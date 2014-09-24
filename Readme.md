@@ -17,7 +17,8 @@ move or clone it later when there is a better location.
           Framework
         * Not utilised by the team due to Linux requirement and other usability
           issues (what were they? I want to avoid them this time around).
-* Matlab: Stephen Sagar's lightweight Matlab implementation of SAMBUCA
-    * fSambuca.m: ***???***
-    * SinglePixSpecMCMC.m: ***???***
-    
+* Matlab: Stephen Sagar's lightweight Matlab implementation of SAMBUCA. See the
+  matlab readme for more detail.
+    * fSambuca.m: forward model
+    * SinglePixSpecMCMC.m: sampling algorithm
+
