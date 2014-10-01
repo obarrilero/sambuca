@@ -3,172 +3,165 @@
 ;-
 function machine_name
     if !version.os_family eq 'Windows' then begin
-       spawn,"set",dos_set
-       for i=0, n_elements(dos_set) -1 do begin
-       aaa= strsplit(dos_set[i],'=',/extract)
-       if  aaa[0] eq "COMPUTERNAME" then $
-         return,aaa[1]
-       endfor
+        spawn,"set",dos_set
+        for i=0, n_elements(dos_set) -1 do begin
+            aaa= strsplit(dos_set[i],'=',/extract)
+            if  aaa[0] eq "COMPUTERNAME" then $
+                return,aaa[1]
+        endfor
     endif
 
-return, "unix"
+    return, "unix"
 end
 
 function DO_whole_guacamole, pstate=pstate, zzzz=zzzz
-common SAMBUCA_share, SAMBUCA
+    common SAMBUCA_share, SAMBUCA
 
-;********************************
-Hmax=(*pstate).values.H_max
-deltaz=(*pstate).values.delta_z
-tidal_offset=(*pstate).values.tidal_offset
-get_z=(*pstate).flag.get_z
-;*************************************
+    ;********************************
+    Hmax=(*pstate).values.H_max
+    deltaz=(*pstate).values.delta_z
+    tidal_offset=(*pstate).values.tidal_offset
+    get_z=(*pstate).flag.get_z
+    ;*************************************
 
-;Data structure that contains all parameters for 14 possible variables
+    ;Data structure that contains all parameters for 14 possible variables
+    whole_guacamole = { name: strarr(15),  $
+                        value: fltarr(15), $
+                        pupper: fltarr(15),$
+                        start: fltarr(15), $
+                        plower: fltarr(15),$
+                        scale: fltarr(15) }
+    ;'scale' defines size of 'step' that amoeba takes when first varying variable
+    ;as a first rule of thumb, start with one order of magnitude less than
+    ;'pupper' - amoeba will still search for solution at several more
+    ;decimal places than value  of scale. e.g. pupper = 2.0,
+    ;scale = 0.1, and answer retrieved can be to fifth decimal.
+    ;too low scale value can result in amoeba getting stuck in nearby local
+    ;minima without properly exploring parameter space, large 'scale' is
+    ;unnecessary, particularly if answer is more or less known, ie starting
+    ;point close to 'answer'.
 
-whole_guacamole = { name: strarr(15),  $
-              value: fltarr(15), $
-                    pupper: fltarr(15),$
-                    start: fltarr(15), $
-                    plower: fltarr(15),$
-                    scale: fltarr(15) }
+    ;'scale' and 'start' settings can have dramatic effects on
+    ;amoeba result! highly recommend exploring these effects every
+    ;time a new dataset is used.
 
+    ;PARAMETERS TO BE OPTIMISED WITH INITIAL VALUES:
+    whole_guacamole.name(0) = 'none'         ; dummy variable for Fi incase all 14 are to be inverted
+    whole_guacamole.value(0) = 0.0
+    whole_guacamole.pupper(0)= 0.0
+    whole_guacamole.start(0)  = 0.0
+    whole_guacamole.plower(0) = 0.0
+    whole_guacamole.scale(0) = 0.0
 
-;PARAMETERS TO BE OPTIMISED WITH INITIAL VALUES:
+    whole_guacamole.name(1) = 'CHL'
+    whole_guacamole.value(1) = SAMBUCA.input_siop.CHL
+    whole_guacamole.start(1)  =SAMBUCA.input_siop.CHL
+    whole_guacamole.scale(1) = 0.1
+    whole_guacamole.pupper(1)=  SAMBUCA.input_siop.CHL_upper
+    whole_guacamole.plower(1) = SAMBUCA.input_siop.CHL_lower
 
-whole_guacamole.name(0) = 'none'         ; dummy variable for Fi incase all 14 are to be inverted
-whole_guacamole.value(0) = 0.0
-whole_guacamole.pupper(0)= 0.0
-whole_guacamole.start(0)  = 0.0
-whole_guacamole.plower(0) = 0.0
-whole_guacamole.scale(0) = 0.0
+    whole_guacamole.name(2) = 'CDOM'
+    whole_guacamole.value(2) = SAMBUCA.input_siop.CDOM
+    whole_guacamole.start(2)  = SAMBUCA.input_siop.CDOM
+    whole_guacamole.scale(2) = 0.1
+    whole_guacamole.pupper(2)= SAMBUCA.input_siop.CDOM_upper
+    whole_guacamole.plower(2) = SAMBUCA.input_siop.CDOM_lower
 
-whole_guacamole.name(1) = 'CHL'
-whole_guacamole.value(1) = SAMBUCA.input_siop.CHL
-whole_guacamole.start(1)  =SAMBUCA.input_siop.CHL
-whole_guacamole.scale(1) = 0.1
-        whole_guacamole.pupper(1)=  SAMBUCA.input_siop.CHL_upper
-        whole_guacamole.plower(1) = SAMBUCA.input_siop.CHL_lower
+    whole_guacamole.name(3) = 'TR'
+    whole_guacamole.value(3) = SAMBUCA.input_siop.TR
+    whole_guacamole.start(3)  = SAMBUCA.input_siop.TR
+    whole_guacamole.scale(3) = 0.1
+    whole_guacamole.pupper(3)=  SAMBUCA.input_siop.TR_upper
+    whole_guacamole.plower(3) = SAMBUCA.input_siop.TR_lower
 
-                             ;'scale' defines size of 'step' that amoeba takes when first varying variable
-                             ; as a first rule of thumb, start with one order of magnitude less than
-                             ; 'pupper' - amoeba will still search for solution at several more
-                             ; decimal places than value  of scale. e.g. pupper = 2.0,
-                             ; scale = 0.1, and answer retrieved can be to fifth decimal.
-                             ; too low scale value can result in amoeba getting stuck in nearby local
-                             ; minima without properly exploring parameter space, large 'scale' is
-                              ;unecessary, particularly if answer is more or less known, ie starting
-                              ;point close to 'answer'.
+    whole_guacamole.name(4) = 'X_ph_lambda0x'
+    whole_guacamole.value(4) = SAMBUCA.input_siop.X_ph_lambda0x
+    whole_guacamole.pupper(4)= 0.005
+    whole_guacamole.start(4)  = 0.005
+    whole_guacamole.plower(4) = 0.00005
+    whole_guacamole.scale(4) = 0.001
 
-                              ;'scale' and 'start' settings can have dramatic effects on
-                              ;amoeba result! highly recommend exploring these effects every
-                              ;time a new dataset is used.
+    whole_guacamole.name(5) = 'X_tr_lambda0x'
+    whole_guacamole.value(5) = SAMBUCA.input_siop.X_tr_lambda0x
+    whole_guacamole.pupper(5)= 0.05
+    whole_guacamole.start(5)  = 0.05
+    whole_guacamole.plower(5) = 0.00005
+    whole_guacamole.scale(5) = 0.01
 
-whole_guacamole.name(2) = 'CDOM'
-whole_guacamole.value(2) = SAMBUCA.input_siop.CDOM
-whole_guacamole.start(2)  = SAMBUCA.input_siop.CDOM
-whole_guacamole.scale(2) = 0.1
-        whole_guacamole.pupper(2)= SAMBUCA.input_siop.CDOM_upper
-        whole_guacamole.plower(2) = SAMBUCA.input_siop.CDOM_lower
+    whole_guacamole.name(6) = 'Sc'
+    whole_guacamole.value(6) = SAMBUCA.input_siop.Sc
+    whole_guacamole.pupper(6)= .021
+    whole_guacamole.start(6)  = 0.016
+    whole_guacamole.plower(6) = 0.012
+    whole_guacamole.scale(6) = 0.001
 
+    whole_guacamole.name(7) = 'Str'
+    whole_guacamole.value(7) = SAMBUCA.input_siop.Str
+    whole_guacamole.pupper(7)= 0.012
+    whole_guacamole.start(7)  = 0.008
+    whole_guacamole.plower(7) = 0.004
+    whole_guacamole.scale(7) = 0.001
 
-whole_guacamole.name(3) = 'TR'
-whole_guacamole.value(3) = SAMBUCA.input_siop.TR
-whole_guacamole.start(3)  = SAMBUCA.input_siop.TR
-whole_guacamole.scale(3) = 0.1
-        whole_guacamole.pupper(3)=  SAMBUCA.input_siop.TR_upper
-        whole_guacamole.plower(3) = SAMBUCA.input_siop.TR_lower
+    whole_guacamole.name(8) = 'a_tr_lambda0tr'
+    whole_guacamole.value(8) = SAMBUCA.input_siop.a_tr_lambda0tr
+    whole_guacamole.pupper(8)= 3.5
+    whole_guacamole.start(8)  = 0.2
+    whole_guacamole.plower(8) = 0.001
+    whole_guacamole.scale(8) = 0.001
 
+    whole_guacamole.name(9) = 'Y'
+    whole_guacamole.value(9) = SAMBUCA.input_siop.Y
+    whole_guacamole.pupper(9)= 1.0
+    whole_guacamole.start(9)  = 0.1
+    whole_guacamole.plower(9) = 0.001
+    whole_guacamole.scale(9) = 0.01
 
+    whole_guacamole.name(10) = 'q1'
+    whole_guacamole.value(10) = SAMBUCA.input_siop.q1
+    whole_guacamole.pupper(10)= 1.0
+    whole_guacamole.start(10)  =  SAMBUCA.input_siop.q1
+    whole_guacamole.plower(10) = 0.01
+    whole_guacamole.scale(10) = 0.1
 
-whole_guacamole.name(4) = 'X_ph_lambda0x'
-whole_guacamole.value(4) = SAMBUCA.input_siop.X_ph_lambda0x
-whole_guacamole.pupper(4)= 0.005
-whole_guacamole.start(4)  = 0.005
-whole_guacamole.plower(4) = 0.00005
-whole_guacamole.scale(4) = 0.001
+    whole_guacamole.name(11) = 'q2'
+    whole_guacamole.value(11) = SAMBUCA.input_siop.q2
+    whole_guacamole.pupper(11)= 1.0
+    whole_guacamole.start(11)  = SAMBUCA.input_siop.q2
+    whole_guacamole.plower(11) = 0.01
+    whole_guacamole.scale(11) = 0.1
 
-whole_guacamole.name(5) = 'X_tr_lambda0x'
-whole_guacamole.value(5) = SAMBUCA.input_siop.X_tr_lambda0x
-whole_guacamole.pupper(5)= 0.05
-whole_guacamole.start(5)  = 0.05
-whole_guacamole.plower(5) = 0.00005
-whole_guacamole.scale(5) = 0.01
+    whole_guacamole.name(12) = 'q3'
+    whole_guacamole.value(12) = SAMBUCA.input_siop.q3
+    whole_guacamole.pupper(12)= 1.0
+    whole_guacamole.start(12)  = 0.5
+    whole_guacamole.plower(12) = 0.01
+    whole_guacamole.scale(12) = 0.1
 
-whole_guacamole.name(6) = 'Sc'
-whole_guacamole.value(6) = SAMBUCA.input_siop.Sc
-whole_guacamole.pupper(6)= .021
-whole_guacamole.start(6)  = 0.016
-whole_guacamole.plower(6) = 0.012
-whole_guacamole.scale(6) = 0.001
+    if get_Z then begin
+        if finite(zzzz) then begin
+            zzz=zzzz
+            whole_guacamole.name(13) = 'H'
+            whole_guacamole.value(13) = zzz
+            whole_guacamole.pupper(13)= zzz+deltaz
+            whole_guacamole.start(13)  = zzz
+            whole_guacamole.plower(13) = zzz-deltaz
+            whole_guacamole.scale(13) = 1.00
+        endif;finite(zzzz)
+    endif else begin; getZ=0
+        whole_guacamole.name(13) = 'H'
+        whole_guacamole.value(13) = SAMBUCA.input_siop.H
+        whole_guacamole.pupper(13)= Hmax + tidal_offset;
+        whole_guacamole.start(13)  = 2.00
+        whole_guacamole.plower(13) = 0.10
+        whole_guacamole.scale(13) = 1.0
+    endelse; getZ
 
-whole_guacamole.name(7) = 'Str'
-whole_guacamole.value(7) = SAMBUCA.input_siop.Str
-whole_guacamole.pupper(7)= 0.012
-whole_guacamole.start(7)  = 0.008
-whole_guacamole.plower(7) = 0.004
-whole_guacamole.scale(7) = 0.001
-
-whole_guacamole.name(8) = 'a_tr_lambda0tr'
-whole_guacamole.value(8) = SAMBUCA.input_siop.a_tr_lambda0tr
-whole_guacamole.pupper(8)= 3.5
-whole_guacamole.start(8)  = 0.2
-whole_guacamole.plower(8) = 0.001
-whole_guacamole.scale(8) = 0.001
-
-whole_guacamole.name(9) = 'Y'
-whole_guacamole.value(9) = SAMBUCA.input_siop.Y
-whole_guacamole.pupper(9)= 1.0
-whole_guacamole.start(9)  = 0.1
-whole_guacamole.plower(9) = 0.001
-whole_guacamole.scale(9) = 0.01
-
-whole_guacamole.name(10) = 'q1'
-whole_guacamole.value(10) = SAMBUCA.input_siop.q1
-whole_guacamole.pupper(10)= 1.0
-whole_guacamole.start(10)  =  SAMBUCA.input_siop.q1
-whole_guacamole.plower(10) = 0.01
-whole_guacamole.scale(10) = 0.1
-
-whole_guacamole.name(11) = 'q2'
-whole_guacamole.value(11) = SAMBUCA.input_siop.q2
-whole_guacamole.pupper(11)= 1.0
-whole_guacamole.start(11)  = SAMBUCA.input_siop.q2
-whole_guacamole.plower(11) = 0.01
-whole_guacamole.scale(11) = 0.1
-
-whole_guacamole.name(12) = 'q3'
-whole_guacamole.value(12) = SAMBUCA.input_siop.q3
-whole_guacamole.pupper(12)= 1.0
-whole_guacamole.start(12)  = 0.5
-whole_guacamole.plower(12) = 0.01
-whole_guacamole.scale(12) = 0.1
-
-if get_Z then begin
-if finite(zzzz) then begin
-         zzz=zzzz
-whole_guacamole.name(13) = 'H'
-whole_guacamole.value(13) = zzz
-whole_guacamole.pupper(13)= zzz+deltaz
-whole_guacamole.start(13)  = zzz
-whole_guacamole.plower(13) = zzz-deltaz
-whole_guacamole.scale(13) = 1.00
-endif;finite(zzzz)
-endif else begin; getZ=0
-whole_guacamole.name(13) = 'H'
-whole_guacamole.value(13) = SAMBUCA.input_siop.H
-whole_guacamole.pupper(13)= Hmax + tidal_offset;
-whole_guacamole.start(13)  = 2.00
-whole_guacamole.plower(13) = 0.10
-whole_guacamole.scale(13) = 1.0
-endelse; getZ
-
-whole_guacamole.name(14) = 'Q'
-whole_guacamole.value(14) = SAMBUCA.input_siop.Qwater
-whole_guacamole.pupper(14)= 5.01
-whole_guacamole.start(14)  = SAMBUCA.input_siop.Qwater
-whole_guacamole.plower(14) = 2.99
-whole_guacamole.scale(14) = 0.1
+    whole_guacamole.name(14) = 'Q'
+    whole_guacamole.value(14) = SAMBUCA.input_siop.Qwater
+    whole_guacamole.pupper(14)= 5.01
+    whole_guacamole.start(14)  = SAMBUCA.input_siop.Qwater
+    whole_guacamole.plower(14) = 2.99
+    whole_guacamole.scale(14) = 0.1
 
 
 ;check for incosistencies in whole_guacamole

@@ -4,8 +4,8 @@ References
 		: Not always the best reference. For example, for Amoeba minimisation
 		: it points to a bespoke python script rather than the Scipy
 		: implementation
-		
-Initial points of interest
+
+Initial questions
 	Data
 		input formats?
 			ESRI
@@ -33,7 +33,37 @@ Initial points of interest
 		does single or double precision matter?
 	What IDL-specific capabilities are used that might be hard to substitute in Python?
 
-Amoeba
+sambuca_2009.pro
+	function machine_name
+		:Straightforward. On windows it searches the environment and returns 
+		:the machine name. On linux it returns "unix" but it could easily
+		:check the value of $HOSTNAME.
+	function DO_whole_guacamole
+		:God function that appears to be the entry point to everything
+		Arguments
+			pstate?
+			zzzz?
+		Where is the common SAMBUCA_share structure defined?
+		whole_guacamole is a structure of arrays
+			What is the purpose of each array?
+				name
+				value
+				pupper
+					:an upper limit to something
+				plower
+					:a lower limit to something
+				start
+				scale
+					:defines the initial step size used by the amoeba
+					:minimisation routine.
+			Number of parameters is hard-coded. 
+				Could be data driven?
+			Ask the team for explanation of each element set
+				what is 'CHL', 'CDOM' etc
+
+amoeba_clw7.pro
+	Is the 7 a version number?
+		If so, what is the history?
 	Performs multidimensional minimisation of a function using the downhill simplex method
 		Does not require a derivative function
 	Appears to be a modified version of the IDL standard function.
@@ -43,11 +73,12 @@ Amoeba
 		: need to diff against original to check, but it probably doesn't
 		: matter for the port.
 		ToDo: identify whether a replacement exists in SciPy.
-			Yes 
+			Yes
 				: downhill simplex (Nelder-Mead/Amoeba) is available as an option
 				: in minimise using method='Nelder-Mead'
 				: http://stackoverflow.com/questions/9613381/python-function-minimisation-without-derivative
 				: http://docs.scipy.org/doc/scipy/reference/tutorial/optimize.html?highlight=nelder
+			Does the IDL function do anything strange that will prevent use of the SciPy version?
 
 IDL quirks to watch
 	arrays
