@@ -8,33 +8,33 @@ Function amotry_CLW2, p, y, psum, func, ihi, fac
 ; from the high point, tries it and replaces the high point if the new
 ; point is better.
 
-  compile_opt hidden
-  common opti_trajec, trajec,ntry,Pupper,Plower
+    compile_opt hidden
+    common opti_trajec, trajec, ntry, Pupper, Plower
 
-
-  fac1 = (1.0 - fac) / n_elements(psum)
-  fac2 = fac1  - fac
-  ptry = psum * fac1 - p[*,ihi] * fac2
-  ; the trial point has to lie in the pupper-plower quadrant
+    fac1 = (1.0 - fac) / n_elements(psum)
+    fac2 = fac1  - fac
+    ptry = psum * fac1 - p[*,ihi] * fac2
+    ; the trial point has to lie in the pupper-plower quadrant
     ;print," amotry_CLW: ",ntry,ptry
 
-      nn=n_elements(ptry)
-      for nnn=0,nn-1 do begin
-      ptry[nnn]=max([ptry[nnn],Plower[nnn]])
-      ptry[nnn]=min([ptry[nnn],Pupper[nnn]])
-      end
+    nn=n_elements(ptry)
+    for nnn=0,nn-1 do begin
+        ptry[nnn]=max([ptry[nnn],Plower[nnn]])
+        ptry[nnn]=min([ptry[nnn],Pupper[nnn]])
+    end
 
-trajec(*,ntry)=ptry
-ntry=ntry+1
-  ;print," amotry_CLW: corr ",ptry
+    trajec(*,ntry)=ptry
+    ntry=ntry+1
+    ;print," amotry_CLW: corr ",ptry
 
-  ytry = call_function(func, ptry)  ;Eval fcn at trial point
-  if ytry lt y[ihi] then begin    ;If its better than highest, replace highest
-    y[ihi] = ytry
-    psum = psum + ptry - p[*,ihi]
-    p[0,ihi] = ptry
+    ytry = call_function(func, ptry)  ;Eval fcn at trial point
+    if ytry lt y[ihi] then begin    ;If its better than highest, replace highest
+        y[ihi] = ytry
+        psum = psum + ptry - p[*,ihi]
+        p[0,ihi] = ptry
     endif
-  return, ytry
+
+    return, ytry
 end
 
 
@@ -161,88 +161,87 @@ Function Amoeba_CLW7, ftol, errtol, FUNCTION_NAME=func, FUNCTION_VALUE=y, $
 ;   DMS, May, 1996.   Written.
 ;-
 
-  common opti_trajec, trajec,ntry,Pupper,Plower
+    common opti_trajec, trajec, ntry, Pupper, Plower
 
-;print,'inside amoeba: abstol:', errtol
+    ;print,'inside amoeba: abstol:', errtol
 
-if keyword_set(scale) then begin  ;If set, then p0 is initial starting pnt
-   ndim = n_elements(p0)
-   p = p0 # replicate(1.0, ndim+1)
-   for i=0, ndim-1 do p[i,i+1] = p0[i] + scale[i < (n_elements(scale)-1)]
-endif
+    if keyword_set(scale) then begin  ;If set, then p0 is initial starting pnt
+        ndim = n_elements(p0)
+        p = p0 # replicate(1.0, ndim+1)
+        for i=0, ndim-1 do p[i,i+1] = p0[i] + scale[i < (n_elements(scale)-1)]
+    endif
 
-s = size(p)
-if s[0] ne 2 then message, 'Either (SCALE,P0) or SIMPLEX must be initialized'
-ndim = s[1]        ;Dimensionality of simplex
-mpts = ndim+1      ;# of points in simplex
-if n_elements(func) eq 0 then func = 'FUNC'
-if n_elements(nmax) eq 0 then nmax = 5000L
+    s = size(p)
+    if s[0] ne 2 then message, 'Either (SCALE,P0) or SIMPLEX must be initialized'
+    ndim = s[1]        ;Dimensionality of simplex
+    mpts = ndim+1      ;# of points in simplex
+    if n_elements(func) eq 0 then func = 'FUNC'
+    if n_elements(nmax) eq 0 then nmax = 5000L
 
-y = replicate(call_function(func, p[*,0]), mpts)  ;Init Y to proper type
-for i=1, ndim do y[i] = call_function(func, p[*,i]) ;Fill in rest of the vals
-ncalls = 0L
-psum = total(p,2)
-
-while ncalls le nmax do begin     ;Each iteration
-  s = sort(y)
-  ilo = s[0]       ;Lowest point
-  ilo2= s[1]       ;Second Lowest Point
-  ihi = s[ndim]     ;Highest point
-  inhi = s[ndim-1]  ;Next highest point
-  d = abs(y[ihi]) + abs(y[ilo]) ;Denominator = interval
-  if d ne 0.0 then rtol = 2.0 * abs(y[ihi]-y[ilo])/d $
-  else rtol = ftol / 2.         ;Terminate if interval is 0
-  ;print, 'rtol:', rtol
-  ;print, 'd:', d
-  if rtol lt ftol then begin ;Done?
-    if y[ilo] lt errtol then begin   ;absolute condition
-      t = y[0] & y[0] = y[ilo] & y[ilo] = t ;Sort so fcn min is 0th elem
-      t = p[*,ilo] & p[*,ilo] = p[*,0] & p[*,0] = t
-      return, t
-    endif                  ;params for fcn min
-  endif else begin
-   p_diff=abs(p[*,ilo]-p[*,ilo2])
-    ;print,"p_diff:",p_diff
-   aaa=machar()& eps=aaa.eps
-   p_diff=total(p_diff)/ndim
-   if p_diff lt eps then begin
-     if y[ilo] lt errtol then begin ; absolute condition
-      t = y[0] & y[0] = y[ilo] & y[ilo] = t ;Sort so fcn min is 0th elem
-      t = p[*,ilo] & p[*,ilo] = p[*,0] & p[*,0] = t
-       ;print, "convergence due to non varying Point"
-      return, t
-     endif                ;params for fcn min
-   endif
-  endelse
-
-  ncalls = ncalls + 2
-  ytry = amotry_CLW2(p, y, psum, func, ihi, -1.0)
-  if ytry le y[ilo] then ytry = amotry_CLW2(p,y,psum, func, ihi, 2.0) $
-  else if ytry ge y[inhi] then begin
-    ysave = y[ihi]
-    ytry = amotry_CLW2(p,y,psum,func, ihi, 0.5)
-    if ytry ge ysave then begin
-    for i=0, ndim do if i ne ilo then begin
-      psum = 0.5 * (p[*,i] + p[*,ilo])
-      ;print, "amo psum",ncalls+i,psum
-  ; the trial point has to lie in the pupper-plower quadrant
-         nn=n_elements(psum)
-         for nnn=0,nn-1 do begin
-         psum[nnn]=max([psum[nnn],Plower[nnn]])
-         psum[nnn]=min([psum[nnn],Pupper[nnn]])
-         end
-       trajec(*,ntry)=psum
-       ntry=ntry+1
-
-
-      p[*,i] = psum
-      ;print, "amo psum corr",ncalls+i,psum
-      y[i] = call_function(func, psum)
-      endif
-    ncalls = ncalls + ndim
+    y = replicate(call_function(func, p[*,0]), mpts)  ;Init Y to proper type
+    for i=1, ndim do y[i] = call_function(func, p[*,i]) ;Fill in rest of the vals
+    ncalls = 0L
     psum = total(p,2)
-    endif   ;ytry ge ysave
-    endif else ncalls = ncalls  - 1
-  endwhile
-  return, -1       ;Here, the function failed to converge.
+
+    while ncalls le nmax do begin     ;Each iteration
+        s = sort(y)
+        ilo = s[0]       ;Lowest point
+        ilo2= s[1]       ;Second Lowest Point
+        ihi = s[ndim]     ;Highest point
+        inhi = s[ndim-1]  ;Next highest point
+        d = abs(y[ihi]) + abs(y[ilo]) ;Denominator = interval
+        if d ne 0.0 then rtol = 2.0 * abs(y[ihi]-y[ilo])/d $
+        else rtol = ftol / 2.         ;Terminate if interval is 0
+        ;print, 'rtol:', rtol
+        ;print, 'd:', d
+        if rtol lt ftol then begin ;Done?
+            if y[ilo] lt errtol then begin   ;absolute condition
+                t = y[0] & y[0] = y[ilo] & y[ilo] = t ;Sort so fcn min is 0th elem
+                t = p[*,ilo] & p[*,ilo] = p[*,0] & p[*,0] = t
+                return, t
+            endif                  ;params for fcn min
+        endif else begin
+            p_diff=abs(p[*,ilo]-p[*,ilo2])
+            ;print,"p_diff:",p_diff
+            aaa=machar()& eps=aaa.eps
+            p_diff=total(p_diff)/ndim
+            if p_diff lt eps then begin
+                if y[ilo] lt errtol then begin ; absolute condition
+                    t = y[0] & y[0] = y[ilo] & y[ilo] = t ;Sort so fcn min is 0th elem
+                    t = p[*,ilo] & p[*,ilo] = p[*,0] & p[*,0] = t
+                    ;print, "convergence due to non varying Point"
+                    return, t
+                endif                ;params for fcn min
+            endif
+        endelse
+
+        ncalls = ncalls + 2
+        ytry = amotry_CLW2(p, y, psum, func, ihi, -1.0)
+        if ytry le y[ilo] then ytry = amotry_CLW2(p,y,psum, func, ihi, 2.0) $
+        else if ytry ge y[inhi] then begin
+            ysave = y[ihi]
+            ytry = amotry_CLW2(p,y,psum,func, ihi, 0.5)
+            if ytry ge ysave then begin
+                for i=0, ndim do if i ne ilo then begin
+                    psum = 0.5 * (p[*,i] + p[*,ilo])
+                    ;print, "amo psum",ncalls+i,psum
+                    ; the trial point has to lie in the pupper-plower quadrant
+                    nn=n_elements(psum)
+                    for nnn=0,nn-1 do begin
+                        psum[nnn]=max([psum[nnn],Plower[nnn]])
+                        psum[nnn]=min([psum[nnn],Pupper[nnn]])
+                    end
+                    trajec(*,ntry)=psum
+                    ntry=ntry+1
+
+                    p[*,i] = psum
+                    ;print, "amo psum corr",ncalls+i,psum
+                    y[i] = call_function(func, psum)
+                endif
+                ncalls = ncalls + ndim
+                psum = total(p,2)
+            endif   ;ytry ge ysave
+        endif else ncalls = ncalls  - 1
+    endwhile
+    return, -1       ;Here, the function failed to converge.
 end
