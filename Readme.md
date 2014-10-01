@@ -6,7 +6,7 @@ move or clone it later when there is a better location.
 
 ## Description of Reference Folders
 * IDL: Original IDL code
-    * amoeba_clw7.pro: ***What is this file?***
+    * amoeba_clw7.pro: Amoeba minimisation function
     * sambuca_2009.pro: current *gold standard* for core SAMBUCA.
     * sambuca_2009_wid.pro: IDL widgets/GUI code for the *gold standard* SAMBUCA.
     * SAMBUCA.zip: Luke Domanski's code from a previous eRCP.
