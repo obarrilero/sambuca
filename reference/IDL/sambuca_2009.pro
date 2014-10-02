@@ -310,170 +310,155 @@ function SAMBUCA_SA_V12_fwdVB, ZZ, input_spectra, input_params
         kd:Kd,$
         Kuc:Kuc,$
         Kub:Kub }
-
 end
 ;****************************************************************
 
 function sub5_SAMBUCA_SA_V12, Z
-common SAMBUCA_share, SAMBUCA
+    common SAMBUCA_share, SAMBUCA
 
+    ;prepare parameter values for forward run
+    ZZ=fltarr(15)
 
+    ZZ(SAMBUCA.opti_params.Zi)=Z       ;parameters to be optimised as passed from SAMBA via AMOEBA
+    ZZ(SAMBUCA.opti_params.Fi)=SAMBUCA.opti_params.F       ;fixed parameters as passed from SAMBA in the common
 
-;prepare parameter values for forward run
+    ; check if SIOPs are constant
+    ; TODO !!!!
+    ;X_ph_lambda0x = ZZ(4)      ;specific backscatter of chlorophyl at lambda0x
+    ;X_tr_lambda0x = ZZ(5)      ;specific backscatter of tripton at lambda0x
+    ;Sc = ZZ(6)            ; slope of cdom absorption
+    ;Str = ZZ(7)               ; slope of tr absorption
+    ;a_tr_lambda0tr = ZZ(8)
 
-ZZ=fltarr(15)
+    ;prepare refelctance of the substrate  for forward run
+    ;inputR= {spectra=all_subs.spectra, names:subs_names,  index:uintarr[2]}
+    ;              inputR.index=[rr,rrr]
 
-ZZ(SAMBUCA.opti_params.Zi)=Z       ;parameters to be optimised as passed from SAMBA via AMOEBA
-ZZ(SAMBUCA.opti_params.Fi)=SAMBUCA.opti_params.F       ;fixed parameters as passed from SAMBA in the common
+    r1 = SAMBUCA.inputR.spectra[SAMBUCA.inputR.index[0],*]
+    r2 = SAMBUCA.inputR.spectra[SAMBUCA.inputR.index[1],*]
+    q1 = ZZ(10)
 
+    substrateR = (q1 * r1) + ( (1-q1)*r2 )     ;proportion of 1st (and second which equals 1-q1 ) end member spectra
 
-; check if SIOPs are constant
-; TODO !!!!
-;X_ph_lambda0x = ZZ(4)      ;specific backscatter of chlorophyl at lambda0x
-;X_tr_lambda0x = ZZ(5)      ;specific backscatter of tripton at lambda0x
-;Sc = ZZ(6)            ; slope of cdom absorption
-;Str = ZZ(7)               ; slope of tr absorption
-;a_tr_lambda0tr = ZZ(8)
+    SAMBUCA.input_spectra.substrateR= substrateR
 
+    ; run forward model
+    spectra = SAMBUCA_SA_V12_fwdVB ( ZZ, SAMBUCA.input_spectra,SAMBUCA.input_params)
+    ;help, spectra,/struc
+    ;spectra = {wl:input_spectra.wl,$
+    ;   R0:closed_spectrum,R0dp:closed_deep_spectrum,kd:Kd,Kuc:Kuc,Kub:Kub }
+    SAMBUCA.input_spectra=spectra.input_spectra
 
-;prepare refelctance of the substrate  for forward run
-;inputR= {spectra=all_subs.spectra, names:subs_names,  index:uintarr[2]}
-;              inputR.index=[rr,rrr]
+    ; move to the common output spectra
+    if SAMBUCA.distances.run_1nm then begin
+        SAMBUCA.imagespectra.closed_spectrum=spectra.R0 # SAMBUCA.distances.nm_filter_function
+        SAMBUCA.imagespectra.closed_deep_spectrum=spectra.R0dp # SAMBUCA.distances.nm_filter_function
+        SAMBUCA.imagespectra.Kd=spectra.Kd  # SAMBUCA.distances.nm_filter_function
+        SAMBUCA.imagespectra.Kub=spectra.Kub  # SAMBUCA.distances.nm_filter_function
+        SAMBUCA.imagespectra.Kuc=spectra.Kuc  # SAMBUCA.distances.nm_filter_function
+    endif else begin
+        SAMBUCA.imagespectra.closed_spectrum=spectra.R0
+        SAMBUCA.imagespectra.closed_deep_spectrum=spectra.R0dp
+        SAMBUCA.imagespectra.kd=spectra.kd
+        SAMBUCA.imagespectra.kub=spectra.kub
+        SAMBUCA.imagespectra.kuc=spectra.kuc
+    endelse
 
-r1 = SAMBUCA.inputR.spectra[SAMBUCA.inputR.index[0],*]
-r2 = SAMBUCA.inputR.spectra[SAMBUCA.inputR.index[1],*]
-q1 = ZZ(10)
+    ; evaluate error function
+    Qwater = ZZ(14)
 
-substrateR = (q1 * r1) + ( (1-q1)*r2 )     ;proportion of 1st (and second which equals 1-q1 ) end member spectra
+    realrrs = SAMBUCA.imagespectra.image_spectrum  / Qwater
+    noiserrs= SAMBUCA.imagespectra.Noise_spectrum / Qwater ;VB07 to fix after all the checks !
+    rrs=SAMBUCA.imagespectra.closed_spectrum / Qwater
 
-SAMBUCA.input_spectra.substrateR= substrateR
+    ;print, rrs,realrrs
 
-; run forward model
+    ;ERROR FUNCTION TO BE OPTIMISED
+    ;LSQ as in as in equation 1 of Mobley 2005 AO:i.e. without using Noise
+    LSQ =   ( (TOTAL (  (double(realrrs) - double(rrs))^2,/double )  ) ^0.5)
 
-spectra= SAMBUCA_SA_V12_fwdVB ( ZZ, SAMBUCA.input_spectra,SAMBUCA.input_params)
-;help, spectra,/struc
-; spectra=  {wl:input_spectra.wl,$
-;                R0:closed_spectrum,R0dp:closed_deep_spectrum,kd:Kd,Kuc:Kuc,Kub:Kub }
-SAMBUCA.input_spectra=spectra.input_spectra
-; move to the common output spectra
+    if SAMBUCA.distances.use_noise then begin
+        rrs=rrs/noiserrs
+        realrrs=realrrs/noiserrs
+    endif
 
-if SAMBUCA.distances.run_1nm then begin
-SAMBUCA.imagespectra.closed_spectrum=spectra.R0 # SAMBUCA.distances.nm_filter_function
-SAMBUCA.imagespectra.closed_deep_spectrum=spectra.R0dp # SAMBUCA.distances.nm_filter_function
-SAMBUCA.imagespectra.Kd=spectra.Kd  # SAMBUCA.distances.nm_filter_function
-SAMBUCA.imagespectra.Kub=spectra.Kub  # SAMBUCA.distances.nm_filter_function
-SAMBUCA.imagespectra.Kuc=spectra.Kuc  # SAMBUCA.distances.nm_filter_function
-endif else begin
-SAMBUCA.imagespectra.closed_spectrum=spectra.R0
-SAMBUCA.imagespectra.closed_deep_spectrum=spectra.R0dp
-SAMBUCA.imagespectra.kd=spectra.kd
-SAMBUCA.imagespectra.kub=spectra.kub
-SAMBUCA.imagespectra.kuc=spectra.kuc
-endelse
+    ;print, rrs,realrrs
+    F_val =   ( (TOTAL (  (double(realrrs) - double(rrs))^2,/double )  ) ^0.5) / (TOTAL(double(realrrs)) )
 
+    ;alpha
+    Topline=TOTAL(double(realrrs)*double(rrs))
+    Botline1=SQRT(TOTAL(double(realrrs)^2))
+    Botline2=SQRT(TOTAL(double(rrs)^2))
+    ;alpha_val=ACOS(Topline/(Botline1*Botline2))
 
+    if Botline1 eq 0 or Botline2 eq 0 then begin
+        rat=0.0
+    endif else begin
+        rat=Topline/(Botline1*Botline2)
+    endelse
 
+    if rat le 1 then begin
+        alpha_val=ACOS(rat) 
+    endif else begin
+        alpha_val=100.0
+    endelse
 
-; evaluate error function
-Qwater = ZZ(14)
+    ;print,alpha_val,rat,Topline,Botline1,Botline2
 
-realrrs = SAMBUCA.imagespectra.image_spectrum  / Qwater
-noiserrs= SAMBUCA.imagespectra.Noise_spectrum / Qwater ;VB07 to fix after all the checks !
-rrs=SAMBUCA.imagespectra.closed_spectrum / Qwater
+    ;move the distance values to the common
+    SAMBUCA.distances.distance_LSQ = LSQ
+    SAMBUCA.distances.distance_alpha = alpha_val & SAMBUCA.distances.distance_f=F_val & SAMBUCA.distances.distance_alpha_f = F_val*alpha_val
 
-;print, rrs,realrrs
+    case SAMBUCA.distances.ERROR_TYPE of
+        "a":  error = alpha_val
+        "f":  error = f_val
+        "af": error = F_val*(0.00000001+alpha_val)
+    endcase
+    ;print, LSQ,F_val,alpha_val,F_val*alpha_val,F_val*(0.00000001+alpha_val)
 
-;ERROR FUNCTION TO BE OPTIMISED
-;LSQ as in as in equation 1 of Mobley 2005 AO:i.e. without using Noise
+    ; retrieve Substrate detectability
+    SubsDet_spectral=(abs((spectra.R0-spectra.R0dp)/SAMBUCA.imagespectra.Noise_spectrum))
+    ;idx=where(closed_deep_diff_quanta)
+    SAMBUCA.imagespectra.SDI =uint(max(SubsDet_spectral))
+    SAMBUCA.imagespectra.subsdet=SubsDet_spectral
 
-  LSQ =   ( (TOTAL (  (double(realrrs) - double(rrs))^2,/double )  ) ^0.5)
+    ;retrieve the "water corrected" mixel
+    ;r = (realrrs - rrsdp * (1.00 - exp(-(Kd+Kuc) * H)) ) /( (1.00/!DPI)  * exp(- ( Kd+Kub)* H)   )
+    ; and  move to the two mixel spectra to the  common output spectra
+    H = ZZ(13)
+    water_corrected_mixel=  $
+        ( (spectra.R0  / Qwater) - (spectra.R0dp/Qwater) * (1.00 - exp(-(spectra.Kd+spectra.Kuc) * H)) ) /( (1.00/!DPI)  * exp(- ( spectra.Kd+spectra.Kub)* H)   )
 
+    ;WCmask=  water_corrected_mixel *0
+    ;idx=where(SubsDet_spectral)
+    ;if idx[0] ne -1 then WCmask[idx]=1
+    ;water_corrected_mixel=water_corrected_mixel*WCmask
 
-if SAMBUCA.distances.use_noise then begin
-  rrs=rrs/noiserrs
-  realrrs=realrrs/noiserrs
-endif
+    if SAMBUCA.distances.run_1nm then begin
+        SAMBUCA.imagespectra.water_corrected_mixel=water_corrected_mixel # SAMBUCA.distances.nm_filter_function
+        SAMBUCA.imagespectra.unmixed_mixel=substrateR# SAMBUCA.distances.nm_filter_function
+    endif else begin
+        SAMBUCA.imagespectra.water_corrected_mixel=water_corrected_mixel
+        SAMBUCA.imagespectra.unmixed_mixel=substrateR
+    endelse
 
-;print, rrs,realrrs
+    ;VB09:WGOSW
+    if SAMBUCA.distances.run_1nm then begin
+        IOP_a=spectra.a # SAMBUCA.distances.nm_filter_function
+        IOP_bb=spectra.bb # SAMBUCA.distances.nm_filter_function
+    endif else begin
+        IOP_a=spectra.a
+        IOP_bb=spectra.bb
+    endelse
 
-  F_val =   ( (TOTAL (  (double(realrrs) - double(rrs))^2,/double )  ) ^0.5) / (TOTAL(double(realrrs)) )
+    ;WGOSW={wl440:i_wls_abb_out[0],wl555:i_wls_abb_out[1],a440:0.,bb555:0.,    Rbot555:0.,    Z:0.,  LSQ:0.}
+    SAMBUCA.WGOSW.a440=IOP_a[SAMBUCA.WGOSW.wl440]
+    SAMBUCA.WGOSW.bb555=IOP_bb[SAMBUCA.WGOSW.wl555]
+    SAMBUCA.WGOSW.Rbot555=SAMBUCA.imagespectra.unmixed_mixel[SAMBUCA.WGOSW.wl555]
+    SAMBUCA.WGOSW.Z=H
+    SAMBUCA.WGOSW.LSQ=LSQ
 
-;alpha
-  Topline=TOTAL(double(realrrs)*double(rrs))
-      Botline1=SQRT(TOTAL(double(realrrs)^2))
-      Botline2=SQRT(TOTAL(double(rrs)^2))
-      ;alpha_val=ACOS(Topline/(Botline1*Botline2))
-
-
-
-   if Botline1 eq 0 or Botline2 eq 0 then rat=0.0 else $
-                                rat=Topline/(Botline1*Botline2)
-      if rat le 1 then alpha_val=ACOS(rat) else alpha_val=100.0
-
-
-;print,alpha_val,rat,Topline,Botline1,Botline2
-
-;move the distance values to the common
-SAMBUCA.distances.distance_LSQ = LSQ
-SAMBUCA.distances.distance_alpha = alpha_val & SAMBUCA.distances.distance_f=F_val & SAMBUCA.distances.distance_alpha_f = F_val*alpha_val
-
-case SAMBUCA.distances.ERROR_TYPE of
-     "a":  error = alpha_val
-     "f":  error = f_val
-     "af": error = F_val*(0.00000001+alpha_val)
-endcase
-;print, LSQ,F_val,alpha_val,F_val*alpha_val,F_val*(0.00000001+alpha_val)
-
-; retrieve Substrate detectability
-  SubsDet_spectral=(abs((spectra.R0-spectra.R0dp)/SAMBUCA.imagespectra.Noise_spectrum))
-  ;idx=where(closed_deep_diff_quanta)
-   SAMBUCA.imagespectra.SDI =uint(max(SubsDet_spectral))
-SAMBUCA.imagespectra.subsdet=SubsDet_spectral
-
-;retrieve the "water corrected" mixel
-;r = (realrrs - rrsdp * (1.00 - exp(-(Kd+Kuc) * H)) ) /( (1.00/!DPI)  * exp(- ( Kd+Kub)* H)   )
-; and  move to the two mixel spectra to the  common output spectra
-
-H = ZZ(13)
-
-water_corrected_mixel=  $
-( (spectra.R0  / Qwater) - (spectra.R0dp/Qwater) * (1.00 - exp(-(spectra.Kd+spectra.Kuc) * H)) ) /( (1.00/!DPI)  * exp(- ( spectra.Kd+spectra.Kub)* H)   )
-
-;WCmask=  water_corrected_mixel *0
-;  idx=where(SubsDet_spectral)
-;if idx[0] ne -1 then WCmask[idx]=1
-;water_corrected_mixel=water_corrected_mixel*WCmask
-
-if SAMBUCA.distances.run_1nm then begin
-SAMBUCA.imagespectra.water_corrected_mixel=water_corrected_mixel # SAMBUCA.distances.nm_filter_function
-SAMBUCA.imagespectra.unmixed_mixel=substrateR# SAMBUCA.distances.nm_filter_function
-endif else begin
-SAMBUCA.imagespectra.water_corrected_mixel=water_corrected_mixel
-SAMBUCA.imagespectra.unmixed_mixel=substrateR
-endelse
-
-
-
- ;VB09:WGOSW
-
-if SAMBUCA.distances.run_1nm then begin
-IOP_a=spectra.a # SAMBUCA.distances.nm_filter_function
-IOP_bb=spectra.bb # SAMBUCA.distances.nm_filter_function
-endif else begin
-IOP_a=spectra.a
-IOP_bb=spectra.bb
-endelse
- ;WGOSW={wl440:i_wls_abb_out[0],wl555:i_wls_abb_out[1],a440:0.,bb555:0.,    Rbot555:0.,    Z:0.,  LSQ:0.}
- SAMBUCA.WGOSW.a440=IOP_a[SAMBUCA.WGOSW.wl440]
- SAMBUCA.WGOSW.bb555=IOP_bb[SAMBUCA.WGOSW.wl555]
- SAMBUCA.WGOSW.Rbot555=SAMBUCA.imagespectra.unmixed_mixel[SAMBUCA.WGOSW.wl555]
- SAMBUCA.WGOSW.Z=H
- SAMBUCA.WGOSW.LSQ=LSQ
-
-
-
-  RETURN,error
-
+  RETURN, error
 end
 
 ;=================================
