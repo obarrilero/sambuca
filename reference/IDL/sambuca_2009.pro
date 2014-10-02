@@ -220,114 +220,96 @@ end
 
 function SAMBUCA_SA_V12_fwdVB, ZZ, input_spectra, input_params
 
-wav = input_spectra.wl
-aw = input_spectra.awater
-;bbw = input_spectra.bbwater
-n_wls = n_elements(wav)
+    wav = input_spectra.wl
+    aw = input_spectra.awater
+    ;bbw = input_spectra.bbwater
+    n_wls = n_elements(wav)
+
+    ;==============
+    theta_air=input_params.theta_air
+    thetaw = (ASIN(1/1.333*SIN(!PI/180.00*(theta_air))))  ;subsurface solar zenith angle in radians
+    thetao = 0.00                                       ;subsurface viewing angle in radians
+
+    ;=======================
+    ;PARAMETERS TO BE OPTIMISED WITH INITIAL VALUES:
 
 
-;==============
-theta_air=input_params.theta_air
-thetaw = (ASIN(1/1.333*SIN(!PI/180.00*(theta_air))))  ;subsurface solar zenith angle in radians
-thetao = 0.00                                       ;subsurface viewing angle in radians
+    ;none  = ZZ(0)      ;dummy parameter incase nothing is to be fixed!
+    CHL  = ZZ(1)              ;concentration of cholorphyl
+    CDOM  = ZZ(2)             ; concentration of cdom
+    TR =    ZZ(3)           ;concentration of tripton
+    X_ph_lambda0x = ZZ(4)      ;specific backscatter of chlorophyl at lambda0x
+    X_tr_lambda0x = ZZ(5)      ;specific backscatter of tripton at lambda0x
+    Sc = ZZ(6)            ; slope of cdom absorption
+    Str = ZZ(7)               ; slope of tr absorption
+    a_tr_lambda0tr = ZZ(8)
+    Y = ZZ(9)
+    q1 = ZZ(10)
+    q2 = ZZ(11)
+    q3 = ZZ(12)
+    H = ZZ(13)
+    Qwater = ZZ(14)
 
-;=======================
-;PARAMETERS TO BE OPTIMISED WITH INITIAL VALUES:
+    if input_spectra.calculate_siops then begin
+        ;=========================
+        ;SIOPS
+        input_spectra.bbwater= ( 0.00194/2.0 ) * ( ( 550.0/wav )^4.32 ) ; Mobely 1994, eq
 
+        lambda0cdom=input_params.lambda0cdom
+        a_cdom_lambda0cdom = 1.0
 
-;none  = ZZ(0)      ;dummy parameter incase nothing is to be fixed!
-CHL  = ZZ(1)              ;concentration of cholorphyl
-CDOM  = ZZ(2)             ; concentration of cdom
-TR =    ZZ(3)           ;concentration of tripton
-X_ph_lambda0x = ZZ(4)      ;specific backscatter of chlorophyl at lambda0x
-X_tr_lambda0x = ZZ(5)      ;specific backscatter of tripton at lambda0x
-Sc = ZZ(6)            ; slope of cdom absorption
-Str = ZZ(7)               ; slope of tr absorption
-a_tr_lambda0tr = ZZ(8)
-Y = ZZ(9)
-q1 = ZZ(10)
-q2 = ZZ(11)
-q3 = ZZ(12)
-H = ZZ(13)
-Qwater = ZZ(14)
+        input_spectra.acdom_star = a_cdom_lambda0cdom * (exp(-Sc * (wav - input_params.lambda0cdom) ) ) ; abs. coeff for CDOM, where a_cdom_550 = 1
+        input_spectra.atr_star = a_tr_lambda0tr * (exp(-Str * (wav - input_params.lambda0tr) ) )   ; abs coeff og tripton, where a_tr_550 = sample dependent
 
+        ;---------scatter--------bb = bbw + bbchl + bbtr
+        input_spectra.bbph_star = X_ph_lambda0x * ( (input_params.lambda0x/wav)^Y )  ;backscatter due to phytoplankton
+        input_spectra.bbtr_star = X_tr_lambda0x * ( (input_params.lambda0x/wav)^Y )      ;backscatter due to tripton
+        input_spectra.calculate_siops=0b
+    endif
 
-if input_spectra.calculate_siops then begin
-;=========================
-;SIOPS
-input_spectra.bbwater= ( 0.00194/2.0 ) * ( ( 550.0/wav )^4.32 ) ; Mobely 1994, eq
+    a =  input_spectra.awater +  CHL * input_spectra.aphy_star + $
+        CDOM  * input_spectra.acdom_star + TR * input_spectra.atr_star
+    bb =  input_spectra.bbwater + CHL * input_spectra.bbph_star + $
+        TR * input_spectra.bbtr_star
 
+    ;-------bottom reflectance--------
 
-lambda0cdom=input_params.lambda0cdom
-a_cdom_lambda0cdom = 1.0
+    ;r = (q1 * r1) + ( (1-q1)*r2 )     ;proportion of 1st (and second which equals 1-q1 ) end member spectra
+    r=input_spectra.substrateR
 
-input_spectra.acdom_star = a_cdom_lambda0cdom * (exp(-Sc * (wav - input_params.lambda0cdom) ) ) ; abs. coeff for CDOM, where a_cdom_550 = 1
-input_spectra.atr_star = a_tr_lambda0tr * (exp(-Str * (wav - input_params.lambda0tr) ) )   ; abs coeff og tripton, where a_tr_550 = sample dependent
+    ;================
+    ;SA MODEL:
 
+    u = bb / (a + bb)
+    kappa = a + bb
 
-;---------scatter--------bb = bbw + bbchl + bbtr
+    DuColumn = 1.03 * (1.00 + (2.40 * u) )^0.50  ; opt. path elongation for scatterd photons from column
+    DuBottom = 1.04 * (1.00 + (5.40 * u) )^0.50  ; opt. path elongation for scatterd photons from bottom
 
-input_spectra.bbph_star = X_ph_lambda0x * ( (input_params.lambda0x/wav)^Y )  ;backscatter due to phytoplankton
-input_spectra.bbtr_star = X_tr_lambda0x * ( (input_params.lambda0x/wav)^Y )      ;backscatter due to tripton
-input_spectra.calculate_siops=0b
-endif
+    rrsdp = (0.084 + (0.17 * u) ) * u   ; remote sensing reflectance for opt deep water
 
+    Kd=   kappa * (1.00     / cos(thetaw))
+    Kuc=  kappa * (DuColumn / cos(thetao))
+    Kub=  kappa * (DuBottom / cos(thetao))
 
-a =  input_spectra.awater +  CHL * input_spectra.aphy_star + $
-       CDOM  * input_spectra.acdom_star + TR * input_spectra.atr_star
-bb =  input_spectra.bbwater + CHL * input_spectra.bbph_star + $
-                    TR * input_spectra.bbtr_star
+    ;rrs = rrsdp * (1.00 - exp(-(Kd+Kuc) * H)) + ( (1.00/!DPI) * r * exp(- ( Kd+Kub)* H)   )
+    rrs = rrsdp * (1.00 - exp(-( (1.00/cos(thetaw)) + (DuColumn / cos(thetao)) )* kappa * H)) + ( (1.00/!DPI) * r * exp(-( (1.00/cos(thetaw)) + (DuBottom / cos(thetao)) )* kappa * H)   )
 
+    ;rrs = rrsdp * (1.00 - exp(-(Kd+Kuc) * H)) + ( (1.00/!DPI) * r * exp(- ( Kd+Kub)* H)   )
 
+    closed_spectrum=  rrs * Qwater ; VB
+    closed_deep_spectrum=  rrsdp * Qwater ; VB
 
-;-------bottom reflectance--------
-
-;r = (q1 * r1) + ( (1-q1)*r2 )     ;proportion of 1st (and second which equals 1-q1 ) end member spectra
-r=input_spectra.substrateR
-
-
-;================
-
-;SA MODEL:
-
-
-
-u = bb / (a + bb)
-kappa = a + bb
-
-DuColumn = 1.03 * (1.00 + (2.40 * u) )^0.50  ; opt. path elongation for scatterd photons from column
-DuBottom = 1.04 * (1.00 + (5.40 * u) )^0.50  ; opt. path elongation for scatterd photons from bottom
-
-
-rrsdp = (0.084 + (0.17 * u) ) * u   ; remote sensing reflectance for opt deep water
-
-Kd=   kappa * (1.00     / cos(thetaw))
-Kuc=  kappa * (DuColumn / cos(thetao))
-Kub=  kappa * (DuBottom / cos(thetao))
-
-
-;rrs = rrsdp * (1.00 - exp(-(Kd+Kuc) * H)) + ( (1.00/!DPI) * r * exp(- ( Kd+Kub)* H)   )
-rrs = rrsdp * (1.00 - exp(-( (1.00/cos(thetaw)) + (DuColumn / cos(thetao)) )* kappa * H)) + ( (1.00/!DPI) * r * exp(-( (1.00/cos(thetaw)) + (DuBottom / cos(thetao)) )* kappa * H)   )
-
-
-
-
-
-;rrs = rrsdp * (1.00 - exp(-(Kd+Kuc) * H)) + ( (1.00/!DPI) * r * exp(- ( Kd+Kub)* H)   )
-
-
-closed_spectrum=  rrs * Qwater ; VB
-closed_deep_spectrum=  rrsdp * Qwater ; VB
-
-
-
- RETURN,    {wl:input_spectra.wl,substrateR:input_spectra.substrateR,$
-       input_spectra:input_spectra,$
-       a:a,bb:bb,$
- ;              a_star: [input_spectra.awater, [input_spectra.aphy_star], [acdom_star], [atr_star]],$
-  ;            bb_star: [input_spectra.bbwater,[bbph_star], [bbcdom_star],[ bbtr_star]],$
-                R0:closed_spectrum,R0dp:closed_deep_spectrum,kd:Kd,Kuc:Kuc,Kub:Kub }
-
+    RETURN, {wl:input_spectra.wl,substrateR:input_spectra.substrateR,$
+        input_spectra:input_spectra,$
+        a:a,bb:bb,$
+        ;a_star: [input_spectra.awater, [input_spectra.aphy_star], [acdom_star], [atr_star]],$
+        ;bb_star: [input_spectra.bbwater,[bbph_star], [bbcdom_star],[ bbtr_star]],$
+        R0:closed_spectrum,$
+        R0dp:closed_deep_spectrum,$
+        kd:Kd,$
+        Kuc:Kuc,$
+        Kub:Kub }
 
 end
 ;****************************************************************
