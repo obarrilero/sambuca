@@ -45,6 +45,7 @@ sambuca_2009.pro
 		arguments
 			pstate
 			zzzz
+				:z value. What is the z value in this context?
 		common
 			SAMBUCA_share
 				:Where is the common SAMBUCA_share structure defined?
@@ -142,6 +143,40 @@ sambuca_2009.pro
 			|ZZ(SAMBUCA.opti_params.Fi)=SAMBUCA.opti_params.F|Fi is a range? Setting fixed parameters into ZZ||
 			||||
 			||||
+	procedure SAMBUCA_plot_SIOP
+		purpose
+			:Is this an optional procedure that is only called to produce
+			:a plot? Or are there side-effects on some data structures
+			:(SAMBUCA_share perhaps) which mean this procedure must be called
+			:as part of the core workflow?
+			:If it is an optional plot function, then all is well. If it is
+			:part of the core workflow, then it should be refactored into two
+			:functions - an optional plot function, and the core workflow
+			:component.
+		common
+			SAMBUCA_share
+		arguments
+			pstate
+				:appears to be flags and other user options from the GUI
+			pstate.flag.get_z
+				:determines whether a z value is used (zzzz=2. passed to 
+				:do_whole_guacamole)
+		comments
+			line 477
+				:appears to be determining indicies for the fixed (Fi) and
+				:free (Zi) parameters in use for the current run. Will probably 
+				:need careful study to translate the intent to Python in a
+				:Pythonic way.
+			line 512
+				:the envi_plot_data call
+			line 514
+				times and executes a hard-coded 50 iterations of the forward model, then prints the avg time per model run
+					why 50 iterations?
+					why is the returned error term thrown away?
+					is this whole section just debugging code? It smells like debug code that shouldn't be there.
+					:regardless, the Python code will need to deal with this
+					:more gracefully
+	procedure SAMBUCA_2009
 
 amoeba_clw7.pro
 	Is the 7 a version number?

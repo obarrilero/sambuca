@@ -463,74 +463,63 @@ end
 
 ;=================================
 pro SAMBUCA_plot_SIOP,pstate=pstate
-common SAMBUCA_share, SAMBUCA
+    common SAMBUCA_share, SAMBUCA
 
+    ;SAMBUCA.inputR.index=[0,1]
 
-;             SAMBUCA.inputR.index=[0,1]
+    ;DEFINING PARAMETERS
+    if (*pstate).flag.get_z then $
+        whole_guacamole=DO_whole_guacamole(pstate=pstate,zzzz=2.) $
+    else $
+        whole_guacamole=DO_whole_guacamole(pstate=pstate)
 
-
-
-;DEFINING PARAMETERS
-
-if (*pstate).flag.get_z then $
-whole_guacamole=DO_whole_guacamole(pstate=pstate,zzzz=2.) $
-else $
-whole_guacamole=DO_whole_guacamole(pstate=pstate)
-
-
-
-
+    ;hard-coded to 15 parameters
+    ;appears to be determining indicies for the fixed (Fi) and free (Zi) parameters
     for cc=0, 14 do begin
+        for ccc= 0, (n_elements(SAMBUCA.opti_params.Zin))- 1  do begin
+            if [SAMBUCA.opti_params.Zin[ccc] EQ whole_guacamole.name[cc] ] then $
+                SAMBUCA.opti_params.Zi[ccc] = cc
+            if [ SAMBUCA.opti_params.Zin[ccc] EQ 'CHL' ] then chl_no = ccc
+            if [ SAMBUCA.opti_params.Zin[ccc] EQ 'CDOM' ] then cdom_no = ccc
+            if [ SAMBUCA.opti_params.Zin[ccc] EQ 'TR' ] then tr_no = ccc
+            if [ SAMBUCA.opti_params.Zin[ccc] EQ 'q1' ] then q1_no = ccc
+            if [ SAMBUCA.opti_params.Zin[ccc] EQ 'H' ] then H_no = ccc
+        endfor
 
+        for cccc = 0, (n_elements(SAMBUCA.opti_params.Fin)) - 1 do begin
+            if [ SAMBUCA.opti_params.Fin[cccc] EQ whole_guacamole.name(cc) ] then SAMBUCA.opti_params.Fi[cccc] = cc
+        endfor
+    endfor
 
-     for ccc= 0, (n_elements(SAMBUCA.opti_params.Zin))- 1  do begin
-
-         if [SAMBUCA.opti_params.Zin[ccc] EQ whole_guacamole.name[cc] ] then $
-               SAMBUCA.opti_params.Zi[ccc] = cc
-
-        if [ SAMBUCA.opti_params.Zin[ccc] EQ 'CHL' ] then chl_no = ccc
-        if [ SAMBUCA.opti_params.Zin[ccc] EQ 'CDOM' ] then cdom_no = ccc
-        if [ SAMBUCA.opti_params.Zin[ccc] EQ 'TR' ] then tr_no = ccc
-        if [ SAMBUCA.opti_params.Zin[ccc] EQ 'q1' ] then q1_no = ccc
-        if [ SAMBUCA.opti_params.Zin[ccc] EQ 'H' ] then H_no = ccc
-
-     endfor
-
-     for cccc = 0, (n_elements(SAMBUCA.opti_params.Fin)) - 1 do begin
-           if [ SAMBUCA.opti_params.Fin[cccc] EQ whole_guacamole.name(cc) ] then SAMBUCA.opti_params.Fi[cccc] = cc
-     endfor
-
-endfor
-
-; VB07 update opti_params to Common
-SAMBUCA.opti_params.F=whole_guacamole.value[SAMBUCA.opti_params.Fi]
+    ; VB07 update opti_params to Common
+    SAMBUCA.opti_params.F=whole_guacamole.value[SAMBUCA.opti_params.Fi]
 
     Z = whole_guacamole.value[SAMBUCA.opti_params.Zi]
-;    help,rst,/struc
+    ;help,rst,/struc
 
-a =  [[SAMBUCA.input_spectra.awater] ,   [SAMBUCA.input_spectra.aphy_star],  $
-      [SAMBUCA.input_spectra.acdom_star] ,[ SAMBUCA.input_spectra.atr_star],$
-      [SAMBUCA.input_spectra.bbwater] , [SAMBUCA.input_spectra.bbph_star] , $
-                               [SAMBUCA.input_spectra.bbtr_star]]
-;help,a
+    a = [[SAMBUCA.input_spectra.awater],$
+        [SAMBUCA.input_spectra.aphy_star],$
+        [SAMBUCA.input_spectra.acdom_star],$
+        [ SAMBUCA.input_spectra.atr_star],$
+        [SAMBUCA.input_spectra.bbwater],$
+        [SAMBUCA.input_spectra.bbph_star],$
+        [SAMBUCA.input_spectra.bbtr_star]]
+    ;help,a
 
-names=["awater ",   "aphy_star", "acdom_star" , "atr_star",$
-      "bbwater" , "bbph_star" , "bbtr_star"]
+    names=["awater ",   "aphy_star", "acdom_star" , "atr_star",$
+        "bbwater" , "bbph_star" , "bbtr_star"]
 
-envi_plot_data,SAMBUCA.input_spectra.wl,a,plot_names=names
+    envi_plot_data,SAMBUCA.input_spectra.wl,a,plot_names=names
 
+    ;VBnov08
+    tic=systime(1)
+    for i=0,49 do $
+        rst= sub5_SAMBUCA_SA_V12(Z)
 
-;VBnov08
-tic=systime(1)
-for i=0,49 do $
-    rst= sub5_SAMBUCA_SA_V12(Z)
+    toc=systime(1)-tic
+    print, 1000.*toc, 1000.*toc/50.
 
-toc=systime(1)-tic
-print, 1000.*toc, 1000.*toc/50.
-
-
-
-return
+    return
 end
 ;-
 ;**************************************************************************
