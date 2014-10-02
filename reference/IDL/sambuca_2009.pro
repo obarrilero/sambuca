@@ -163,16 +163,16 @@ function DO_whole_guacamole, pstate=pstate, zzzz=zzzz
     whole_guacamole.plower(14) = 2.99
     whole_guacamole.scale(14) = 0.1
 
+    ;check for incosistencies in whole_guacamole
+    for ig = 1, n_elements(whole_guacamole.pupper)-1 do $
+        if whole_guacamole.plower[ig] ge whole_guacamole.pupper[ig] then begin
+            print, "Incosistency in whole_guacamole: RETURNING -1"
+            print, "Plower >= Pupper :",ig, whole_guacamole.name[ig], whole_guacamole.plower[ig],whole_guacamole.pupper[ig]
+            return,-1
+        endif
 
-;check for incosistencies in whole_guacamole
-for ig = 1, n_elements(whole_guacamole.pupper)-1 do $
-    if whole_guacamole.plower[ig] ge whole_guacamole.pupper[ig] then begin
-    print, "Incosistency in whole_guacamole: RETURNING -1"
-    print, "Plower >= Pupper :",ig, whole_guacamole.name[ig], whole_guacamole.plower[ig],whole_guacamole.pupper[ig]
- return,-1
-    endif
- RETURN,whole_guacamole
- END
+    RETURN,whole_guacamole
+END
 
 
 pro restore_envi_library, fname=fname, lib=lib

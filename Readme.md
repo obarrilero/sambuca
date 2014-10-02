@@ -21,4 +21,3 @@ move or clone it later when there is a better location.
   matlab readme for more detail.
     * fSambuca.m: forward model
     * SinglePixSpecMCMC.m: sampling algorithm
-

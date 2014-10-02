@@ -39,11 +39,13 @@ sambuca_2009.pro
 		:the machine name. On linux it returns "unix" but it could easily
 		:check the value of $HOSTNAME.
 	function DO_whole_guacamole
-		:God function that appears to be the entry point to everything
+		: Contrary to the name, it doesn't "do" or execute anything. It just
+		: appears to construct the whole_guacamole structure
 		Arguments
 			pstate?
 			zzzz?
 		Where is the common SAMBUCA_share structure defined?
+			:It looks like it is setup in sambuca_2009_wid.pro, function SAMBUCA_2009_pre
 		whole_guacamole is a structure of arrays
 			What is the purpose of each array?
 				name
