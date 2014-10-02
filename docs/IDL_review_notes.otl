@@ -62,6 +62,12 @@ sambuca_2009.pro
 				Could be data driven?
 			Ask the team for explanation of each element set
 				what is 'CHL', 'CDOM' etc
+	procedure restore_envi_library
+		Function
+			Searches for an ENVI file by name,
+			Reads metadata for the file
+			Puts the metadata into a structure used by Sambuca
+		The Python GDAL library reads ENVI rasters. Will it also let me query the metadata?
 
 amoeba_clw7.pro
 	Is the 7 a version number?
@@ -108,3 +114,10 @@ IDL quirks to watch
 	data types
 		default int is only 16 bits. Need long for 32 bits
 		float (32 bits) and double (64 bits) make sense
+
+Sambuca common features
+	tight binding to GUI
+		:a number of Sambuca functions directly trigger an IDL message box. In
+		:python it will be better to throw an exception. This will keep
+		:a clean separation between the core code and any GUI that may or may
+		:not be layered over the top.

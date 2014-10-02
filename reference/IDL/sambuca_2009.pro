@@ -176,47 +176,44 @@ END
 
 
 pro restore_envi_library, fname=fname, lib=lib
-; select the envi image,
-; query ENVI for all the needed info,
-; and store them in the image_info structure
-;
-; get all the fids
-       fids = envi_get_file_ids()
-       ;print, fids
-       fid=-1L
-        if (fids[0] ne -1) then begin
-         for i = 0, n_elements(fids) - 1 do begin
-          envi_file_query, fids[i], fname = fid_fname
-          if fid_fname eq  fname  then   fid= fids[i]
+    ; select the envi image,
+    ; query ENVI for all the needed info,
+    ; and store them in the image_info structure
+    ;
+    ; get all the fids
+    fids = envi_get_file_ids()
+    ;print, fids
+    fid=-1L
+    if (fids[0] ne -1) then begin
+        for i = 0, n_elements(fids) - 1 do begin
+            envi_file_query, fids[i], fname = fid_fname
+            if fid_fname eq fname then fid= fids[i]
          endfor
-       endif
-       ;print, fid
-        if fid le 0 then envi_open_file, fname,r_fid=fid
+    endif
+    ;print, fid
+    if fid le 0 then envi_open_file, fname,r_fid=fid
 
+    ; envi_select,title="select input file",fid=my_fid,pos=pos,dims=dims ;, /no_dims,/no_spec
 
-      ; envi_select,title="select input file",fid=my_fid,pos=pos,dims=dims ;, /no_dims,/no_spec
+    envi_file_query, fid,ns=ns, nl=nl, nb=nb, wl=wl, $
+        fwhm=fwhm, bnames=bnames,data_type=data_type ,$
+        descrip=descrip, fname=fname, interleave=interleave,$
+        spec_names=spec_names,file_type=file_type
 
+    pos=uintarr(nb) & dims= [-1,0,ns-1,0,nl-1]
+    if file_type ne 4 then begin
+        result=widget_message("MUST BE SPECTRAL LIBRARY", /error)
+        return
+    end
 
-        envi_file_query, fid,ns=ns, nl=nl, nb=nb, wl=wl, $
-                  fwhm=fwhm, bnames=bnames,data_type=data_type ,$
-                  descrip=descrip, fname=fname, interleave=interleave,$
-                  spec_names=spec_names,file_type=file_type
+    tile=envi_get_data(fid=fid, pos=pos, dims=dims)
+    spectra=float(transpose(tile))
 
-         pos=uintarr(nb) & dims= [-1,0,ns-1,0,nl-1]
-        if file_type ne 4 then begin
-          result=widget_message("MUST BE SPECTRAL LIBRARY", /error)
-         return
-         end
-
-       tile=envi_get_data(fid=fid, pos=pos, dims=dims)
-       spectra=float(transpose(tile))
-
-
-        lib={fid: fid, nl:nl, ns:ns, nb:nb,$
-                 spectra:spectra,spec_names:spec_names,$
-                  wl:wl, fwhm:fwhm, bnames:bnames, data_type:data_type,$
-                  descrip:descrip,fname:fname, interleave:interleave,$
-                  pos:pos, dims:dims  }
+    lib={fid: fid, nl:nl, ns:ns, nb:nb,$
+        spectra:spectra,spec_names:spec_names,$
+        wl:wl, fwhm:fwhm, bnames:bnames, data_type:data_type,$
+        descrip:descrip,fname:fname, interleave:interleave,$
+        pos:pos, dims:dims  }
 
 end
 
