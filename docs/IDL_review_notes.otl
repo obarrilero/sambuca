@@ -122,6 +122,7 @@ sambuca_2009.pro
 			|closed_deep_spectrum|||
 	function sub5_SAMBUCA_SA_V12
 		purpose
+			called from the amoeba minimiser as entry point to the model
 			prepares inputs (ZZ) for the forward model
 			runs the forward model
 				:call to the forward model is hard-coded. Would it make sense
@@ -284,3 +285,35 @@ Sambuca common features
 		:python it will be better to throw an exception. This will keep
 		:a clean separation between the core code and any GUI that may or may
 		:not be layered over the top.
+
+Ideas for Python Port
+	Reader and Writer pattern to keep file formats separated from core code
+	Can I use the Nelder-Mead downhill simplex minimiser from SciPy?
+		even better, can I use an interface to allow the minimiser and sambuca to co-vary?
+	Can plotting requirements be deferred?
+	Need to sort out the data structures
+		common block into a class
+		identify dependencies and refactor into smaller modular structures where possible
+	hard-coded assumptions are not good
+		number of input spectra
+		mapping of free and fixed parameters to indicies might be better with a map instead of the "loop search and save index" approach
+	classes for each input spectra (CHL, CDOM etc)
+		make the whole_guacamole structure cleaner
+	sambuca_options class
+		may be split into subclasses if cleaner/required
+		keeps core separate from GUI
+			GUI would populate the options class and pass it in
+			hard-coded runner will populate options class manually
+	determine best parallelism level
+		tiles?
+		pixels?
+		hybrid:
+			tiles as IPython engines
+			threads per pixel
+				would this require synchronised access to shared memory?
+	replace debug print code with Python logging
+	AGDC interactions
+		what level of code?
+			tile
+			pixel
+			just get raw rasters and process as usual
