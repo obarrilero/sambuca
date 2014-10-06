@@ -286,8 +286,10 @@ Sambuca common features
 		:a clean separation between the core code and any GUI that may or may
 		:not be layered over the top.
 
-Ideas for Python Port
-	Python 2 for AGDC compliance
+Ideas for Python
+	use pydoc compatible comments everywhere
+		get Janet et al to fill them out if required
+	Python 2.7 for AGDC compliance
 	Testing
 		validation/integration test with a small input image
 		unit tests for individual functions
