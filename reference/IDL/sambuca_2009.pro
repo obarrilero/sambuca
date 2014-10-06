@@ -396,7 +396,7 @@ function sub5_SAMBUCA_SA_V12, Z
     endelse
 
     if rat le 1 then begin
-        alpha_val=ACOS(rat) 
+        alpha_val=ACOS(rat)
     endif else begin
         alpha_val=100.0
     endelse
@@ -757,7 +757,7 @@ pro SAMBUCA_2009, pstate=pstate
             start_spectrum_time=systime(1)
 
             ; check for '0' pixel
-            if (total(image_spectrum) lt 0.00001) then begin 
+            if (total(image_spectrum) lt 0.00001) then begin
                 depth_t[n] = 0.00
                 fval_t[n] = .000
                 P_t[n] = 0.00
