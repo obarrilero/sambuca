@@ -287,6 +287,10 @@ Sambuca common features
 		:not be layered over the top.
 
 Ideas for Python Port
+	Python 2 for AGDC compliance
+	Testing
+		validation/integration test with a small input image
+		unit tests for individual functions
 	Reader and Writer pattern to keep file formats separated from core code
 	Can I use the Nelder-Mead downhill simplex minimiser from SciPy?
 		even better, can I use an interface to allow the minimiser and sambuca to co-vary?
