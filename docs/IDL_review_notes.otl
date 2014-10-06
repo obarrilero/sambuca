@@ -1,10 +1,47 @@
+Daniel's Sambuca Notes
+Ideas for Python
+	use pydoc compatible comments everywhere
+		get Janet et al to fill them out if required
+	Python 2.7 for AGDC compliance
+	Testing
+		validation/integration test with a small input image
+		unit tests for individual functions
+	Reader and Writer pattern to keep file formats separated from core code
+	Can I use the Nelder-Mead downhill simplex minimiser from SciPy?
+		even better, can I use an interface to allow the minimiser and sambuca to co-vary?
+	Can plotting requirements be deferred?
+	Need to sort out the data structures
+		common block into a class
+		identify dependencies and refactor into smaller modular structures where possible
+	hard-coded assumptions are not good
+		number of input spectra
+		mapping of free and fixed parameters to indicies might be better with a map instead of the "loop search and save index" approach
+	classes for each input spectra (CHL, CDOM etc)
+		make the whole_guacamole structure cleaner
+	sambuca_options class
+		may be split into subclasses if cleaner/required
+		keeps core separate from GUI
+			GUI would populate the options class and pass it in
+			hard-coded runner will populate options class manually
+	determine best parallelism level
+		tiles?
+		pixels?
+		hybrid:
+			tiles as IPython engines
+			threads per pixel
+				would this require synchronised access to shared memory?
+	replace debug print code with Python logging
+	AGDC interactions
+		what level of code?
+			tile
+			pixel
+			just get raw rasters and process as usual
 References
 	Mapping IDL to Python
 		http://www.scicoder.org/mapping-idl-to-python/
 		: Not always the best reference. For example, for Amoeba minimisation
 		: it points to a bespoke python script rather than the Scipy
 		: implementation
-
 Initial questions
 	Data
 		input formats?
@@ -32,7 +69,6 @@ Initial questions
 		numpy, scipy
 		does single or double precision matter?
 	What IDL-specific capabilities are used that might be hard to substitute in Python?
-
 sambuca_2009.pro
 	function machine_name
 		:Straightforward. On windows it searches the environment and returns 
@@ -77,7 +113,7 @@ sambuca_2009.pro
 		purpose
 			: From the name, I think it represents version 12 of the forward model
 		arguments/variables
-			||variables|description|vector/scalar/structure|
+			|variables|description|vector/scalar/structure|
 			|ZZ|looks like a big collection of inputs|vector?|
 			|input_params.theta_air||scalar|
 			|input_params.lambda0cdom||scalar|
@@ -139,7 +175,7 @@ sambuca_2009.pro
 		arguments
 			Z:?
 		variables
-			||variable|description|scalar/vector/structure|
+			|variable|description|scalar/vector/structure|
 			|ZZ|forward run parameters?|float array, length 15|
 			|ZZ(SAMBUCA.opti_params.Zi)=Z|Zi is a range? Appears to be setting the free parameters to be used later in Amoeba||
 			|ZZ(SAMBUCA.opti_params.Fi)=SAMBUCA.opti_params.F|Fi is a range? Setting fixed parameters into ZZ||
@@ -232,7 +268,6 @@ sambuca_2009.pro
 		common
 			SAMBUCA_share
 		
-
 amoeba_clw7.pro
 	Is the 7 a version number?
 		If so, what is the history?
@@ -251,7 +286,6 @@ amoeba_clw7.pro
 				: http://stackoverflow.com/questions/9613381/python-function-minimisation-without-derivative
 				: http://docs.scipy.org/doc/scipy/reference/tutorial/optimize.html?highlight=nelder
 			Does the IDL function do anything strange that will prevent use of the SciPy version?
-
 IDL quirks to watch
 	arrays
 		IDL arrays are row-major, but differ from standard matrix notation by using (column, row) rather than (row, column)
@@ -278,48 +312,9 @@ IDL quirks to watch
 	data types
 		default int is only 16 bits. Need long for 32 bits
 		float (32 bits) and double (64 bits) make sense
-
 Sambuca common features
 	tight binding to GUI
 		:a number of Sambuca functions directly trigger an IDL message box. In
 		:python it will be better to throw an exception. This will keep
 		:a clean separation between the core code and any GUI that may or may
 		:not be layered over the top.
-
-Ideas for Python
-	use pydoc compatible comments everywhere
-		get Janet et al to fill them out if required
-	Python 2.7 for AGDC compliance
-	Testing
-		validation/integration test with a small input image
-		unit tests for individual functions
-	Reader and Writer pattern to keep file formats separated from core code
-	Can I use the Nelder-Mead downhill simplex minimiser from SciPy?
-		even better, can I use an interface to allow the minimiser and sambuca to co-vary?
-	Can plotting requirements be deferred?
-	Need to sort out the data structures
-		common block into a class
-		identify dependencies and refactor into smaller modular structures where possible
-	hard-coded assumptions are not good
-		number of input spectra
-		mapping of free and fixed parameters to indicies might be better with a map instead of the "loop search and save index" approach
-	classes for each input spectra (CHL, CDOM etc)
-		make the whole_guacamole structure cleaner
-	sambuca_options class
-		may be split into subclasses if cleaner/required
-		keeps core separate from GUI
-			GUI would populate the options class and pass it in
-			hard-coded runner will populate options class manually
-	determine best parallelism level
-		tiles?
-		pixels?
-		hybrid:
-			tiles as IPython engines
-			threads per pixel
-				would this require synchronised access to shared memory?
-	replace debug print code with Python logging
-	AGDC interactions
-		what level of code?
-			tile
-			pixel
-			just get raw rasters and process as usual
