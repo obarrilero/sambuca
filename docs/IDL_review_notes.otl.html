@@ -1,0 +1,652 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"s
+        "http://www.w3.org/TR/html4/strict.dtd">
+    <html><head><title>Daniel's Sambuca Notes</title></head>
+<style type="text/css">
+    /* copyright notice and filename */
+    body {
+            font-family: helvetica, arial, sans-serif;
+            font-size: 10pt;
+    }
+        /* title at the top of the page */
+    H1 {
+            font-family: helvetica, arial, sans-serif;
+            font-size: 16pt;
+            font-weight: bold;
+            text-align: center;
+            color: black;
+        background-color: #ddddee;
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+    H2 {
+            font-family: helvetica, arial, sans-serif;
+            font-size: 16pt;
+            font-weight: bold;
+            text-align: left;
+            color: black;
+    }
+    H3 {
+            font-family: helvetica, arial, sans-serif;
+            font-size: 12pt;
+            text-align: left;
+            color: black;
+    }
+    H4 {
+            font-family: helvetica, arial, sans-serif;
+            font-size: 12pt;
+            text-align: left;
+            color: black;
+    }
+    H5 {
+            font-family: helvetica, arial, sans-serif;
+            font-size: 10pt;
+            text-align: left;
+            color: black;
+    }
+        /* outline level spacing */
+    OL {
+            margin-left: 1.0em;
+            padding-left: 0;
+            padding-bottom: 8pt;
+    }
+        /* global heading settings */
+    LI {
+            font-family: helvetica, arial, sans-serif;
+            color: black;
+            font-weight: normal;
+            list-style: lower-alpha;
+        padding-top: 4px;
+    }
+        /* level 1 heading overrides */
+    LI.L1 {
+            font-size: 12pt;
+            font-weight: bold;
+            list-style: none;
+    }
+        /* level 2 heading overrides */
+    LI.L2 {
+            font-size: 10pt;
+            font-weight: bold;
+            list-style: none;
+    }
+        /* level 3 heading overrides */
+    LI.L3 {
+            font-size: 10pt;
+            list-style: none;
+    }
+        /* level 4 heading overrides */
+    LI.L4 {
+            font-size: 10pt;
+            list-style: none;
+    }
+        /* level 5 heading overrides */
+    LI.L5 {
+            font-size: 10pt;
+            list-style: none;
+    }
+        /* level 6 heading overrides */
+    LI.L6 {
+            font-size: 10pt;
+            list-style: none;
+    }
+        /* level 7 heading overrides */
+    LI.L7 {
+            font-size: 10pt;
+            list-style: none;
+    }
+        /* level 1 bullet heading overrides */
+    LI.LB1 {
+            font-size: 12pt;
+            font-weight: bold;
+            list-style: disc;
+    }
+        /* level 2 bullet heading overrides */
+    LI.LB2 {
+            font-size: 10pt;
+            font-weight: bold;
+            list-style: disc;
+    }
+        /* level 3 bullet heading overrides */
+    LI.LB3 {
+            font-size: 10pt;
+            list-style: disc;
+    }
+        /* level 4 bullet heading overrides */
+    LI.LB4 {
+            font-size: 10pt;
+            list-style: disc;
+    }
+        /* level 5 bullet heading overrides */
+    LI.LB5 {
+            font-size: 10pt;
+            list-style: disc;
+    }
+        /* level 6 bullet heading overrides */
+    LI.LB6 {
+            font-size: 10pt;
+            list-style: disc;
+    }
+        /* level 7 bullet heading overrides */
+    LI.LB7 {
+            font-size: 10pt;
+            list-style: disc;
+    }
+        /* level 1 numeric heading overrides */
+    LI.LN1 {
+            font-size: 12pt;
+            font-weight: bold;
+            list-style: decimal;
+    }
+        /* level 2 numeric heading overrides */
+    LI.LN2 {
+            font-size: 10pt;
+            font-weight: bold;
+            list-style: decimal;
+    }
+        /* level 3 numeric heading overrides */
+    LI.LN3 {
+            font-size: 10pt;
+            list-style: decimal;
+    }
+        /* level 4 numeric heading overrides */
+    LI.LN4 {
+            font-size: 10pt;
+            list-style: decimal;
+    }
+        /* level 5 numeric heading overrides */
+    LI.LN5 {
+            font-size: 10pt;
+            list-style: decimal;
+    }
+        /* level 6 numeric heading overrides */
+    LI.LN6 {
+            font-size: 10pt;
+            list-style: decimal;
+    }
+        /* level 7 numeric heading overrides */
+    LI.LN7 {
+            font-size: 10pt;
+            list-style: decimal;
+    }
+               /* body text */
+    P {
+            font-family: helvetica, arial, sans-serif;
+            font-size: 9pt;
+            font-weight: normal;
+            color: darkgreen;
+    }
+        /* preformatted text */
+    PRE {
+            font-family: fixed, monospace;
+            font-size: 9pt;
+            font-weight: normal;
+            color: darkblue;
+    }
+
+    TABLE {
+        margin-top: 1em;
+            font-family: helvetica, arial, sans-serif;
+            font-size: 12pt;
+            font-weight: normal;
+        border-collapse: collapse;
+    }
+
+    TH {
+        border: 1px solid black;
+        padding: 0.5em;
+        background-color: #eeddee;
+    }
+
+    TD {
+        border: 1px solid black;
+        padding: 0.5em;
+        background-color: #ddeeee;
+    }
+
+    CODE {
+        background-color: yellow;
+    }
+
+    TABLE.TAB1 {
+        margin-top: 1em;
+            font-family: helvetica, arial, sans-serif;
+            font-size: 12pt;
+            font-weight: normal;
+        border-collapse: collapse;
+    }
+    TABLE.TAB2 {
+        margin-top: 1em;
+            font-family: helvetica, arial, sans-serif;
+            font-size: 11pt;
+            font-weight: normal;
+        border-collapse: collapse;
+    }
+    TABLE.TAB3 {
+        margin-top: 1em;
+            font-family: helvetica, arial, sans-serif;
+            font-size: 10pt;
+            font-weight: normal;
+        border-collapse: collapse;
+    }
+    TABLE.TAB4 {
+        margin-top: 1em;
+            font-family: helvetica, arial, sans-serif;
+            font-size: 10pt;
+            font-weight: normal;
+        border-collapse: collapse;
+    }
+    TABLE.TAB5 {
+        margin-top: 1em;
+            font-family: helvetica, arial, sans-serif;
+            font-size: 10pt;
+            font-weight: normal;
+        border-collapse: collapse;
+    }
+    TABLE.TAB6 {
+        margin-top: 1em;
+            font-family: helvetica, arial, sans-serif;
+            font-size: 10pt;
+            font-weight: normal;
+        border-collapse: collapse;
+     </style></head>
+<body>
+<div class="DocTitle">
+    <h1>Daniel's Sambuca Notes</h1>
+    </div>
+    <div class="MainPage">
+<ol>
+<li  class="L1" >Ideas for Python <ol>
+<li  class="L2" >use pydoc compatible comments everywhere <ol>
+<li  class="L3" >get Janet et al to fill them out if required </ol>
+<li  class="L2" >Python 2.7 for AGDC compliance
+<li  class="L2" >Testing <ol>
+<li  class="L3" >validation/integration test with a small input image
+<li  class="L3" >unit tests for individual functions </ol>
+<li  class="L2" >Reader and Writer pattern to keep file formats separated from core code
+<li  class="L2" >Can I use the Nelder-Mead downhill simplex minimiser from SciPy? <ol>
+<li  class="L3" >even better, can I use an interface to allow the minimiser and sambuca to co-vary? </ol>
+<li  class="L2" >Can plotting requirements be deferred?
+<li  class="L2" >Need to sort out the data structures <ol>
+<li  class="L3" >common block into a class
+<li  class="L3" >identify dependencies and refactor into smaller modular structures where possible </ol>
+<li  class="L2" >hard-coded assumptions are not good <ol>
+<li  class="L3" >number of input spectra
+<li  class="L3" >mapping of free and fixed parameters to indicies might be better with a map instead of the "loop search and save index" approach </ol>
+<li  class="L2" >classes for each input spectra (CHL, CDOM etc) <ol>
+<li  class="L3" >make the whole_guacamole structure cleaner </ol>
+<li  class="L2" >sambuca_options class <ol>
+<li  class="L3" >may be split into subclasses if cleaner/required
+<li  class="L3" >keeps core separate from GUI <ol>
+<li  class="L4" >GUI would populate the options class and pass it in
+<li  class="L4" >hard-coded runner will populate options class manually </ol>
+</ol>
+<li  class="L2" >determine best parallelism level <ol>
+<li  class="L3" >tiles?
+<li  class="L3" >pixels?
+<li  class="L3" >hybrid: <ol>
+<li  class="L4" >tiles as IPython engines
+<li  class="L4" >threads per pixel <ol>
+<li  class="L5" >would this require synchronised access to shared memory? </ol>
+</ol>
+</ol>
+<li  class="L2" >replace debug print code with Python logging
+<li  class="L2" >AGDC interactions <ol>
+<li  class="L3" >what level of code? <ol>
+<li  class="L4" >tile
+<li  class="L4" >pixel
+<li  class="L4" >just get raw rasters and process as usual </ol>
+</ol>
+</ol>
+<li  class="L1" >References <ol>
+<li  class="L2" >Mapping IDL to Python <ol>
+<li  class="L3" >http://www.scicoder.org/mapping-idl-to-python/
+<p  class="P3" >Not always the best reference. For example, for Amoeba minimisation
+it points to a bespoke python script rather than the Scipy
+implementation </p>
+</ol>
+</ol>
+<li  class="L1" >Initial questions <ol>
+<li  class="L2" >Data <ol>
+<li  class="L3" >input formats? <ol>
+<li  class="L4" >ESRI
+<li  class="L4" >ENVI HDR
+<li  class="L4" >Other raster formats (GeoTIFF etc)
+<li  class="L4" >Custom <ol>
+<li  class="L5" >binary? <ol>
+<li  class="L6" >watch for endianess </ol>
+</ol>
+</ol>
+<li  class="L3" >output formats?
+<li  class="L3" >What data structures are used? <ol>
+<li  class="L4" >What is the best way to translate them to numpy? </ol>
+<li  class="L3" >Does the code need to explicitly deal with spatial aspects of the data (projections etc)? <ol>
+<li  class="L4" >or does it just see an array of pixels </ol>
+<li  class="L3" >How can I breakdown the large global data structure to be more modular? <ol>
+<li  class="L4" >Identify coherent subsets of data required by the processing modules </ol>
+</ol>
+<li  class="L2" >What are the plotting requirements? <ol>
+<li  class="L3" >Should the plots be generated by Python at all? <ol>
+<p  class="P4" >Can I just write out to HDF using an appropriate convention(CF-1.2?),
+and then use standard tools (ESRI, ENVI, Panoply) to visualise the
+data? </p>
+</ol>
+<li  class="L3" >If plotting from Python, what library will I need? <ol>
+<li  class="L4" >Matplotlib, Basemap, veusz... </ol>
+</ol>
+<li  class="L2" >Processing: <ol>
+<li  class="L3" >numpy, scipy
+<li  class="L3" >does single or double precision matter? </ol>
+<li  class="L2" >What IDL-specific capabilities are used that might be hard to substitute in Python? </ol>
+<li  class="L1" >sambuca_2009.pro <ol>
+<li  class="L2" >function machine_name <ol>
+<p  class="P3" >Straightforward. On windows it searches the environment and returns
+the machine name. On linux it returns "unix" but it could easily
+check the value of $HOSTNAME. </p>
+</ol>
+<li  class="L2" >function DO_whole_guacamole <ol>
+<li  class="L3" >purpose <ol>
+<p  class="P4" >Contrary to the name, it doesn't "do" or execute anything. It just
+appears to construct the whole_guacamole structure </p>
+</ol>
+<li  class="L3" >arguments <ol>
+<li  class="L4" >pstate
+<li  class="L4" >zzzz <ol>
+<p  class="P5" >z value. What is the z value in this context? </p>
+</ol>
+</ol>
+<li  class="L3" >common <ol>
+<li  class="L4" >SAMBUCA_share <ol>
+<p  class="P5" >Where is the common SAMBUCA_share structure defined?
+It looks like it is setup in sambuca_2009_wid.pro, function SAMBUCA_2009_pre </p>
+</ol>
+</ol>
+<li  class="L3" >whole_guacamole is a structure of arrays <ol>
+<li  class="L4" >What is the purpose of each array? <ol>
+<li  class="L5" >name
+<li  class="L5" >value
+<li  class="L5" >pupper <ol>
+<p  class="P6" >an upper limit to something </p>
+</ol>
+<li  class="L5" >plower <ol>
+<p  class="P6" >a lower limit to something </p>
+</ol>
+<li  class="L5" >start
+<li  class="L5" >scale <ol>
+<p  class="P6" >defines the initial step size used by the amoeba
+minimisation routine. </p>
+</ol>
+</ol>
+<li  class="L4" >Number of parameters is hard-coded. <ol>
+<li  class="L5" >Could be data driven? </ol>
+<li  class="L4" >Ask the team for explanation of each element set <ol>
+<li  class="L5" >what is 'CHL', 'CDOM' etc </ol>
+</ol>
+</ol>
+<li  class="L2" >procedure restore_envi_library <ol>
+<li  class="L3" >purpose <ol>
+<li  class="L4" >Searches for an ENVI file by name,
+<li  class="L4" >Reads metadata for the file
+<li  class="L4" >Puts the metadata into a structure used by Sambuca <ol>
+<p  class="P5" >lib parameter </p>
+</ol>
+</ol>
+<li  class="L3" >The Python GDAL library reads ENVI rasters. Will it also let me query the metadata? </ol>
+<li  class="L2" >function SAMBUCA_SA_V12_fwdVB <ol>
+<li  class="L3" >purpose <ol>
+<p  class="P4" >From the name, I think it represents version 12 of the forward model </p>
+</ol>
+<li  class="L3" >arguments/variables <ol>
+<table class="TAB4">
+<tr><td>variables</td><td>description</td><td>vector/scalar/structure</td></tr>
+<tr><td>ZZ</td><td>looks like a big collection of inputs</td><td>vector?</td></tr>
+<tr><td>input_params.theta_air</td><td></td><td>scalar</td></tr>
+<tr><td>input_params.lambda0cdom</td><td></td><td>scalar</td></tr>
+<tr><td>input_spectra.wl</td><td></td><td>vector</td></tr>
+<tr><td>input_spectra.awater</td><td></td><td></td></tr>
+<tr><td>input_spectra.bbwater</td><td></td><td></td></tr>
+<tr><td>input_spectra.acdom_star</td><td>abs. coeff for CDOM, where a_cdom_550 = 1</td><td></td></tr>
+<tr><td>input_spectra.atr_star</td><td>abs coeff og tripton, where a_tr_550 = sample dependent</td><td></td></tr>
+<tr><td>input_spectra.bbph_star</td><td>backscatter due to phytoplankton</td><td></td></tr>
+<tr><td>input_spectra.bbtr_star</td><td>backscatter due to tripton</td><td></td></tr>
+<tr><td>input_spectra.substrateR</td><td></td><td></td></tr>
+<tr><td>thetaw</td><td>subsurface solar zenith angle in radians</td><td></td></tr>
+<tr><td>thetao</td><td>subsurface viewing angle in radians</td><td></td></tr>
+<tr><td>a_cdom_lambda0cdom</td><td></td><td>scalar</td></tr>
+<tr><td>n_wls</td><td>number of elements in wav (input_spectra.wl)</td><td></td></tr>
+<tr><td>CHL</td><td>chlorophyl concentration</td><td></td></tr>
+<tr><td>CDOM</td><td>cdom concentration</td><td></td></tr>
+<tr><td>TR</td><td>tripton concentration</td><td></td></tr>
+<tr><td>X_ph_lambda0x</td><td>specific backscatter of chlorophyl at lambda0x</td><td></td></tr>
+<tr><td>X_tr_lambda0x</td><td>specific backscatter of tripton at lambda0x</td><td></td></tr>
+<tr><td>Sc</td><td>cdom absorption slope</td><td></td></tr>
+<tr><td>Str</td><td>TR absorption slope</td><td></td></tr>
+<tr><td>a_tr_lambda0tr</td><td></td><td></td></tr>
+<tr><td>Y</td><td></td><td></td></tr>
+<tr><td>q1</td><td></td><td></td></tr>
+<tr><td>q2</td><td></td><td></td></tr>
+<tr><td>q3</td><td></td><td></td></tr>
+<tr><td>H</td><td></td><td></td></tr>
+<tr><td>Qwater</td><td></td><td></td></tr>
+<tr><td>a</td><td></td><td></td></tr>
+<tr><td>bb</td><td></td><td></td></tr>
+<tr><td>u</td><td></td><td></td></tr>
+<tr><td>kappa</td><td></td><td></td></tr>
+<tr><td>DuColumn</td><td>opt. path elongation for scatterd photons from column</td><td></td></tr>
+<tr><td>DuBottom</td><td>opt. path elongation for scatterd photons from bottom</td><td></td></tr>
+<tr><td>rrsdp</td><td>remote sensing reflectance for opt<a href="optional?">optically?</a> deep water</td><td></td></tr>
+<tr><td>Kd</td><td></td><td></td></tr>
+<tr><td>Kuc</td><td></td><td></td></tr>
+<tr><td>Kub</td><td></td><td></td></tr>
+<tr><td>rrs</td><td></td><td></td></tr>
+<tr><td>closed_spectrum</td><td></td><td></td></tr>
+<tr><td>closed_deep_spectrum</td><td></td><td></td></tr> </table>
+</ol>
+</ol>
+<li  class="L2" >function sub5_SAMBUCA_SA_V12 <ol>
+<li  class="L3" >purpose <ol>
+<li  class="L4" >called from the amoeba minimiser as entry point to the model
+<li  class="L4" >prepares inputs (ZZ) for the forward model
+<li  class="L4" >runs the forward model <ol>
+<p  class="P5" >call to the forward model is hard-coded. Would it make sense
+to pass the function in as an argument? This would allow
+plugging different forward models so long as they have the
+same interface. </p>
+</ol>
+<li  class="L4" >prepares the forward model outputs for input to SAMBUCA
+<li  class="L4" >evaluates the error function <ol>
+<p  class="P5" >error function is hard-coded into this function. It might be
+better to pass an error function in as an argument. </p>
+</ol>
+<li  class="L4" >returns error </ol>
+<li  class="L3" >common <ol>
+<li  class="L4" >SAMBUCA_share </ol>
+<li  class="L3" >arguments <ol>
+<li  class="L4" >Z:? </ol>
+<li  class="L3" >variables <ol>
+<table class="TAB4">
+<tr><td>variable</td><td>description</td><td>scalar/vector/structure</td></tr>
+<tr><td>ZZ</td><td>forward run parameters?</td><td>float array, length 15</td></tr>
+<tr><td>ZZ(SAMBUCA.opti_params.Zi)=Z</td><td>Zi is a range? Appears to be setting the free parameters to be used later in Amoeba</td><td></td></tr>
+<tr><td>ZZ(SAMBUCA.opti_params.Fi)=SAMBUCA.opti_params.F</td><td>Fi is a range? Setting fixed parameters into ZZ</td><td></td></tr>
+<tr><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td></tr> </table>
+</ol>
+</ol>
+<li  class="L2" >procedure SAMBUCA_plot_SIOP <ol>
+<li  class="L3" >purpose <ol>
+<p  class="P4" >Is this an optional procedure that is only called to produce
+a plot? Or are there side-effects on some data structures
+(SAMBUCA_share perhaps) which mean this procedure must be called
+as part of the core workflow?
+If it is an optional plot function, then all is well. If it is
+part of the core workflow, then it should be refactored into two
+functions - an optional plot function, and the core workflow
+component. </p>
+</ol>
+<li  class="L3" >common <ol>
+<li  class="L4" >SAMBUCA_share </ol>
+<li  class="L3" >arguments <ol>
+<li  class="L4" >pstate <ol>
+<p  class="P5" >appears to be flags and other user options from the GUI </p>
+</ol>
+<li  class="L4" >pstate.flag.get_z <ol>
+<p  class="P5" >determines whether a z value is used (zzzz=2. passed to
+do_whole_guacamole) </p>
+</ol>
+</ol>
+<li  class="L3" >comments <ol>
+<li  class="L4" >line 477 <ol>
+<p  class="P5" >appears to be determining indicies for the fixed (Fi) and
+free (Zi) parameters in use for the current run. Will probably
+need careful study to translate the intent to Python in a
+Pythonic way. </p>
+</ol>
+<li  class="L4" >line 512 <ol>
+<p  class="P5" >the envi_plot_data call </p>
+</ol>
+<li  class="L4" >line 514 <ol>
+<li  class="L5" >times and executes a hard-coded 50 iterations of the forward model, then prints the avg time per model run <ol>
+<li  class="L6" >why 50 iterations?
+<li  class="L6" >why is the returned error term thrown away?
+<li  class="L6" >is this whole section just debugging code? It smells like debug code that shouldn't be there.
+<p  class="P6" >regardless, the Python code will need to deal with this
+more gracefully </p>
+</ol>
+</ol>
+</ol>
+</ol>
+<li  class="L2" >procedure SAMBUCA_2009 <ol>
+<li  class="L3" >purpose <ol>
+<li  class="L4" >appears to be the primary sambuca runner
+<li  class="L4" >grabs some options
+<li  class="L4" >reads input files <ol>
+<li  class="L5" >pstate.p_input_info?
+<li  class="L5" >where is the lib argument to restore_envi_library declared? <ol>
+<li  class="L6" >Implicitly in restore_envi_library call? </ol>
+<li  class="L5" >Are the envi libraries connected to the compressed/categorised inputs? </ol>
+<li  class="L4" >opens a whole bunch of output files
+<li  class="L4" >line 669: initialises debug printing <ol>
+<p  class="P5" >could I use a lightweight python logging framework? </p>
+</ol>
+<li  class="L4" >reads the image data <ol>
+<p  class="P5" >Python can use reader pattern to separate input formats from
+core code. GDAL might do it, but might be better off with
+a thin layer over the top of gdal if there is extra work to
+do. </p>
+</ol>
+<li  class="L4" >loops over tiles <ol>
+<li  class="L5" >but no parallel execution of tiles <ol>
+<p  class="P6" >parallelism: tiles to processes (MPI?), and pixels to
+threads? </p>
+</ol>
+<li  class="L5" >each tile loop contains an inner pixel loop <ol>
+<p  class="P6" >line 734
+</p>
+<li  class="L6" >seems to be doing a lot of work
+<li  class="L6" >line 768: <ol>
+<p  class="P7" >can else block for non-zero pixel processing be
+promoted by having an early-exit on zero pixels? </p>
+</ol>
+<li  class="L6" >line 799: <ol>
+<p  class="P7" >does the whole_guacamole structure differ per-pixel?
+Could any of the parameter setup code be moved out of
+the inner loop? </p>
+</ol>
+<li  class="L6" >line 791: <ol>
+<p  class="P7" >loops over all input substrates (per-pixel) </p>
+</ol>
+<li  class="L6" >searches for and records some parameter indicies
+<li  class="L6" >sets up some other values
+<li  class="L6" >if pixel is in z range (min, max), calls amoeba minimisation function
+<li  class="L6" >line 884: checks amoeba_converged value <ol>
+<p  class="P7" >value is set inside a loop, check is outside the
+loop. So the check only sees the value from the final
+iteration! </p>
+</ol>
+<li  class="L6" >line 998: pixel loop ends </ol>
+<li  class="L5" >writes out tile results
+<li  class="L5" >line 1041: end of tile loop </ol>
+<li  class="L4" >line 1044: appears to be writing out ENVI-specific headers for the results. <ol>
+<p  class="P5" >I would like to use a writer pattern to keep file formats
+separate from the core code
+</p>
+<li  class="L5" >there are a whole bunch of option tests, followed by output for that option <ol>
+<p  class="P6" >would this work with a collection of writers? All this
+code would then be hidden inside the writer classes, and
+the main loop would have something like
+"writers.writeHeaders()" </p>
+</ol>
+</ol>
+</ol>
+<li  class="L3" >common <ol>
+<li  class="L4" >SAMBUCA_share </ol>
+</ol>
+</ol>
+<li  class="L1" >amoeba_clw7.pro <ol>
+<li  class="L2" >Is the 7 a version number? <ol>
+<li  class="L3" >If so, what is the history? </ol>
+<li  class="L2" >Performs multidimensional minimisation of a function using the downhill simplex method <ol>
+<li  class="L3" >Does not require a derivative function </ol>
+<li  class="L2" >Appears to be a modified version of the IDL standard function. <ol>
+<p  class="P3" >I suspect that one modification is the splitting out of the
+amotry_CLW2 function, and the addition of the common block, as the
+original function block comment indicates no common blocks. Would
+need to diff against original to check, but it probably doesn't
+matter for the port.
+</p>
+<li  class="L3" >ToDo: identify whether a replacement exists in SciPy. <ol>
+<li  class="L4" >Yes <ol>
+<p  class="P5" >downhill simplex (Nelder-Mead/Amoeba) is available as an option
+in minimise using method='Nelder-Mead'
+http://stackoverflow.com/questions/9613381/python-function-minimisation-without-derivative
+http://docs.scipy.org/doc/scipy/reference/tutorial/optimize.html?highlight=nelder </p>
+</ol>
+<li  class="L4" >Does the IDL function do anything strange that will prevent use of the SciPy version? </ol>
+</ol>
+</ol>
+<li  class="L1" >IDL quirks to watch <ol>
+<li  class="L2" >arrays <ol>
+<li  class="L3" >IDL arrays are row-major, but differ from standard matrix notation by using (column, row) rather than (row, column)
+<p  class="P3" >so indexing looks like column-major but it's not. Rationale is that
+memory layout for 2D images matches the data access ordering of device
+scanlines </p>
+<ol>
+<li  class="L4" >will just have to watch indexing orders in Python </ol>
+<li  class="L3" >array subscripts are 0-based (yeay)
+<li  class="L3" >implicit array operations
+<li  class="L3" >default is to use [] for array subscripts, but () is legal (and confusing since it looks like a function call) </ol>
+<li  class="L2" >Common Blocks <ol>
+<li  class="L3" >Global data dressed up so it doesn't look like a bad idea, but it is.
+<li  class="L3" >it could be addressed by objects: common blocks become object data, functions and procedures become methods </ol>
+<li  class="L2" >Functions & Procedures <ol>
+<li  class="L3" >It looks like procedures don't have a return value, but functions do.
+<li  class="L3" >Side effects!! Both functions and procedures routinely make permanent changes to input arguments
+<li  class="L3" >Keyword arguments <ol>
+<li  class="L4" >names can be shortened, so watch for errors caused by similar names </ol>
+</ol>
+<li  class="L2" >dynamic typing <ol>
+<li  class="L3" >values have a hard type (string, float, double etc)
+<li  class="L3" >references can point to any type
+<p  class="P3" >So a='a' followed by a=3 does not change a string to an int. It just
+changes the data type referenced by a </p>
+</ol>
+<li  class="L2" >data types <ol>
+<li  class="L3" >default int is only 16 bits. Need long for 32 bits
+<li  class="L3" >float (32 bits) and double (64 bits) make sense </ol>
+</ol>
+<li  class="L1" >Sambuca common features <ol>
+<li  class="L2" >tight binding to GUI <ol>
+<p  class="P3" >a number of Sambuca functions directly trigger an IDL message box. In
+python it will be better to throw an exception. This will keep
+a clean separation between the core code and any GUI that may or may
+not be layered over the top. </ol>
+</ol>
+</ol>
+</div>
+<div class="Footer">
+<hr>
+
+<br>
+IDL_review_notes.otl&nbsp&nbsp 2014/10/06 20:11
+</div>
+</body></html>
