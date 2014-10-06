@@ -71,6 +71,7 @@ sambuca_2009.pro
 			Searches for an ENVI file by name,
 			Reads metadata for the file
 			Puts the metadata into a structure used by Sambuca
+				: lib parameter
 		The Python GDAL library reads ENVI rasters. Will it also let me query the metadata?
 	function SAMBUCA_SA_V12_fwdVB
 		purpose
@@ -177,6 +178,59 @@ sambuca_2009.pro
 					:regardless, the Python code will need to deal with this
 					:more gracefully
 	procedure SAMBUCA_2009
+		purpose
+			appears to be the primary sambuca runner
+			grabs some options
+			reads input files
+				pstate.p_input_info?
+				where is the lib argument to restore_envi_library declared?
+					Implicitly in restore_envi_library call?
+				Are the envi libraries connected to the compressed/categorised inputs?
+			opens a whole bunch of output files
+			line 669: initialises debug printing
+				:could I use a lightweight python logging framework?
+			reads the image data
+				:Python can use reader pattern to separate input formats from
+				:core code. GDAL might do it, but might be better off with
+				:a thin layer over the top of gdal if there is extra work to
+				:do.
+			loops over tiles
+				but no parallel execution of tiles
+					:parallelism: tiles to processes (MPI?), and pixels to
+					:threads?
+				each tile loop contains an inner pixel loop
+					:line 734
+					seems to be doing a lot of work
+					line 768:
+						:can else block for non-zero pixel processing be 
+						:promoted by having an early-exit on zero pixels?
+					line 799:
+						:does the whole_guacamole structure differ per-pixel?
+						:Could any of the parameter setup code be moved out of
+						:the inner loop?
+					line 791:
+						:loops over all input substrates (per-pixel)
+					searches for and records some parameter indicies
+					sets up some other values
+					if pixel is in z range (min, max), calls amoeba minimisation function
+					line 884: checks amoeba_converged value
+						:value is set inside a loop, check is outside the
+						:loop. So the check only sees the value from the final
+						:iteration!
+					line 998: pixel loop ends
+				writes out tile results
+				line 1041: end of tile loop
+			line 1044: appears to be writing out ENVI-specific headers for the results.
+				:I would like to use a writer pattern to keep file formats
+				:separate from the core code
+				there are a whole bunch of option tests, followed by output for that option
+					:would this work with a collection of writers? All this
+					:code would then be hidden inside the writer classes, and
+					:the main loop would have something like
+					:"writers.writeHeaders()"
+		common
+			SAMBUCA_share
+		
 
 amoeba_clw7.pro
 	Is the 7 a version number?

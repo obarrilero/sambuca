@@ -232,8 +232,6 @@ function SAMBUCA_SA_V12_fwdVB, ZZ, input_spectra, input_params
 
     ;=======================
     ;PARAMETERS TO BE OPTIMISED WITH INITIAL VALUES:
-
-
     ;none  = ZZ(0)      ;dummy parameter incase nothing is to be fixed!
     CHL  = ZZ(1)              ;concentration of cholorphyl
     CDOM  = ZZ(2)             ; concentration of cdom
@@ -525,13 +523,7 @@ end
 ;**************************************************************************
 
 
-
 pro SAMBUCA_2009, pstate=pstate
-
-if ~ KEYWORD_SET(pstate) then  begin
-print, "No pstate"
-return
- endif
 ;Simulates subsurface Lu/ED spectra by running the SAMBUCA model FORward while varying input parameters,
 ; (such as water optical propterties, bottom substrate mixtures and depth) and adding random 1%
 ; reflectance (R(0-)) noise. SAMBUCA is then run bacKWARDs in order to test retrieveal
@@ -539,65 +531,67 @@ return
 ; altough the final evaluation of the spectral fit is done after applying a given sensor's response function
 ; to the modelled spectra.
 
-common SAMBUCA_share, SAMBUCA
+    if ~ KEYWORD_SET(pstate) then begin
+        print, "No pstate"
+        return
+    endif
 
-;===========================
-report_title="multi_SAMBUCA_2007"
+    common SAMBUCA_share, SAMBUCA
 
-tic=systime(1)
-n_iter=0UL
-n_pixel_run=0UL
-n_pixel_conv=0UL
-;**************************************************************************
-image_scale=(*pstate).values.image_scale
-Hmax=(*pstate).values.H_max
-deltaz=(*pstate).values.delta_z
-tidal_offset=(*pstate).values.tidal_offset
-;**************************************************************************
-rundeep=(*pstate).flag.rundeep
-go_shallow=(*pstate).flag.go_shallow
-run_TR=(*pstate).flag.run_TR
-get_z=(*pstate).flag.get_z
-run_1nm=(*pstate).flag.run_1nm
-print_debug=(*pstate).flag.print_debug
-use_noise=(*pstate).flag.use_noise
-do_graph1=(*pstate).flag.do_graph1
+    ;===========================
+    report_title="multi_SAMBUCA_2007"
 
-;**************************************************************************
-;get hold of the files from the state
-file_type= (*(*pstate).files.p_input_info).file_type
-       case  file_type of
-       ; 0: ENVI standard image, 4: ENVI library
-         0 : image_info=(*(*pstate).files.p_input_info)
-         4 :  restore_envi_library,  fname=(*(*pstate).files.p_input_info).fname,lib=lib
-       endcase
+    tic=systime(1)
+    n_iter=0UL
+    n_pixel_run=0UL
+    n_pixel_conv=0UL
+    ;**************************************************************************
+    image_scale=(*pstate).values.image_scale
+    Hmax=(*pstate).values.H_max
+    deltaz=(*pstate).values.delta_z
+    tidal_offset=(*pstate).values.tidal_offset
+    ;**************************************************************************
+    rundeep=(*pstate).flag.rundeep
+    go_shallow=(*pstate).flag.go_shallow
+    run_TR=(*pstate).flag.run_TR
+    get_z=(*pstate).flag.get_z
+    run_1nm=(*pstate).flag.run_1nm
+    print_debug=(*pstate).flag.print_debug
+    use_noise=(*pstate).flag.use_noise
+    do_graph1=(*pstate).flag.do_graph1
 
-       image_scale=(*pstate).values.image_scale
+    ;**************************************************************************
+    ;get hold of the files from the state
+    file_type= (*(*pstate).files.p_input_info).file_type
+    case  file_type of
+        ; 0: ENVI standard image, 4: ENVI library
+        0 : image_info = (*(*pstate).files.p_input_info)
+        4 : restore_envi_library,  fname=(*(*pstate).files.p_input_info).fname,lib=lib
+    endcase
 
+    image_scale=(*pstate).values.image_scale
 
-
-; adjust ns & nl
-       case  file_type of
-       ; 0: ENVI standard image, 4: ENVI library
-         0 : begin
-             ns=image_info.ns
-             nl=image_info.nl
-             ;n_wavs_input=image_info.nb & wavs_input = pos
-             wavs_input=where(image_info.wl gt 400. and image_info.wl lt 800., n_wavs_input )
-             num_tiles=Image_info.num_tiles
-             n_wavs=n_wavs_input
-          out_wls=image_info.wl[wavs_input]
-             end
-              4 : begin
+    ; adjust ns & nl
+    case  file_type of
+        ; 0: ENVI standard image, 4: ENVI library
+        0 : begin
+            ns=image_info.ns
+            nl=image_info.nl
+            ;n_wavs_input=image_info.nb & wavs_input = pos
+            wavs_input=where(image_info.wl gt 400. and image_info.wl lt 800., n_wavs_input )
+            num_tiles=Image_info.num_tiles
+            n_wavs=n_wavs_input
+            out_wls=image_info.wl[wavs_input]
+        end
+        4 : begin
             ns=1+lib.dims[4]-lib.dims[3]
             ;n_wavs_input=lib.ns  & wavs_input= uindgen(nb) ;???
             wavs_input=where(lib.wl gt 400. and lib.wl lt 800., n_wavs_input )
             num_tiles=1
-              n_wavs=n_wavs_input
-          out_wls=lib.wl[wavs_input]
-            end
-        endcase
-
+            n_wavs=n_wavs_input
+            out_wls=lib.wl[wavs_input]
+        end
+    endcase
 
 ;; start the envi_report_init
 ;
@@ -610,859 +604,793 @@ file_type= (*(*pstate).files.p_input_info).file_type
 ;       endcase
 
 
-
-
-
-;=====================
-; OPENING OUTPUT FILES
-       case  file_type of
-       ;0:ENVI standard image, 4: ENVI library
+    ;=====================
+    ; OPENING OUTPUT FILES
+    case  file_type of
+        ;0:ENVI standard image, 4: ENVI library
         0 : begin
-           if STRPOS(Image_info.fname, '.') ne -1 then $
-               dot=STRPOS(Image_info.fname, '.',/REVERSE_SEARCH) else $
-               dot=STRLEN(Image_info.fname)-1
-          out_name=strmid(Image_info.fname, 0,dot)
-                extension=".img"
-            end
+            if STRPOS(Image_info.fname, '.') ne -1 then $
+                dot=STRPOS(Image_info.fname, '.',/REVERSE_SEARCH) else $
+                dot=STRLEN(Image_info.fname)-1
+            out_name=strmid(Image_info.fname, 0,dot)
+            extension=".img"
+        end
         4 : begin
-          if STRPOS(lib.fname, '.') ne -1 then $
-              dot=STRPOS(lib.fname, '.',/REVERSE_SEARCH) else $
-              dot=STRLEN(lib.fname)-1
-          out_name=strmid(lib.fname, 0,dot)
-                extension=".lib"
+            if STRPOS(lib.fname, '.') ne -1 then $
+                dot=STRPOS(lib.fname, '.',/REVERSE_SEARCH) else $
+                dot=STRLEN(lib.fname)-1
+            out_name=strmid(lib.fname, 0,dot)
+            extension=".lib"
+        end
+    endcase
+
+    runname=(*pstate).runname
+
+    ;(*pstate).output.Kd
+    ;(*pstate).output.Kub
+    ;(*pstate).output.Kuc
+
+    if (*pstate).output.depth_concs then out_name_ZCA=out_name+runname+'_depth_concs'+extension
+    if (*pstate).output.distances  then out_name_dist=out_name+runname+'_distances'+extension
+    if (*pstate).output.iter then out_name_iter=out_name+runname+'_iter'+extension
+    if (*pstate).output.subs then out_name_subs=out_name+runname+'_subs'+extension
+    if (*pstate).output.closed_spectra then out_name_R0=out_name+runname+'_closed_spectra'+extension
+    if (*pstate).output.closed_deep_spectra then out_name_R0dp=out_name+runname+'_closed_deep_spectra'+extension
+    if (*pstate).output.diff_deep_spectra  then out_name_R0dp_diff=out_name+runname+'_diff_deep_spectra'+extension
+    if (*pstate).output.diff_spectra  then out_name_diff=out_name+runname+'_diff_spectra'+extension
+    if (*pstate).output.UNmixel_spectra then out_name_unmix=out_name+runname+'_UNmixel_spectra'+extension
+    if (*pstate).output.WCmixel_spectra then out_name_WCmix=out_name+runname+'_WCmixel_spectra'+extension
+    if (*pstate).output.Kd then out_name_Kd=out_name+runname+'_Kd_spectra'+extension
+    if (*pstate).output.Kub then out_name_Kub=out_name+runname+'_Kub_spectra'+extension
+    if (*pstate).output.Kub then out_name_Kuc=out_name+runname+'_Kuc_spectra'+extension
+    if (*pstate).output.SubsDet_spectra then out_name_SubsDet=out_name+runname+'_SubsDet_spectra'+extension
+    ;if (*pstate).output.SubsDet_spectra then out_name_SubsDet=out_name+runname+'_SubsDet_spectra'+extension
+    if (*pstate).output.depth_concs then openw,out_ZCA,out_name_ZCA,/get_lun
+    if (*pstate).output.distances  then openw,out_dist,out_name_dist,/get_lun
+    if (*pstate).output.iter then openw,out_iter,out_name_iter,/get_lun
+    if (*pstate).output.subs then openw,out_subs,out_name_subs,/get_lun
+    if (*pstate).output.closed_spectra then openw,out_R0,out_name_R0,/get_lun
+    if (*pstate).output.closed_deep_spectra then openw,out_R0dp,out_name_R0dp,/get_lun
+    if (*pstate).output.diff_deep_spectra  then openw,out_R0dp_diff,out_name_R0dp_diff,/get_lun
+    if (*pstate).output.diff_spectra  then openw,out_diff,out_name_diff,/get_lun
+    if (*pstate).output.UNmixel_spectra then openw,out_unmix,out_name_unmix,/get_lun
+    if (*pstate).output.WCmixel_spectra then openw,out_wcmix,out_name_wcmix,/get_lun
+    if (*pstate).output.SubsDet_spectra then openw,out_SubsDet,out_name_SubsDet,/get_lun
+    if (*pstate).output.Kd then openw,out_kd,out_name_kd,/get_lun
+    if (*pstate).output.Kub then openw,out_kub,out_name_kub,/get_lun
+    if (*pstate).output.Kuc then openw,out_kuc,out_name_kuc,/get_lun
+
+    ;VB09
+    out_name_WGOSW=out_name+runname+'_WGOSW'+extension
+    openw,out_WGOSW,out_name_WGOSW,/get_lun
+
+    if print_debug then journal, out_name+runname+'print_debug.txt'
+    if print_debug then print,systime(0)
+
+    ;-------------------------
+    ;common imagespectra, image_spectrum, Noise_spectrum, closed_spectrum, closed_deep_spectrum
+    ;common distances, dist_wl_index, distance_alpha , distance_f, distance_alpha_f
+
+    ;READING IMAGE
+    for i_tile=0L, num_tiles-1 do begin                       ; tile loop
+
+        ; output arrays
+        depth_t = fltarr(ns)
+        fval_t = fltarr(ns)
+        P_t = fltarr(ns)
+        G_t = fltarr(ns)
+        Tr_t = fltarr(ns)
+        subs_t = fltarr(ns,SAMBUCA.inputR.n_spectra+1)
+        SDI = fltarr(ns)
+        dist_t=fltarr(ns,3)
+        ;VB09:WGOSW
+        WGOSW=fltarr(ns,5)
+
+        n_iteration_spectrum=lonarr(ns)
+        spectrum_time=fltarr(ns)
+
+        closed_R0 = fltarr(ns,n_wavs) ; VB
+        closed_R0dp = fltarr(ns,n_wavs) ; VB
+        closed_deep_diff= fltarr(ns,n_wavs) ; VB
+        closed_diff= fltarr(ns,n_wavs) ; VB
+        WC_mixel= fltarr(ns,n_wavs) ; VB
+        UN_mixel= fltarr(ns,n_wavs) ; VB
+        SubsDet=fltarr(ns,n_wavs)
+        Kd=fltarr(ns,n_wavs)
+        Kub=fltarr(ns,n_wavs)
+        Kuc=fltarr(ns,n_wavs)
+
+        case  file_type of
+        ; 0: ENVI standard image, 4: ENVI library
+            0 : begin
+                ;envi_report_stat, base,i_tile,num_tiles
+                data_tile = envi_get_tile( image_info.tile_id, i_tile)
+                case image_info.interleave of
+                    0:  result=widget_message("IMAGE MUST BE BIL or BIP", /error)
+                    1:  L_rs_t=float(data_tile) ; BIL: data_tile(ns,nb)
+                    2:  L_rs_t=float(transpose(data_tile)) ; BIP: data_tile(nb,ns)
+                endcase
+                L_rs_t=image_scale*L_rs_t[*,wavs_input]
             end
-       endcase
-runname=(*pstate).runname
+            4 : begin
+                L_rs_t=image_scale*lib.spectra[*,wavs_input]
+            end
+        endcase
 
-
-;(*pstate).output.Kd
-; (*pstate).output.Kub
-; (*pstate).output.Kuc
-
-
-if (*pstate).output.depth_concs then out_name_ZCA=out_name+runname+'_depth_concs'+extension
-if (*pstate).output.distances  then out_name_dist=out_name+runname+'_distances'+extension
-if (*pstate).output.iter then out_name_iter=out_name+runname+'_iter'+extension
-if (*pstate).output.subs then out_name_subs=out_name+runname+'_subs'+extension
-if (*pstate).output.closed_spectra then out_name_R0=out_name+runname+'_closed_spectra'+extension
-if (*pstate).output.closed_deep_spectra then out_name_R0dp=out_name+runname+'_closed_deep_spectra'+extension
-if (*pstate).output.diff_deep_spectra  then out_name_R0dp_diff=out_name+runname+'_diff_deep_spectra'+extension
-if (*pstate).output.diff_spectra  then out_name_diff=out_name+runname+'_diff_spectra'+extension
-if (*pstate).output.UNmixel_spectra then out_name_unmix=out_name+runname+'_UNmixel_spectra'+extension
-if (*pstate).output.WCmixel_spectra then out_name_WCmix=out_name+runname+'_WCmixel_spectra'+extension
-if (*pstate).output.Kd then out_name_Kd=out_name+runname+'_Kd_spectra'+extension
-if (*pstate).output.Kub then out_name_Kub=out_name+runname+'_Kub_spectra'+extension
-if (*pstate).output.Kub then out_name_Kuc=out_name+runname+'_Kuc_spectra'+extension
-if (*pstate).output.SubsDet_spectra then out_name_SubsDet=out_name+runname+'_SubsDet_spectra'+extension
-;if (*pstate).output.SubsDet_spectra then out_name_SubsDet=out_name+runname+'_SubsDet_spectra'+extension
-
-
-if (*pstate).output.depth_concs then openw,out_ZCA,out_name_ZCA,/get_lun
-if (*pstate).output.distances  then openw,out_dist,out_name_dist,/get_lun
-if (*pstate).output.iter then openw,out_iter,out_name_iter,/get_lun
-if (*pstate).output.subs then openw,out_subs,out_name_subs,/get_lun
-if (*pstate).output.closed_spectra then openw,out_R0,out_name_R0,/get_lun
-if (*pstate).output.closed_deep_spectra then openw,out_R0dp,out_name_R0dp,/get_lun
-if (*pstate).output.diff_deep_spectra  then openw,out_R0dp_diff,out_name_R0dp_diff,/get_lun
-if (*pstate).output.diff_spectra  then openw,out_diff,out_name_diff,/get_lun
-if (*pstate).output.UNmixel_spectra then openw,out_unmix,out_name_unmix,/get_lun
-if (*pstate).output.WCmixel_spectra then openw,out_wcmix,out_name_wcmix,/get_lun
-if (*pstate).output.SubsDet_spectra then openw,out_SubsDet,out_name_SubsDet,/get_lun
-if (*pstate).output.Kd then openw,out_kd,out_name_kd,/get_lun
-if (*pstate).output.Kub then openw,out_kub,out_name_kub,/get_lun
-if (*pstate).output.Kuc then openw,out_kuc,out_name_kuc,/get_lun
-
-;VB09
-out_name_WGOSW=out_name+runname+'_WGOSW'+extension
-openw,out_WGOSW,out_name_WGOSW,/get_lun
-
-
-if print_debug then journal, out_name+runname+'print_debug.txt
-if print_debug then print,systime(0)
-
-
-;-------------------------
-;common imagespectra, image_spectrum, Noise_spectrum, closed_spectrum, closed_deep_spectrum
-;common distances, dist_wl_index, distance_alpha , distance_f, distance_alpha_f
-
-;READING IMAGE
-
- for i_tile=0L, num_tiles-1 do begin                       ; tile loop
-
-; output arrays
-depth_t = fltarr(ns)
-fval_t = fltarr(ns)
-P_t = fltarr(ns)
-G_t = fltarr(ns)
-Tr_t = fltarr(ns)
-subs_t = fltarr(ns,SAMBUCA.inputR.n_spectra+1)
-SDI = fltarr(ns)
-dist_t=fltarr(ns,3)
- ;VB09:WGOSW
-WGOSW=fltarr(ns,5)
-
-
-
-n_iteration_spectrum=lonarr(ns)
-spectrum_time=fltarr(ns)
-
-
-closed_R0 = fltarr(ns,n_wavs) ; VB
-closed_R0dp = fltarr(ns,n_wavs) ; VB
-closed_deep_diff= fltarr(ns,n_wavs) ; VB
-closed_diff= fltarr(ns,n_wavs) ; VB
-WC_mixel= fltarr(ns,n_wavs) ; VB
-UN_mixel= fltarr(ns,n_wavs) ; VB
-SubsDet=fltarr(ns,n_wavs)
-Kd=fltarr(ns,n_wavs)
-Kub=fltarr(ns,n_wavs)
-Kuc=fltarr(ns,n_wavs)
-
-
-
-       case  file_type of
-       ; 0: ENVI standard image, 4: ENVI library
-         0 : begin
-;          envi_report_stat, base,i_tile,num_tiles
-            data_tile = envi_get_tile( image_info.tile_id, i_tile)
-            case image_info.interleave of
-             0:  result=widget_message("IMAGE MUST BE BIL or BIP", /error)
-             1:  L_rs_t=float(data_tile) ; BIL: data_tile(ns,nb)
-             2:  L_rs_t=float(transpose(data_tile)) ; BIP: data_tile(nb,ns)
+        if get_Z then begin
+            zfile_type= (*(*pstate).files.p_Z_info).file_type
+            help, (*(*pstate).files.p_Z_info),/struc
+            case  file_type of
+                ; 0: ENVI standard image, 4: ENVI library
+                0 :ZZZZZ= envi_get_data(fid=(*(*pstate).files.p_Z_info).fid,dims=[-1,0, ns-1,i_tile,i_tile],pos=0)
+                4 : ZZZZZ= envi_get_data(fid=(*(*pstate).files.p_Z_info).fid,dims=[-1,0, ns-1,i_tile,i_tile],pos=0)
             endcase
-             L_rs_t=image_scale*L_rs_t[*,wavs_input]
-             end
-         4 : begin
-          L_rs_t=image_scale*lib.spectra[*,wavs_input]
-             end
-        endcase
-    if get_Z then BEGIN
-       zfile_type= (*(*pstate).files.p_Z_info).file_type
-       help, (*(*pstate).files.p_Z_info),/struc
-       case  file_type of
-       ; 0: ENVI standard image, 4: ENVI library
-         0 :ZZZZZ= envi_get_data(fid=(*(*pstate).files.p_Z_info).fid,dims=[-1,0, ns-1,i_tile,i_tile],pos=0)
-         4 : ZZZZZ= envi_get_data(fid=(*(*pstate).files.p_Z_info).fid,dims=[-1,0, ns-1,i_tile,i_tile],pos=0)
-       endcase
-
-    HELP, ZZZZZ
-
-
-       ENDIF
-tic_line=systime(1)
-      for n = 0L,(ns-1) do begin ; pixel loop
-;      for n = 0,(1) do begin ; pixel loop
-if print_debug then print,systime(0)
-if print_debug then print,string([ i_tile,n, systime(1)-tic_line])
-
-       case  file_type of
-       ; 0: ENVI standard image, 4: ENVI library
-         0 : begin
-             ;if print_debug then print,i_tile,n
-             end
-         4 : begin
-             envi_report_stat, base,n,ns
-             end
-        endcase
-
-
-
-         min_amoeba = [0.0, 0.0, 0.0, 0.0, 0.0]
-
-
-         min_fval = 2
-         amoeba_converged=0b
-         amoeba = 1.00
-         min_ref1 = '******'
-         min_ref2 = '******'
-         min_rrr = 100
-         min_rr = 100
-
- image_spectrum = L_rs_t[n,*]
-SAMBUCA.imagespectra.image_spectrum=image_spectrum
-
-start_spectrum_time=systime(1)
-
-         if (total(image_spectrum) lt 0.00001) then begin ; check for '0' pixel
-
-              depth_t[n] = 0.00
-              fval_t[n] = .000
-              P_t[n] = 0.00
-              G_t[n] = 0.00
-              Tr_t[n] = 0.00
-              SDI[n]=0
-             dist_t[n,*]=0.00 ;VB
-
-
-           endif else begin                    ; pixel not zero proceed with inversion!
-n_pixel_run=n_pixel_run+1
-
-; start iteration control variables
-n_iteration_spectrum[n]=0L
-
-;if print_debug then print,i_tile,n , n_pixel_run
-
-
-
-;==================================graph1
-do_graph1=(*pstate).flag.do_graph1
-if do_graph1 then begin
-tlb=widget_base(column=1, title='Spectral matching through minimisation  ', $
-    mbar=bar)
-draw=widget_draw(tlb, graphics_level=1, xsize=400, ysize=300)   ;graph for ping_SA minimisation
-base1=widget_base(tlb, /row)
-widget_control, tlb, /realize
-widget_control, draw, get_value=winindex1
-set_plot, 'win'
-wset, winindex1
-;device, decomposed=0
-;loadct, 12
-
-endif
-;======================================
-
-
-    ;    common input_reflectance, ref1, ref2              ; loop for input substrate spectra
-
-         for rr = 0,SAMBUCA.inputR.n_spectra-1 do begin            ;n_spectra-1
-           for rrr = rr+1,SAMBUCA.inputR.n_spectra-1 do begin    ; n_spectra-2
-
-; VB07 update ref indexes to Common
-              SAMBUCA.inputR.index=[rr,rrr]
-
-              if print_debug then print,SAMBUCA.inputR.names[SAMBUCA.inputR.index]
-;======================================
-
-
-;DEFINING PARAMETERS
-      if get_Z then $
-       whole_guacamole=DO_whole_guacamole(pstate=pstate, zzzz=zzzzz[n]) else $
-       whole_guacamole=DO_whole_guacamole(pstate=pstate)
-
-    for cc=0, 14 do begin
-
-
-     for ccc= 0, (n_elements(SAMBUCA.opti_params.Zin))- 1  do begin
-
-         if [SAMBUCA.opti_params.Zin[ccc] EQ whole_guacamole.name[cc] ] then $
-               SAMBUCA.opti_params.Zi[ccc] = cc
-
-        if [ SAMBUCA.opti_params.Zin[ccc] EQ 'CHL' ] then chl_no = ccc
-        if [ SAMBUCA.opti_params.Zin[ccc] EQ 'CDOM' ] then cdom_no = ccc
-        if [ SAMBUCA.opti_params.Zin[ccc] EQ 'TR' ] then tr_no = ccc
-        if [ SAMBUCA.opti_params.Zin[ccc] EQ 'q1' ] then q1_no = ccc
-        if [ SAMBUCA.opti_params.Zin[ccc] EQ 'H' ] then H_no = ccc
-
-     endfor
-
-     for cccc = 0, (n_elements(SAMBUCA.opti_params.Fin)) - 1 do begin
-           if [ SAMBUCA.opti_params.Fin[cccc] EQ whole_guacamole.name(cc) ] then SAMBUCA.opti_params.Fi[cccc] = cc
-     endfor
-
-endfor
-
-; VB07 update opti_params to Common
-SAMBUCA.opti_params.F=whole_guacamole.value[SAMBUCA.opti_params.Fi]
-
-; common opti_trajec is shared with the amoeba routine
-common opti_trajec, trajec,ntry,Pupper,Plower
-
-; setting the depth range as a function of the substrates
-; the depth range is the intersection of the ranges of the two substrates
-
-zmin=MAX([whole_guacamole.plower(13),SAMBUCA.InputR.Subs_Z[0,RR],SAMBUCA.InputR.Subs_Z[0,RRr]])
-zmax=Min([whole_guacamole.pupper(13),SAMBUCA.InputR.Subs_Z[1,RR],SAMBUCA.InputR.Subs_Z[1,RRr]])
-
-whole_guacamole.plower[13]=zmin
-whole_guacamole.pupper[13]=zmax
-
-    Pupper = whole_guacamole.pupper[SAMBUCA.opti_params.Zi]
-    Plower = whole_guacamole.plower[SAMBUCA.opti_params.Zi]
-    p_start = whole_guacamole.start[SAMBUCA.opti_params.Zi]
-    p_scale = whole_guacamole.scale[SAMBUCA.opti_params.Zi]
-
-;print, 'fixed: ', whole_guacamole.name(Fi)
-;print, 'to be inverted:',whole_guacamole.name(Zi)
-;print, 'sum of parameters = ',n_elements(Zi) + n_elements(Fi)
-
-
-;==============================================
-
-
-ntry=0
-abs_tol = 1     ; largest (absolute) error function value accepted for retrieval of minimum
-fractional_tol =1e-4 ; largest fractional decrease in error function accepted for retrieval of minimum
-max_iterations = 500
-;max_iterations = 10
-fval_threshold = .005
-;fval_threshold = .001
-;trajec=fltarr(n_elements(SAMBUCA.opti_params.Zi),max_iterations+5)
-trajec=fltarr(n_elements(SAMBUCA.opti_params.Zi),max_iterations+15)
-
-;grid_steps=n_gridsteps ; number of stps in the grid
-
-if zmin lt zmax then $
-;r = AMOEBA_CLW_grid(fractional_tol,abs_tol,function_name='sub5_SAMBUCA_SA_V12',SCALE =P_scale, P0=P_start,FUNCTION_VALUE=fval,ncalls=ncall,NMAX=max_iterations, grid_steps=grid_steps) $
-r = AMOEBA_CLW7(fractional_tol,abs_tol,function_name='sub5_SAMBUCA_SA_V12',SCALE =P_scale, P0=P_start,FUNCTION_VALUE=fval,ncalls=ncall,NMAX=max_iterations) $
-else r=-1
-if print_debug then print, string([n_pixel_run,ntry,fval[0],r])
-n_iter=n_iter+ntry
-n_iteration_spectrum[n]=n_iteration_spectrum[n]+ntry
-
-;*******
-;CHECKING INVERSION SUCCESS AND WRITING ANSWERS TO TEMP ARRAYS
-
-    if (n_elements(r) GT 1) then begin   ;checking amoeba has an answer
-
-        if (fval(0) LT min_fval) then begin
-
-           min_fval = fval(0)
-           min_amoeba = r
-           min_rrr = rrr
-           min_rr = rr
-         amoeba_converged=1b
+            help, ZZZZZ
         endif
 
+        tic_line=systime(1)
+        for n = 0L,(ns-1) do begin ; pixel loop
+        ;for n = 0,(1) do begin ; pixel loop
+            if print_debug then print,systime(0)
+            if print_debug then print,string([ i_tile,n, systime(1)-tic_line])
 
-     endif      ; checking for amoeba having an answer
-   endfor       ; substrate loops
-  endfor       ; substrate loops
+            case  file_type of
+                ; 0: ENVI standard image, 4: ENVI library
+                0 : begin
+                    ;if print_debug then print,i_tile,n
+                end
+                4 : begin
+                    envi_report_stat, base,n,ns
+                end
+            endcase
 
-if print_debug then print,"out of the substrate loop"
-if print_debug then print,min_amoeba
-if print_debug then print,r
-if print_debug then print,amoeba_converged
+            min_amoeba = [0.0, 0.0, 0.0, 0.0, 0.0]
+            min_fval = 2
+            amoeba_converged=0b
+            amoeba = 1.00
+            min_ref1 = '******'
+            min_ref2 = '******'
+            min_rrr = 100
+            min_rr = 100
+            image_spectrum = L_rs_t[n,*]
+            SAMBUCA.imagespectra.image_spectrum=image_spectrum
+            start_spectrum_time=systime(1)
 
-             if ( amoeba_converged EQ 0) then begin ;
- if print_debug then print,"AMOEBA did not converge"
-        ; AMOEBA did not converge:
-         ; set al the output values to the non converged code
-              depth_t[n] = -0.001
-              fval_t[n] = -0.001
-              P_t[n] = -0.001
-              G_t[n] = -0.001
-              Tr_t[n] =-0.001
-              SDI[n] =-0.001
-              dist_t[n,*]=-0.001 ;VB
-              WGOSW[n,*]=-0.001 ;VB
+            ; check for '0' pixel
+            if (total(image_spectrum) lt 0.00001) then begin 
+                depth_t[n] = 0.00
+                fval_t[n] = .000
+                P_t[n] = 0.00
+                G_t[n] = 0.00
+                Tr_t[n] = 0.00
+                SDI[n]=0
+                dist_t[n,*]=0.00 ;VB
+            endif else begin ; pixel not zero proceed with inversion!
+                n_pixel_run=n_pixel_run+1
+                ; start iteration control variables
+                n_iteration_spectrum[n]=0L
 
-              subs_t(n,SAMBUCA.inputR.n_spectra)=1.
-               closed_R0 [n,*] =make_array(/float,n_wavs, value=-0.001); VB
-               closed_R0dp [n,*] =make_array(/float,n_wavs, value=-0.001); VB
-               ;closed_deep_diff [n,*] =make_array(/float,n_wavs, value=-0.001); VB
-               closed_diff [n,*] =make_array(/float,n_wavs, value=-0.001); VB
-               WC_mixel[n,*]=make_array(/float,n_wavs, value=-0.001); VB
-               UN_mixel[n,*]=make_array(/float,n_wavs, value=-0.001); VB
-                SubsDet[n,*]=make_array(/float,n_wavs, value=-0.001); VB
-              Kd[n,*]=make_array(/float,n_wavs, value=-0.001); VB
-              Kub[n,*]=make_array(/float,n_wavs, value=-0.001); VB
-              Kuc[n,*]=make_array(/float,n_wavs, value=-0.001); VB
+                ;if print_debug then print,i_tile,n , n_pixel_run
 
-             endif else begin
-         ; AMOEBA did  converge:
- if print_debug then print,"AMOEBA DID converge"
-          n_pixel_conv=n_pixel_conv+1
+                ;==================================graph1
+                do_graph1=(*pstate).flag.do_graph1
+                if do_graph1 then begin
+                    tlb=widget_base(column=1, title='Spectral matching through minimisation  ', mbar=bar)
+                    draw=widget_draw(tlb, graphics_level=1, xsize=400, ysize=300)   ;graph for ping_SA minimisation
+                    base1=widget_base(tlb, /row)
+                    widget_control, tlb, /realize
+                    widget_control, draw, get_value=winindex1
+                    set_plot, 'win'
+                    wset, winindex1
+                    ;device, decomposed=0
+                    ;loadct, 12
+                endif
+                ;======================================
 
-                ;----------------------
-          ; run  forward with the solution to retrieve the closed spectra from the common
-              SAMBUCA.inputR.index=[min_rr,min_rrr]
- if print_debug then print,"AMOEBA DID converge", SAMBUCA.inputR.names[SAMBUCA.inputR.index]
+                ;common input_reflectance, ref1, ref2              ; loop for input substrate spectra
+                for rr = 0,SAMBUCA.inputR.n_spectra-1 do begin            ;n_spectra-1
+                    for rrr = rr+1,SAMBUCA.inputR.n_spectra-1 do begin    ; n_spectra-2
+                        ; VB07 update ref indexes to Common
+                        SAMBUCA.inputR.index=[rr,rrr]
 
+                        if print_debug then print,SAMBUCA.inputR.names[SAMBUCA.inputR.index]
+                        ;======================================
 
-          ;----------------------
-          ; if pixel is optically deep get as shallow as possible ....
-          ; i.e. run sambuca fwd fixing everything  while decreasing depth
-      if go_shallow then begin
-               shallow_amoeba=    min_amoeba
-               h_min=shallow_amoeba[H_no]
-       if print_debug then print,"AMOEBA DID converge:SDI= ", SAMBUCA.imagespectra.SDI
-       if print_debug then print,"AMOEBA DID converge:h_min= ", h_min
+                        ;DEFINING PARAMETERS
+                        if get_Z then $
+                            whole_guacamole=DO_whole_guacamole(pstate=pstate, zzzz=zzzzz[n]) else $
+                            whole_guacamole=DO_whole_guacamole(pstate=pstate)
 
-          while  SAMBUCA.imagespectra.SDI eq 0 and H_min gt 0.1 do begin
-      if print_debug then print,"AMOEBA go_shallow :SDI= ",SAMBUCA.imagespectra.SDI
-          ;while  SAMBUCA.imagespectra.SDI eq 1 do begin
-               shallow_amoeba[H_no]=shallow_amoeba[H_no]*.9
-               h_min=shallow_amoeba[H_no]
-      if print_debug then print,"AMOEBA go_shallow :H= ",min_amoeba[h_no],shallow_amoeba[H_no]
-                result=sub5_SAMBUCA_SA_V12(shallow_amoeba)
-;                 if SAMBUCA.imagespectra.SDI eq 1 then  min_amoeba=shallow_amoeba
+                        for cc=0, 14 do begin
+                            for ccc= 0, (n_elements(SAMBUCA.opti_params.Zin))- 1  do begin
+                                if [SAMBUCA.opti_params.Zin[ccc] EQ whole_guacamole.name[cc]] then SAMBUCA.opti_params.Zi[ccc] = cc
+                                if [SAMBUCA.opti_params.Zin[ccc] EQ 'CHL'] then chl_no = ccc
+                                if [SAMBUCA.opti_params.Zin[ccc] EQ 'CDOM'] then cdom_no = ccc
+                                if [SAMBUCA.opti_params.Zin[ccc] EQ 'TR'] then tr_no = ccc
+                                if [SAMBUCA.opti_params.Zin[ccc] EQ 'q1'] then q1_no = ccc
+                                if [SAMBUCA.opti_params.Zin[ccc] EQ 'H'] then H_no = ccc
+                            endfor
 
-                 if SAMBUCA.imagespectra.SDI eq 0 then  min_amoeba=shallow_amoeba
-          endwhile
-                  if print_debug then journal,"AMOEBA DID converge:SDI=0, shallow iteration finished"
+                            for cccc = 0, (n_elements(SAMBUCA.opti_params.Fin)) - 1 do begin
+                                if [SAMBUCA.opti_params.Fin[cccc] EQ whole_guacamole.name(cc)] then SAMBUCA.opti_params.Fi[cccc] = cc
+                            endfor
+                        endfor
 
-       endif;   go_shallow
-             ; run  forward with the solution to retrieve the closed spectra from the common
-        result=sub5_SAMBUCA_SA_V12(min_amoeba)
-        if print_debug then journal,"AMOEBA DID converge: run fwd finished"
-           ;if print_debug then print, result,min_fval,fval
+                        ; VB07 update opti_params to Common
+                        SAMBUCA.opti_params.F=whole_guacamole.value[SAMBUCA.opti_params.Fi]
 
-               ; save min_amoeba to variables !
-               if run_TR eq 0 then begin
-              P_t[n] = min_amoeba[chl_no]
-              G_t[n] = min_amoeba[cdom_no]
-              endif
-              Tr_t[n] = min_amoeba[tr_no]
-              fval_t[n] = min_fval
-              if rundeep eq 0 then begin
-                depth_t[n] = min_amoeba[H_no]- tidal_offset
-                subs_t[n,min_rr]=min_amoeba[q1_no]
-                subs_t[n,min_rrr]=1-min_amoeba[q1_no]
-              endif
-       ;VB09:WGOSW
-                WGOSW[n,*]=[SAMBUCA.WGOSW.a440,$
-                       SAMBUCA.WGOSW.bb555,$
-                       SAMBUCA.WGOSW.Rbot555,$
-                       SAMBUCA.WGOSW.Z,$
-                       SAMBUCA.WGOSW.LSQ]
+                        ; common opti_trajec is shared with the amoeba routine
+                        common opti_trajec, trajec,ntry,Pupper,Plower
 
-         ; the spectra
-               closed_R0 [n,*] =SAMBUCA.imagespectra.closed_spectrum/image_scale; VB
-               closed_R0dp [n,*] =SAMBUCA.imagespectra.closed_deep_spectrum/image_scale; VB
-               closed_deep_diff[n,*]= closed_R0[n,*] - closed_R0dp[n,*]
-               closed_diff[n,*]= (SAMBUCA.imagespectra.image_spectrum - SAMBUCA.imagespectra.closed_spectrum)/image_scale
-               ;  the two mixel spectra
+                        ; setting the depth range as a function of the substrates
+                        ; the depth range is the intersection of the ranges of the two substrates
+                        zmin=MAX([whole_guacamole.plower(13),SAMBUCA.InputR.Subs_Z[0,RR],SAMBUCA.InputR.Subs_Z[0,RRr]])
+                        zmax=Min([whole_guacamole.pupper(13),SAMBUCA.InputR.Subs_Z[1,RR],SAMBUCA.InputR.Subs_Z[1,RRr]])
 
-               WC_mixel[n,*]=SAMBUCA.imagespectra.water_corrected_mixel
-               UN_mixel[n,*]=SAMBUCA.imagespectra.unmixed_mixel
-               SubsDet[n,*]=SAMBUCA.imagespectra.SubsDet
-              kd[n,*]=SAMBUCA.imagespectra.kd
-              kub[n,*]=SAMBUCA.imagespectra.kub
-              kuc[n,*]=SAMBUCA.imagespectra.kuc
+                        whole_guacamole.plower[13]=zmin
+                        whole_guacamole.pupper[13]=zmax
 
-           ; and all the three distances
-               dist_t[n,*]=[SAMBUCA.distances.distance_alpha , SAMBUCA.distances.distance_f, SAMBUCA.distances.distance_alpha_f]
-           ;index of optical depth
-             SDI[n]=SAMBUCA.imagespectra.SDI
-           ;----------------------   if deep=closed, flag pixel as optically deep
-               if SAMBUCA.imagespectra.SDI eq 1 then    subs_t(n, SAMBUCA.inputR.n_spectra)=1.
+                        Pupper = whole_guacamole.pupper[SAMBUCA.opti_params.Zi]
+                        Plower = whole_guacamole.plower[SAMBUCA.opti_params.Zi]
+                        p_start = whole_guacamole.start[SAMBUCA.opti_params.Zi]
+                        p_scale = whole_guacamole.scale[SAMBUCA.opti_params.Zi]
 
-        if print_debug then journal,"AMOEBA DID converge: results copied to output arrays"
+                        ;print, 'fixed: ', whole_guacamole.name(Fi)
+                        ;print, 'to be inverted:',whole_guacamole.name(Zi)
+                        ;print, 'sum of parameters = ',n_elements(Zi) + n_elements(Fi)
+                        ;==============================================
 
+                        ntry=0
+                        abs_tol = 1     ; largest (absolute) error function value accepted for retrieval of minimum
+                        fractional_tol =1e-4 ; largest fractional decrease in error function accepted for retrieval of minimum
+                        max_iterations = 500
+                        ;max_iterations = 10
+                        fval_threshold = .005
+                        ;fval_threshold = .001
+                        ;trajec=fltarr(n_elements(SAMBUCA.opti_params.Zi),max_iterations+5)
+                        trajec=fltarr(n_elements(SAMBUCA.opti_params.Zi),max_iterations+15)
 
-             endelse ; end of check for amoeba returning -1
+                        ;grid_steps=n_gridsteps ; number of stps in the grid
 
-           endelse ; end of check for 0 pixel
+                        if zmin lt zmax then $
+                            ;r = AMOEBA_CLW_grid(fractional_tol,abs_tol,function_name='sub5_SAMBUCA_SA_V12',SCALE =P_scale, P0=P_start,FUNCTION_VALUE=fval,ncalls=ncall,NMAX=max_iterations, grid_steps=grid_steps) $
+                            r = AMOEBA_CLW7(fractional_tol,abs_tol,function_name='sub5_SAMBUCA_SA_V12',SCALE =P_scale, P0=P_start,FUNCTION_VALUE=fval,ncalls=ncall,NMAX=max_iterations) $
+                        else $
+                            r=-1
 
-       spectrum_time[n]=1000.*(systime(1)-start_spectrum_time)
-if print_debug then print, systime(0)
-if print_debug then print, string([n_pixel_run,spectrum_time[n]])
+                        if print_debug then print, string([n_pixel_run,ntry,fval[0],r])
+                        n_iter=n_iter+ntry
+                        n_iteration_spectrum[n]=n_iteration_spectrum[n]+ntry
 
-         endfor ; pixel [n]
+                        ;*******
+                        ;CHECKING INVERSION SUCCESS AND WRITING ANSWERS TO TEMP ARRAYS
+                        if (n_elements(r) GT 1) then begin   ;checking amoeba has an answer
+                            if (fval(0) LT min_fval) then begin
+                                min_fval = fval(0)
+                                min_amoeba = r
+                                min_rrr = rrr
+                                min_rr = rr
+                                amoeba_converged=1b
+                            endif
+                        endif      ; checking for amoeba having an answer
+                    endfor       ; substrate loops
+                endfor       ; substrate loops
 
-;WRITING OUT ANSWERS TO IMAGES
+                if print_debug then print,"out of the substrate loop"
+                if print_debug then print,min_amoeba
+                if print_debug then print,r
+                if print_debug then print,amoeba_converged
 
-       case  file_type of
-       ; 0: ENVI standard image, 4: ENVI library
-         0 : begin
-            if (*pstate).output.depth_concs then    writeu, out_ZCA, (reform ([[P_t], [G_t],[Tr_t],[depth_t],[fval_t],SDI],ns,6)); depth_concs.lib
-            if (*pstate).output.distances  then  writeu, out_dist , float(dist_t)
-              if (*pstate).output.iter then writeu,out_iter, (reform ([float(n_iteration_spectrum),spectrum_time],ns,2))
-              if (*pstate).output.subs  then    writeu, out_subs, fix((100*subs_t))
-              if (*pstate).output.closed_spectra then writeu, out_R0, float((closed_R0))
-              if (*pstate).output.closed_deep_spectra then writeu, out_R0dp, float((closed_R0dp))
-              if (*pstate).output.diff_deep_spectra  then writeu, out_R0dp_diff, float((closed_deep_diff))
-              if (*pstate).output.diff_spectra  then  writeu, out_diff, float((closed_diff))
-              if (*pstate).output.WCmixel_spectra then  writeu, out_WCmix,   float(WC_mixel)
-              if (*pstate).output.UNmixel_spectra then writeu, out_UNmix,   float(UN_mixel)
-              if (*pstate).output.kd then writeu, out_kd,   float(kd)
-              if (*pstate).output.kub then writeu, out_kub,   float(kub)
-              if (*pstate).output.kuc then writeu, out_kuc,   float(kuc)
-              if (*pstate).output.SubsDet_spectra then writeu, out_SubsDet, float(SubsDet)
-            ;VB09:WGOSW
-          writeu, out_WGOSW, float(WGOSW)
+                if ( amoeba_converged EQ 0) then begin
+                    if print_debug then print,"AMOEBA did not converge"
+                    ; AMOEBA did not converge:
+                    ; set all the output values to the non converged code
+                    depth_t[n] = -0.001
+                    fval_t[n] = -0.001
+                    P_t[n] = -0.001
+                    G_t[n] = -0.001
+                    Tr_t[n] =-0.001
+                    SDI[n] =-0.001
+                    dist_t[n,*]=-0.001 ;VB
+                    WGOSW[n,*]=-0.001 ;VB
+                    subs_t(n,SAMBUCA.inputR.n_spectra)=1.
+                    closed_R0 [n,*] =make_array(/float,n_wavs, value=-0.001); VB
+                    closed_R0dp [n,*] =make_array(/float,n_wavs, value=-0.001); VB
+                    ;closed_deep_diff [n,*] =make_array(/float,n_wavs, value=-0.001); VB
+                    closed_diff [n,*] =make_array(/float,n_wavs, value=-0.001); VB
+                    WC_mixel[n,*]=make_array(/float,n_wavs, value=-0.001); VB
+                    UN_mixel[n,*]=make_array(/float,n_wavs, value=-0.001); VB
+                    SubsDet[n,*]=make_array(/float,n_wavs, value=-0.001); VB
+                    Kd[n,*]=make_array(/float,n_wavs, value=-0.001); VB
+                    Kub[n,*]=make_array(/float,n_wavs, value=-0.001); VB
+                    Kuc[n,*]=make_array(/float,n_wavs, value=-0.001); VB
+                endif else begin
+                    ; AMOEBA did  converge:
+                    if print_debug then print,"AMOEBA DID converge"
+                    n_pixel_conv=n_pixel_conv+1
+                    ;----------------------
+                    ; run  forward with the solution to retrieve the closed spectra from the common
+                    SAMBUCA.inputR.index=[min_rr,min_rrr]
+                    if print_debug then print,"AMOEBA DID converge", SAMBUCA.inputR.names[SAMBUCA.inputR.index]
 
-          end
-         4 : begin
-               if (*pstate).output.depth_concs then  writeu, out_ZCA, transpose(reform ([[P_t], [G_t],[Tr_t],[depth_t],[fval_t],SDI],ns,6)); depth_concs.lib
-               if (*pstate).output.distances  then writeu, out_dist , float(transpose(dist_t))
-               if (*pstate).output.iter then writeu,out_iter, transpose(reform ([float(n_iteration_spectrum),spectrum_time],ns,2))
-               if (*pstate).output.subs then writeu, out_subs, fix(transpose(100*subs_t))
+                    ;----------------------
+                    ; if pixel is optically deep get as shallow as possible ....
+                    ; i.e. run sambuca fwd fixing everything while decreasing depth
+                    if go_shallow then begin
+                        shallow_amoeba = min_amoeba
+                        h_min = shallow_amoeba[H_no]
+                        if print_debug then print,"AMOEBA DID converge:SDI= ", SAMBUCA.imagespectra.SDI
+                        if print_debug then print,"AMOEBA DID converge:h_min= ", h_min
+
+                        while SAMBUCA.imagespectra.SDI eq 0 and H_min gt 0.1 do begin
+                            if print_debug then print,"AMOEBA go_shallow :SDI= ",SAMBUCA.imagespectra.SDI
+                            ;while SAMBUCA.imagespectra.SDI eq 1 do begin
+                            shallow_amoeba[H_no] = shallow_amoeba[H_no]*.9
+                            h_min = shallow_amoeba[H_no]
+                            if print_debug then print,"AMOEBA go_shallow :H= ",min_amoeba[h_no],shallow_amoeba[H_no]
+                            result = sub5_SAMBUCA_SA_V12(shallow_amoeba)
+                            ;if SAMBUCA.imagespectra.SDI eq 1 then  min_amoeba = shallow_amoeba
+                            if SAMBUCA.imagespectra.SDI eq 0 then  min_amoeba = shallow_amoeba
+                        endwhile
+
+                        if print_debug then journal,"AMOEBA DID converge:SDI=0, shallow iteration finished"
+                    endif;   go_shallow
+
+                    ; run forward with the solution to retrieve the closed spectra from the common
+                    result=sub5_SAMBUCA_SA_V12(min_amoeba)
+
+                    if print_debug then journal,"AMOEBA DID converge: run fwd finished"
+                    ;if print_debug then print, result,min_fval,fval
+
+                    ; save min_amoeba to variables !
+                    if run_TR eq 0 then begin
+                        P_t[n] = min_amoeba[chl_no]
+                        G_t[n] = min_amoeba[cdom_no]
+                    endif
+
+                    Tr_t[n] = min_amoeba[tr_no]
+                    fval_t[n] = min_fval
+
+                    if rundeep eq 0 then begin
+                        depth_t[n] = min_amoeba[H_no]- tidal_offset
+                        subs_t[n,min_rr]=min_amoeba[q1_no]
+                        subs_t[n,min_rrr]=1-min_amoeba[q1_no]
+                    endif
+
+                    ;VB09:WGOSW
+                    WGOSW[n,*]=[SAMBUCA.WGOSW.a440,$
+                        SAMBUCA.WGOSW.bb555,$
+                        SAMBUCA.WGOSW.Rbot555,$
+                        SAMBUCA.WGOSW.Z,$
+                        SAMBUCA.WGOSW.LSQ]
+
+                    ; the spectra
+                    closed_R0 [n,*] =SAMBUCA.imagespectra.closed_spectrum/image_scale; VB
+                    closed_R0dp [n,*] =SAMBUCA.imagespectra.closed_deep_spectrum/image_scale; VB
+                    closed_deep_diff[n,*]= closed_R0[n,*] - closed_R0dp[n,*]
+                    closed_diff[n,*]= (SAMBUCA.imagespectra.image_spectrum - SAMBUCA.imagespectra.closed_spectrum)/image_scale
+
+                    ; the two mixel spectra
+                    WC_mixel[n,*]=SAMBUCA.imagespectra.water_corrected_mixel
+                    UN_mixel[n,*]=SAMBUCA.imagespectra.unmixed_mixel
+                    SubsDet[n,*]=SAMBUCA.imagespectra.SubsDet
+                    kd[n,*]=SAMBUCA.imagespectra.kd
+                    kub[n,*]=SAMBUCA.imagespectra.kub
+                    kuc[n,*]=SAMBUCA.imagespectra.kuc
+
+                    ; and all the three distances
+                    dist_t[n,*]=[SAMBUCA.distances.distance_alpha , SAMBUCA.distances.distance_f, SAMBUCA.distances.distance_alpha_f]
+                    ;index of optical depth
+                    SDI[n]=SAMBUCA.imagespectra.SDI
+
+                    ;----------------------   if deep=closed, flag pixel as optically deep
+                    if SAMBUCA.imagespectra.SDI eq 1 then subs_t(n, SAMBUCA.inputR.n_spectra)=1.
+
+                    if print_debug then journal,"AMOEBA DID converge: results copied to output arrays"
+
+                endelse ; end of check for amoeba returning -1
+            endelse ; end of check for 0 pixel
+
+            spectrum_time[n]=1000.*(systime(1)-start_spectrum_time)
+            if print_debug then print, systime(0)
+            if print_debug then print, string([n_pixel_run,spectrum_time[n]])
+
+        endfor ; pixel [n]
+
+        ;WRITING OUT ANSWERS TO IMAGES
+
+        case  file_type of
+        ; 0: ENVI standard image, 4: ENVI library
+            0 : begin
+                if (*pstate).output.depth_concs then writeu, out_ZCA, (reform ([[P_t], [G_t],[Tr_t],[depth_t],[fval_t],SDI],ns,6)); depth_concs.lib
+                if (*pstate).output.distances then writeu, out_dist , float(dist_t)
+                if (*pstate).output.iter then writeu,out_iter, (reform ([float(n_iteration_spectrum),spectrum_time],ns,2))
+                if (*pstate).output.subs then writeu, out_subs, fix((100*subs_t))
+                if (*pstate).output.closed_spectra then writeu, out_R0, float((closed_R0))
+                if (*pstate).output.closed_deep_spectra then writeu, out_R0dp, float((closed_R0dp))
+                if (*pstate).output.diff_deep_spectra then writeu, out_R0dp_diff, float((closed_deep_diff))
+                if (*pstate).output.diff_spectra then writeu, out_diff, float((closed_diff))
+                if (*pstate).output.WCmixel_spectra then writeu, out_WCmix, float(WC_mixel)
+                if (*pstate).output.UNmixel_spectra then writeu, out_UNmix, float(UN_mixel)
+                if (*pstate).output.kd then writeu, out_kd, float(kd)
+                if (*pstate).output.kub then writeu, out_kub, float(kub)
+                if (*pstate).output.kuc then writeu, out_kuc, float(kuc)
+                if (*pstate).output.SubsDet_spectra then writeu, out_SubsDet, float(SubsDet)
+                ;VB09:WGOSW
+                writeu, out_WGOSW, float(WGOSW)
+            end
+            4 : begin
+                if (*pstate).output.depth_concs then  writeu, out_ZCA, transpose(reform ([[P_t], [G_t],[Tr_t],[depth_t],[fval_t],SDI],ns,6)); depth_concs.lib
+                if (*pstate).output.distances  then writeu, out_dist , float(transpose(dist_t))
+                if (*pstate).output.iter then writeu,out_iter, transpose(reform ([float(n_iteration_spectrum),spectrum_time],ns,2))
+                if (*pstate).output.subs then writeu, out_subs, fix(transpose(100*subs_t))
                 if (*pstate).output.closed_spectra then writeu, out_R0, float(transpose(closed_R0))
-              if (*pstate).output.closed_deep_spectra then writeu, out_R0dp, float(transpose(closed_R0dp))
-               if (*pstate).output.diff_deep_spectra  then writeu, out_R0dp_diff, float(transpose(closed_deep_diff))
-              if (*pstate).output.diff_spectra  then writeu, out_diff, float(transpose(closed_diff))
-              if (*pstate).output.WCmixel_spectra then   writeu, out_WCmix,   float(transpose(WC_mixel))
-              if (*pstate).output.UNmixel_spectra then writeu, out_UNmix,   float(transpose(UN_mixel))
-               if (*pstate).output.kd then writeu, out_kd,   float(transpose(kd))
-               if (*pstate).output.kub then writeu, out_kub,   float(transpose(kub))
-               if (*pstate).output.kuc then writeu, out_kuc,   float(transpose(kuc))
-               if (*pstate).output.SubsDet_spectra then writeu, out_SubsDet, float(transpose(SubsDet))
+                if (*pstate).output.closed_deep_spectra then writeu, out_R0dp, float(transpose(closed_R0dp))
+                if (*pstate).output.diff_deep_spectra  then writeu, out_R0dp_diff, float(transpose(closed_deep_diff))
+                if (*pstate).output.diff_spectra  then writeu, out_diff, float(transpose(closed_diff))
+                if (*pstate).output.WCmixel_spectra then   writeu, out_WCmix,   float(transpose(WC_mixel))
+                if (*pstate).output.UNmixel_spectra then writeu, out_UNmix,   float(transpose(UN_mixel))
+                if (*pstate).output.kd then writeu, out_kd,   float(transpose(kd))
+                if (*pstate).output.kub then writeu, out_kub,   float(transpose(kub))
+                if (*pstate).output.kuc then writeu, out_kuc,   float(transpose(kuc))
+                if (*pstate).output.SubsDet_spectra then writeu, out_SubsDet, float(transpose(SubsDet))
+                ;VB09:WGOSW
+                writeu, out_WGOSW, float(transpose(WGOSW))
+            end
+        endcase
+    endfor ; tile
+
+    ;----------------------
+    ;ENVI HEADERS FOR ANSWERS
+    case  file_type of
+    ;0: ENVI standard image, 4: ENVI library
+        0 : begin
+            if (*pstate).output.depth_concs then $
+                ENVI_SETUP_HEAD, fname=out_name_ZCA, $
+                ns=image_info.ns, nl=image_info.nl, nb=6, $
+                file_type=file_type,$
+                bnames=["CHL","CDOM","TR","Z","fval","SDI"],$
+                interleave=1, data_type=4, $
+                inherit=image_info.inherit_spatial,$
+                descrip="concentrations",$
+                /write, /open
+
+            if (*pstate).output.subs then $
+                ENVI_SETUP_HEAD, fname=out_name_SUBS, $
+                ns=image_info.ns, nl=image_info.nl, nb= SAMBUCA.inputR.n_spectra+1, $
+                file_type=file_type,$
+                bnames=subs_names,$
+                interleave=1, data_type=2, $
+                def_stretch = ENVI_DEFAULT_STRETCH_CREATE(/LINEAR, VAL1=0, VAL2=100),$
+                inherit=image_info.inherit_spatial,$
+                descrip="substrate relative abundance",$
+                /write, /open
+
+            if (*pstate).output.distances  then $
+                ENVI_SETUP_HEAD, fname=out_name_dist, $
+                ns=image_info.ns, nl=image_info.nl, nb=3, $
+                file_type=file_type,$
+                bnames=["distance_alpha" , "distance_f", "distance_alpha*f"],$
+                interleave=1, data_type=4, $
+                inherit=image_info.inherit_spatial,$
+                descrip="spectral distances",$
+                /write, /open
+
+            if (*pstate).output.closed_spectra then $
+                ENVI_SETUP_HEAD, fname=out_name_R0, $
+                ;ns=image_info.ns, nl=image_info.nl, nb=image_info.nb, $
+                ;file_type=file_type,  wl=image_info.wl,$
+                ;bnames=image_info.bnames,$
+                ns=image_info.ns, nl=image_info.nl, nb=n_wavs, $
+                file_type=file_type,  wl=image_info.wl[wavs_input],$
+                bnames=image_info.bnames[wavs_input],$
+                inherit=image_info.inherit_spatial,$
+                interleave=1, data_type=4, $
+                descrip="closed R0",$
+                /write, /open
+
+            if (*pstate).output.closed_deep_spectra then $
+                ENVI_SETUP_HEAD, fname=out_name_R0dp, $
+                ns=image_info.ns, nl=image_info.nl, nb=n_wavs, $
+                file_type=file_type,  wl=image_info.wl[wavs_input],$
+                bnames=image_info.bnames[wavs_input],$
+                inherit=image_info.inherit_spatial,$
+                interleave=1, data_type=4, $
+                descrip="closed R0 deep",$
+                /write, /open
+
+            if (*pstate).output.diff_deep_spectra  then $
+                ENVI_SETUP_HEAD, fname=out_name_R0dp_diff, $
+                ns=image_info.ns, nl=image_info.nl, nb=n_wavs, $
+                file_type=file_type,  wl=image_info.wl[wavs_input],$
+                bnames=image_info.bnames[wavs_input],$
+                inherit=image_info.inherit_spatial,$
+                interleave=1, data_type=4, $
+                descrip="difference between closed R0 and  closed R0 deep",$
+                /write, /open
+
+            if (*pstate).output.diff_spectra  then $
+                ENVI_SETUP_HEAD, fname=out_name_diff, $
+                ns=image_info.ns, nl=image_info.nl, nb=n_wavs, $
+                file_type=file_type,  wl=image_info.wl[wavs_input],$
+                bnames=image_info.bnames[wavs_input],$
+                inherit=image_info.inherit_spatial,$
+                interleave=1, data_type=4, $
+                descrip="difference between closed R0 and  image",$
+                /write, /open
+
+            if (*pstate).output.UNmixel_spectra then $
+                ENVI_SETUP_HEAD, fname=out_name_UNmix, $
+                ns=image_info.ns, nl=image_info.nl, nb=n_wavs, $
+                file_type=file_type,  wl=image_info.wl[wavs_input],$
+                bnames=image_info.bnames[wavs_input],$
+                inherit=image_info.inherit_spatial,$
+                interleave=1, data_type=4, $
+                descrip="substrate Unmixing mixel",$
+                /write, /open
+
+            if (*pstate).output.WCmixel_spectra then $
+                ENVI_SETUP_HEAD, fname=out_name_wcmix, $
+                ns=image_info.ns, nl=image_info.nl, nb=n_wavs, $
+                file_type=file_type,  wl=image_info.wl[wavs_input],$
+                bnames=image_info.bnames[wavs_input],$
+                inherit=image_info.inherit_spatial,$
+                interleave=1, data_type=4, $
+                descrip="substrate water corrected mixel",$
+                /write, /open
+
+            if (*pstate).output.kd then $
+                ENVI_SETUP_HEAD, fname=out_name_kd, $
+                ns=image_info.ns, nl=image_info.nl, nb=n_wavs, $
+                file_type=file_type,  wl=image_info.wl[wavs_input],$
+                bnames=image_info.bnames[wavs_input],$
+                inherit=image_info.inherit_spatial,$
+                interleave=1, data_type=4, $
+                descrip="upwelling vertical attenuation Kd",$
+                /write, /open
+
+            if (*pstate).output.kub then $
+                ENVI_SETUP_HEAD, fname=out_name_kub, $
+                ns=image_info.ns, nl=image_info.nl, nb=n_wavs, $
+                file_type=file_type,  wl=image_info.wl[wavs_input],$
+                bnames=image_info.bnames[wavs_input],$
+                inherit=image_info.inherit_spatial,$
+                interleave=1, data_type=4, $
+                descrip="upwelling vertical attenuation Kub",$
+                /write, /open
+
+            if (*pstate).output.kuc then $
+                ENVI_SETUP_HEAD, fname=out_name_kuc, $
+                ns=image_info.ns, nl=image_info.nl, nb=n_wavs, $
+                file_type=file_type,  wl=image_info.wl[wavs_input],$
+                bnames=image_info.bnames[wavs_input],$
+                inherit=image_info.inherit_spatial,$
+                interleave=1, data_type=4, $
+                descrip="upwelling vertical attenuation Kuc",$
+                /write, /open
+
+            if (*pstate).output.SubsDet_spectra then $
+                ENVI_SETUP_HEAD, fname=out_name_SubsDet, $
+                ns=image_info.ns, nl=image_info.nl, nb=n_wavs, $
+                file_type=file_type,  wl=image_info.wl[wavs_input],$
+                bnames=image_info.bnames[wavs_input],$
+                inherit=image_info.inherit_spatial,$
+                interleave=1, data_type=4, $
+                descrip="Substrate detectability",$
+                /write, /open
+
+            if (*pstate).output.iter  then $
+                ENVI_SETUP_HEAD, fname=out_name_iter, $
+                ns=image_info.ns, nl=image_info.nl, nb=2, $
+                file_type=file_type,$
+                bnames=["n_iteration_spectrum","spectrum_time"],$
+                interleave=1, data_type=4, $
+                inherit=image_info.inherit_spatial,$
+                descrip="iteration info",$
+                /write, /open
+
             ;VB09:WGOSW
-          writeu, out_WGOSW, float(transpose(WGOSW))
-
-
-           end
-       endcase
-
-
-
-      endfor ; tile
-
-;----------------------
-;ENVI HEADERS FOR ANSWERS
-
-
-       case  file_type of
-       ; 0: ENVI standard image, 4: ENVI library
-         0 : begin
-
-
-                   if (*pstate).output.depth_concs then $
-         ENVI_SETUP_HEAD, fname=out_name_ZCA, $
-            ns=image_info.ns, nl=image_info.nl, nb=6, $
-            file_type=file_type,$
-            bnames=["CHL","CDOM","TR","Z","fval","SDI"],$
-            interleave=1, data_type=4, $
-            inherit=image_info.inherit_spatial,$
-                  descrip="concentrations",$
-            /write, /open
-          if (*pstate).output.subs then $
-         ENVI_SETUP_HEAD, fname=out_name_SUBS, $
-            ns=image_info.ns, nl=image_info.nl, nb= SAMBUCA.inputR.n_spectra+1, $
-            file_type=file_type,$
-            bnames=subs_names,$
-            interleave=1, data_type=2, $
-            def_stretch = ENVI_DEFAULT_STRETCH_CREATE(/LINEAR, VAL1=0, VAL2=100),$
-            inherit=image_info.inherit_spatial,$
-                  descrip="substrate relative abundance",$
-            /write, /open
-
-
-          if (*pstate).output.distances  then $
-         ENVI_SETUP_HEAD, fname=out_name_dist, $
-            ns=image_info.ns, nl=image_info.nl, nb=3, $
-            file_type=file_type,$
-            bnames=["distance_alpha" , "distance_f", "distance_alpha*f"],$
-            interleave=1, data_type=4, $
-            inherit=image_info.inherit_spatial,$
-                  descrip="spectral distances",$
-            /write, /open
-
-         if (*pstate).output.closed_spectra then $
-
-          ENVI_SETUP_HEAD, fname=out_name_R0, $
-;            ns=image_info.ns, nl=image_info.nl, nb=image_info.nb, $
-;            file_type=file_type,  wl=image_info.wl,$
- ;           bnames=image_info.bnames,$
-            ns=image_info.ns, nl=image_info.nl, nb=n_wavs, $
-            file_type=file_type,  wl=image_info.wl[wavs_input],$
-            bnames=image_info.bnames[wavs_input],$
-            inherit=image_info.inherit_spatial,$
-                  interleave=1, data_type=4, $
-            descrip="closed R0",$
-            /write, /open
-
-         if (*pstate).output.closed_deep_spectra then $
-          ENVI_SETUP_HEAD, fname=out_name_R0dp, $
-            ns=image_info.ns, nl=image_info.nl, nb=n_wavs, $
-            file_type=file_type,  wl=image_info.wl[wavs_input],$
-            bnames=image_info.bnames[wavs_input],$
-            inherit=image_info.inherit_spatial,$
-                  interleave=1, data_type=4, $
-            descrip="closed R0 deep",$
-            /write, /open
-
-         if (*pstate).output.diff_deep_spectra  then $
-          ENVI_SETUP_HEAD, fname=out_name_R0dp_diff, $
-            ns=image_info.ns, nl=image_info.nl, nb=n_wavs, $
-            file_type=file_type,  wl=image_info.wl[wavs_input],$
-            bnames=image_info.bnames[wavs_input],$
-            inherit=image_info.inherit_spatial,$
-                  interleave=1, data_type=4, $
-            descrip="difference between closed R0 and  closed R0 deep",$
-            /write, /open
-
-       if (*pstate).output.diff_spectra  then $
-          ENVI_SETUP_HEAD, fname=out_name_diff, $
-            ns=image_info.ns, nl=image_info.nl, nb=n_wavs, $
-            file_type=file_type,  wl=image_info.wl[wavs_input],$
-            bnames=image_info.bnames[wavs_input],$
-            inherit=image_info.inherit_spatial,$
-                  interleave=1, data_type=4, $
-            descrip="difference between closed R0 and  image",$
-            /write, /open
-        if (*pstate).output.UNmixel_spectra then $
-         ENVI_SETUP_HEAD, fname=out_name_UNmix, $
-            ns=image_info.ns, nl=image_info.nl, nb=n_wavs, $
-            file_type=file_type,  wl=image_info.wl[wavs_input],$
-            bnames=image_info.bnames[wavs_input],$
-            inherit=image_info.inherit_spatial,$
-                  interleave=1, data_type=4, $
-            descrip="substrate Unmixing mixel",$
-            /write, /open
-          if (*pstate).output.WCmixel_spectra then $
-         ENVI_SETUP_HEAD, fname=out_name_wcmix, $
-            ns=image_info.ns, nl=image_info.nl, nb=n_wavs, $
-            file_type=file_type,  wl=image_info.wl[wavs_input],$
-            bnames=image_info.bnames[wavs_input],$
-            inherit=image_info.inherit_spatial,$
-                  interleave=1, data_type=4, $
-            descrip="substrate water corrected mixel",$
-            /write, /open
-          if (*pstate).output.kd then $
-         ENVI_SETUP_HEAD, fname=out_name_kd, $
-            ns=image_info.ns, nl=image_info.nl, nb=n_wavs, $
-            file_type=file_type,  wl=image_info.wl[wavs_input],$
-            bnames=image_info.bnames[wavs_input],$
-            inherit=image_info.inherit_spatial,$
-                  interleave=1, data_type=4, $
-            descrip="upwelling vertical attenuation Kd",$
-            /write, /open
-          if (*pstate).output.kub then $
-         ENVI_SETUP_HEAD, fname=out_name_kub, $
-            ns=image_info.ns, nl=image_info.nl, nb=n_wavs, $
-            file_type=file_type,  wl=image_info.wl[wavs_input],$
-            bnames=image_info.bnames[wavs_input],$
-            inherit=image_info.inherit_spatial,$
-                  interleave=1, data_type=4, $
-            descrip="upwelling vertical attenuation Kub",$
-            /write, /open
-          if (*pstate).output.kuc then $
-         ENVI_SETUP_HEAD, fname=out_name_kuc, $
-            ns=image_info.ns, nl=image_info.nl, nb=n_wavs, $
-            file_type=file_type,  wl=image_info.wl[wavs_input],$
-            bnames=image_info.bnames[wavs_input],$
-            inherit=image_info.inherit_spatial,$
-                  interleave=1, data_type=4, $
-            descrip="upwelling vertical attenuation Kuc",$
-            /write, /open
-       if (*pstate).output.SubsDet_spectra then $
-            ENVI_SETUP_HEAD, fname=out_name_SubsDet, $
-            ns=image_info.ns, nl=image_info.nl, nb=n_wavs, $
-            file_type=file_type,  wl=image_info.wl[wavs_input],$
-            bnames=image_info.bnames[wavs_input],$
-            inherit=image_info.inherit_spatial,$
-                  interleave=1, data_type=4, $
-            descrip="Substrate detectability",$
-            /write, /open
-
-          if (*pstate).output.iter  then $
-         ENVI_SETUP_HEAD, fname=out_name_iter, $
-            ns=image_info.ns, nl=image_info.nl, nb=2, $
-            file_type=file_type,$
-            bnames=["n_iteration_spectrum","spectrum_time"],$
-            interleave=1, data_type=4, $
-            inherit=image_info.inherit_spatial,$
-                  descrip="iteration info",$
-            /write, /open
-
- ;VB09:WGOSW
-          ENVI_SETUP_HEAD, fname=out_name_WGOSW, $
+            ENVI_SETUP_HEAD, fname=out_name_WGOSW, $
             ns=image_info.ns, nl=image_info.nl, nb=5, $
             file_type=4,$
             bnames=["a_440","bb_555","Rbot555","Z","LSQ"],$
             interleave=1, data_type=4, $
             inherit=image_info.inherit_spatial,$
-                  descrip="output for Working Group for Optically Shallow Water",$
+            descrip="output for Working Group for Optically Shallow Water",$
             /write, /open
 
-                     end
+        end ;case 0:
+        4 : begin
+            if (*pstate).output.depth_concs then $
+                ENVI_SETUP_HEAD, fname=out_name_ZCA, $
+                ns=6, nl=lib.nl, nb=1, $
+                file_type=4,$
+                spec_names=lib.spec_names,bnames=["CHL","CDOM","TR","Z","fval","SDI"],$
+                interleave=0, data_type=4, $
+                descrip="concentrations",$
+                /write, /open
 
+            if (*pstate).output.subs then $
+                ENVI_SETUP_HEAD, fname=out_name_SUBS, $
+                ns= SAMBUCA.inputR.n_spectra+1, nl=lib.nl, nb=1, $
+                file_type=4,$
+                spec_names=lib.spec_names,bnames=subs_names,$
+                interleave=0, data_type=2, $
+                descrip="substrate relative abundance",$
+                /write, /open
 
-         4 : begin
-        if (*pstate).output.depth_concs then $
-          ENVI_SETUP_HEAD, fname=out_name_ZCA, $
-            ns=6, nl=lib.nl, nb=1, $
-            file_type=4,$
-            spec_names=lib.spec_names,bnames=["CHL","CDOM","TR","Z","fval","SDI"],$
-            interleave=0, data_type=4, $
-            descrip="concentrations",$
-            /write, /open
+            if (*pstate).output.distances  then $
+                ENVI_SETUP_HEAD, fname=out_name_dist, $
+                ns=3, nl=lib.nl, nb=1, $
+                file_type=4,$
+                spec_names=lib.spec_names,$
+                bnames=["distance_alpha" , "distance_f", "distance_alpha*f"],$
+                interleave=0, data_type=4, $
+                descrip="spectral distances",$
+                /write, /open
 
-       if (*pstate).output.subs then $
-          ENVI_SETUP_HEAD, fname=out_name_SUBS, $
-            ns= SAMBUCA.inputR.n_spectra+1, nl=lib.nl, nb=1, $
-            file_type=4,$
-            spec_names=lib.spec_names,bnames=subs_names,$
-            interleave=0, data_type=2, $
-            descrip="substrate relative abundance",$
-            /write, /open
+            if (*pstate).output.closed_spectra then $
+                ENVI_SETUP_HEAD, fname=out_name_R0, $
+                ns=n_wavs, nl=lib.nl, nb=1, $
+                file_type=4,wl=out_wls,$
+                spec_names=lib.spec_names,bnames=lib.bnames,$
+                interleave=0, data_type=4, $
+                descrip="closed R0",$
+                /write, /open
 
-       if (*pstate).output.distances  then $
-          ENVI_SETUP_HEAD, fname=out_name_dist, $
-            ns=3, nl=lib.nl, nb=1, $
-            file_type=4,$
-            spec_names=lib.spec_names,$
-            bnames=["distance_alpha" , "distance_f", "distance_alpha*f"],$
-            interleave=0, data_type=4, $
-            descrip="spectral distances",$
-            /write, /open
+            if (*pstate).output.closed_deep_spectra then $
+                ENVI_SETUP_HEAD, fname=out_name_R0dp, $
+                ns=n_wavs, nl=lib.nl, nb=1, $
+                file_type=4,wl=out_wls,$
+                spec_names=lib.spec_names,bnames=lib.bnames,$
+                interleave=0, data_type=4, $
+                descrip="closed R0 deep",$
+                /write, /open
 
-       if (*pstate).output.closed_spectra then $
-           ENVI_SETUP_HEAD, fname=out_name_R0, $
-            ns=n_wavs, nl=lib.nl, nb=1, $
-            file_type=4,wl=out_wls,$
-            spec_names=lib.spec_names,bnames=lib.bnames,$
-            interleave=0, data_type=4, $
-            descrip="closed R0",$
-            /write, /open
+            if (*pstate).output.diff_deep_spectra  then $
+                ENVI_SETUP_HEAD, fname=out_name_R0dp_diff, $
+                ns=n_wavs, nl=lib.nl, nb=1, $
+                file_type=4,wl=out_wls,$
+                spec_names=lib.spec_names,bnames=lib.bnames,$
+                interleave=0, data_type=4, $
+                descrip="difference between closed R0 and  closed R0 deep",$
+                /write, /open
 
-       if (*pstate).output.closed_deep_spectra then $
-          ENVI_SETUP_HEAD, fname=out_name_R0dp, $
-            ns=n_wavs, nl=lib.nl, nb=1, $
-            file_type=4,wl=out_wls,$
-            spec_names=lib.spec_names,bnames=lib.bnames,$
-            interleave=0, data_type=4, $
-            descrip="closed R0 deep",$
-            /write, /open
-       if (*pstate).output.diff_deep_spectra  then $
-          ENVI_SETUP_HEAD, fname=out_name_R0dp_diff, $
-            ns=n_wavs, nl=lib.nl, nb=1, $
-            file_type=4,wl=out_wls,$
-            spec_names=lib.spec_names,bnames=lib.bnames,$
-            interleave=0, data_type=4, $
-            descrip="difference between closed R0 and  closed R0 deep",$
-            /write, /open
-       if (*pstate).output.diff_spectra  then $
-          ENVI_SETUP_HEAD, fname=out_name_diff, $
-            ns=n_wavs, nl=lib.nl, nb=1, $
-            file_type=4,wl=out_wls,$
-            spec_names=lib.spec_names,bnames=lib.bnames,$
-            interleave=0, data_type=4, $
-            descrip="difference between closed R0 and  image",$
-            /write, /open
+            if (*pstate).output.diff_spectra  then $
+                ENVI_SETUP_HEAD, fname=out_name_diff, $
+                ns=n_wavs, nl=lib.nl, nb=1, $
+                file_type=4,wl=out_wls,$
+                spec_names=lib.spec_names,bnames=lib.bnames,$
+                interleave=0, data_type=4, $
+                descrip="difference between closed R0 and  image",$
+                /write, /open
 
-             if (*pstate).output.UNmixel_spectra then $
-         ENVI_SETUP_HEAD, fname=out_name_unmix, $
-            ns=n_wavs, nl=lib.nl, nb=1, $
-            file_type=4,wl=out_wls,$
-            spec_names=lib.spec_names,bnames=lib.bnames,$
-            interleave=0, data_type=4, $
-            descrip="substrate Unmixing mixel",$
-            /write, /open
-      if (*pstate).output.WCmixel_spectra then $
-        ENVI_SETUP_HEAD, fname=out_name_wcmix, $
-            ns=n_wavs, nl=lib.nl, nb=1, $
-            file_type=4,wl=out_wls,$
-            spec_names=lib.spec_names,bnames=lib.bnames,$
-            interleave=0, data_type=4, $
-            descrip="substrate water corrected mixel",$
-            /write, /open
-          if (*pstate).output.kd then $
-         ENVI_SETUP_HEAD, fname=out_name_kd, $
-            ns=n_wavs, nl=lib.nl, nb=1, $
-            file_type=4,wl=out_wls,$
-            spec_names=lib.spec_names,bnames=lib.bnames,$
-            interleave=0, data_type=4, $
-            descrip="downwelling vertical attenuation Kd",$
-            /write, /open
-         if (*pstate).output.kub then $
-         ENVI_SETUP_HEAD, fname=out_name_kub, $
-            ns=n_wavs, nl=lib.nl, nb=1, $
-            file_type=4,wl=out_wls,$
-            spec_names=lib.spec_names,bnames=lib.bnames,$
-            interleave=0, data_type=4, $
-            descrip="upwelling vertical attenuation Kub",$
-            /write, /open
-         if (*pstate).output.kuc then $
-         ENVI_SETUP_HEAD, fname=out_name_kuc, $
-            ns=n_wavs, nl=lib.nl, nb=1, $
-            file_type=4,wl=out_wls,$
-            spec_names=lib.spec_names,bnames=lib.bnames,$
-            interleave=0, data_type=4, $
-            descrip="upwelling vertical attenuation Kuc",$
-            /write, /open
-       if (*pstate).output.SubsDet_spectra then $
-         ENVI_SETUP_HEAD, fname=out_name_SubsDet, $
-            ns=n_wavs, nl=lib.nl, nb=1, $
-            file_type=4,wl=out_wls,$
-            spec_names=lib.spec_names,bnames=lib.bnames,$
-            interleave=0, data_type=4, $
-            descrip="Substrate detectability",$
-            /write, /open
+            if (*pstate).output.UNmixel_spectra then $
+                ENVI_SETUP_HEAD, fname=out_name_unmix, $
+                ns=n_wavs, nl=lib.nl, nb=1, $
+                file_type=4,wl=out_wls,$
+                spec_names=lib.spec_names,bnames=lib.bnames,$
+                interleave=0, data_type=4, $
+                descrip="substrate Unmixing mixel",$
+                /write, /open
 
-       if (*pstate).output.iter  then $
-          ENVI_SETUP_HEAD, fname=out_name_iter, $
-            ns=2, nl=lib.nl, nb=1, $
-            file_type=4,$
-            spec_names=lib.spec_names,$
-            bnames=["n_iteration_spectrum","spectrum_time"],$
-            interleave=0, data_type=4, $
-                  descrip="iteration info",$
-            /write, /open
+            if (*pstate).output.WCmixel_spectra then $
+                ENVI_SETUP_HEAD, fname=out_name_wcmix, $
+                ns=n_wavs, nl=lib.nl, nb=1, $
+                file_type=4,wl=out_wls,$
+                spec_names=lib.spec_names,bnames=lib.bnames,$
+                interleave=0, data_type=4, $
+                descrip="substrate water corrected mixel",$
+                /write, /open
 
+            if (*pstate).output.kd then $
+                ENVI_SETUP_HEAD, fname=out_name_kd, $
+                ns=n_wavs, nl=lib.nl, nb=1, $
+                file_type=4,wl=out_wls,$
+                spec_names=lib.spec_names,bnames=lib.bnames,$
+                interleave=0, data_type=4, $
+                descrip="downwelling vertical attenuation Kd",$
+                /write, /open
 
- ;VB09:WGOSW
-          ENVI_SETUP_HEAD, fname=out_name_WGOSW, $
+            if (*pstate).output.kub then $
+                ENVI_SETUP_HEAD, fname=out_name_kub, $
+                ns=n_wavs, nl=lib.nl, nb=1, $
+                file_type=4,wl=out_wls,$
+                spec_names=lib.spec_names,bnames=lib.bnames,$
+                interleave=0, data_type=4, $
+                descrip="upwelling vertical attenuation Kub",$
+                /write, /open
+
+            if (*pstate).output.kuc then $
+                ENVI_SETUP_HEAD, fname=out_name_kuc, $
+                ns=n_wavs, nl=lib.nl, nb=1, $
+                file_type=4,wl=out_wls,$
+                spec_names=lib.spec_names,bnames=lib.bnames,$
+                interleave=0, data_type=4, $
+                descrip="upwelling vertical attenuation Kuc",$
+                /write, /open
+
+            if (*pstate).output.SubsDet_spectra then $
+                ENVI_SETUP_HEAD, fname=out_name_SubsDet, $
+                ns=n_wavs, nl=lib.nl, nb=1, $
+                file_type=4,wl=out_wls,$
+                spec_names=lib.spec_names,bnames=lib.bnames,$
+                interleave=0, data_type=4, $
+                descrip="Substrate detectability",$
+                /write, /open
+
+            if (*pstate).output.iter  then $
+                ENVI_SETUP_HEAD, fname=out_name_iter, $
+                ns=2, nl=lib.nl, nb=1, $
+                file_type=4,$
+                spec_names=lib.spec_names,$
+                bnames=["n_iteration_spectrum","spectrum_time"],$
+                interleave=0, data_type=4, $
+                descrip="iteration info",$
+                /write, /open
+
+            ;VB09:WGOSW
+            ENVI_SETUP_HEAD, fname=out_name_WGOSW, $
             ns=5, nl=lib.nl, nb=1, $
             file_type=4,$
             spec_names=lib.spec_names,$
             bnames=["a_440","bb_555","Rbot555","Z","LSQ"],$
             interleave=0, data_type=4, $
-                  descrip="output for Working Group for Optically Shallow Water",$
+            descrip="output for Working Group for Optically Shallow Water",$
             /write, /open
+        end ;case 4:
+    endcase
 
+    if (*pstate).output.closed_deep_spectra then begin
+        close, out_R0dp & free_lun, out_R0dp
+    endif
+    if (*pstate).output.closed_spectra then begin
+        close, out_R0 & free_lun, out_R0
+    endif
+    if (*pstate).output.depth_concs then begin
+        close, out_ZCA & free_lun, out_ZCA
+    endif
+    if (*pstate).output.subs  then begin
+        close, out_subs & free_lun, out_subs
+    endif
+    if (*pstate).output.distances  then begin
+        close, out_dist & free_lun, out_dist
+    endif
+    if (*pstate).output.diff_deep_spectra  then begin
+        close, out_R0dp_diff & free_lun, out_R0dp_diff
+    endif
+    if (*pstate).output.diff_spectra  then begin
+        close, out_diff & free_lun, out_diff
+    endif
+    if (*pstate).output.WCmixel_spectra then begin
+        close, out_WCmix & free_lun, out_WCmix
+    endif
+    if (*pstate).output.UNmixel_spectra then begin
+        close, out_unmix & free_lun, out_unmix
+    endif
+    if (*pstate).output.kd then begin
+        close, out_kd & free_lun, out_kd
+    endif
+    if (*pstate).output.kub then begin
+        close, out_kub & free_lun, out_kub
+    endif
+    if (*pstate).output.kuc then begin
+        close, out_kuc & free_lun, out_kuc
+    endif
+    if (*pstate).output.SubsDet_spectra then begin
+        close, out_SubsDet & free_lun, out_SubsDet
+    endif
+    ;if (*pstate).output.iter then begin$
+    close,out_iter & free_lun, out_iter
+    ;endif
 
-             end
-       endcase
+    ;VB09:WGOSW
+    close, out_WGOSW & free_lun,out_WGOSW
 
-if (*pstate).output.closed_deep_spectra then  begin
-close, out_R0dp & free_lun, out_R0dp
-endif
-if (*pstate).output.closed_spectra then begin
- close, out_R0 & free_lun, out_R0
-endif
-if (*pstate).output.depth_concs then begin
-close, out_ZCA & free_lun, out_ZCA
-endif
-if (*pstate).output.subs  then begin
-close, out_subs & free_lun, out_subs
-endif
-if (*pstate).output.distances  then begin
-close, out_dist & free_lun, out_dist
-endif
-if (*pstate).output.diff_deep_spectra  then begin
-close, out_R0dp_diff & free_lun, out_R0dp_diff
-endif
-if (*pstate).output.diff_spectra  then begin
-close, out_diff & free_lun, out_diff
-endif
-if (*pstate).output.WCmixel_spectra then begin
-close, out_WCmix & free_lun, out_WCmix
-endif
-if (*pstate).output.UNmixel_spectra then begin
-close, out_unmix & free_lun, out_unmix
-endif
-if (*pstate).output.kd then begin
-close, out_kd & free_lun, out_kd
-endif
-if (*pstate).output.kub then begin
-close, out_kub & free_lun, out_kub
-endif
-if (*pstate).output.kuc then begin
-close, out_kuc & free_lun, out_kuc
-endif
-if (*pstate).output.SubsDet_spectra then begin
-close, out_SubsDet & free_lun, out_SubsDet
-endif
+    ptr_free, pstate
+    heap_gc
 
-              ;if (*pstate).output.iter then begin$
-                    close,out_iter & free_lun, out_iter
-                    ;endif
-
- ;VB09:WGOSW
-close, out_WGOSW & free_lun,out_WGOSW
-
-
-ptr_free, pstate
-heap_gc
-
- ;  envi_report_init, base=base, /finish
-PRINT,runname, " done in :", SYSTIME(1) - TIC, ' Seconds; ' , n_iter, ' total iterations', n_pixel_run,' total pixels', n_pixel_conv, 'pixel  converged'
-JOURNAL
-
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
+    ;envi_report_init, base=base, /finish
+    PRINT,runname, " done in :", SYSTIME(1) - TIC, ' Seconds; ' , n_iter, ' total iterations', n_pixel_run,' total pixels', n_pixel_conv, 'pixel  converged'
+    JOURNAL
+end ;procedure SAMBUCA_2009
