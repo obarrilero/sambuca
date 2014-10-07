@@ -7,8 +7,10 @@ Ideas for Python
 		validation/integration test with a small input image
 		unit tests for individual functions
 	Reader and Writer pattern to keep file formats separated from core code
-	Can I use the Nelder-Mead downhill simplex minimiser from SciPy?
+	Can I use the Nelder-Mead downhill simplex minimiser from SciPy to replace the Amoeba function?
 		even better, can I use an interface to allow the minimiser and sambuca to co-vary?
+		Potential issue is the use of a common block (opti_trajec) to give state to the amoeba function. 
+			I need to check how this is used, and come up with a strategy
 	Can plotting requirements be deferred?
 	Need to sort out the data structures
 		common block into a class
@@ -241,6 +243,12 @@ sambuca_2009.pro
 					line 768:
 						:can else block for non-zero pixel processing be 
 						:promoted by having an early-exit on zero pixels?
+					line 779, pstate.flag.do_graph1:
+						:embedded GUI/plotting dependency. If this plot cannot
+						:be produced purely from the final outputs then it
+						:could be handled with an optional user supplied
+						:function that will default to a nullop and will keep
+						:the core routine separated from the GUI and plotting
 					line 799:
 						:does the whole_guacamole structure differ per-pixel?
 						:Could any of the parameter setup code be moved out of
@@ -267,6 +275,12 @@ sambuca_2009.pro
 					:"writers.writeHeaders()"
 		common
 			SAMBUCA_share
+			opti_trajec, line 823
+				:shared data block with the amoeba minimiser. I assume this is
+				:data that persists over multiple calls to amoeba. I would
+				:prefer amoeba to be stateless, so I need to check how these
+				:common block values are used, and what implications that has
+				:for use of the Scipy minimiser function.
 		
 amoeba_clw7.pro
 	Is the 7 a version number?
@@ -286,6 +300,19 @@ amoeba_clw7.pro
 				: http://stackoverflow.com/questions/9613381/python-function-minimisation-without-derivative
 				: http://docs.scipy.org/doc/scipy/reference/tutorial/optimize.html?highlight=nelder
 			Does the IDL function do anything strange that will prevent use of the SciPy version?
+	function amotry_CLW2
+		purpose
+			???
+		common
+			opti_trajec
+	function Amoeba_CLW7
+		purpose
+			entry point from Sambuca_2009
+			implements amoeba downhill simplex minimiser
+			calls both the function to minimise directly, and via the amotry_CLW2 function
+			Will the common blocks be a problem for use of the Scipy replacement?
+		common
+			opti_trajec
 IDL quirks to watch
 	arrays
 		IDL arrays are row-major, but differ from standard matrix notation by using (column, row) rather than (row, column)

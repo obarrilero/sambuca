@@ -644,7 +644,6 @@ pro SAMBUCA_2009, pstate=pstate
     if (*pstate).output.Kub then out_name_Kub=out_name+runname+'_Kub_spectra'+extension
     if (*pstate).output.Kub then out_name_Kuc=out_name+runname+'_Kuc_spectra'+extension
     if (*pstate).output.SubsDet_spectra then out_name_SubsDet=out_name+runname+'_SubsDet_spectra'+extension
-    ;if (*pstate).output.SubsDet_spectra then out_name_SubsDet=out_name+runname+'_SubsDet_spectra'+extension
     if (*pstate).output.depth_concs then openw,out_ZCA,out_name_ZCA,/get_lun
     if (*pstate).output.distances  then openw,out_dist,out_name_dist,/get_lun
     if (*pstate).output.iter then openw,out_iter,out_name_iter,/get_lun
