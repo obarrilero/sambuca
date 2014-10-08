@@ -1,4 +1,9 @@
 Daniel's Sambuca Notes
+Potential Issues
+	Numerical Recipes code (Amoeba) cannot be distributed in source form. Ever.
+		Reference: http://www.nr.com/licenses/redistribute.html
+		:Note that this also covers "derivative works", including ports of NR
+		:routines to different languages.
 Ideas for Python
 	use pydoc compatible comments everywhere
 		get Janet et al to fill them out if required
