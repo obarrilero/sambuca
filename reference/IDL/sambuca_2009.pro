@@ -1060,7 +1060,7 @@ pro SAMBUCA_2009, pstate=pstate
                 file_type=file_type,$
                 bnames=subs_names,$
                 interleave=1, data_type=2, $
-                def_stretch = ENVI_DEFAULT_STRETCH_CREATE(/LINEAR, VAL1=0, VAL2=100),$
+                def_stretch = ENVI_DEFAULT_STRETCH_CREATE(LINEAR, VAL1=0, VAL2=100),$
                 inherit=image_info.inherit_spatial,$
                 descrip="substrate relative abundance",$
                 /write, /open
