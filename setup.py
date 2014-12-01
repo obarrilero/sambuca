@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages  # Always prefer setuptools over distutils
-from setuptools.command.test import test as TestCommand # do I need this?
+from setuptools.command.test import test as TestCommand
 from codecs import open  # To use a consistent encoding
 from os import path
 
