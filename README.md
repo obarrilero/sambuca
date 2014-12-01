@@ -1,7 +1,9 @@
 # SAMBUCA Python and AGDC Project
-Temporarily creating this repo in my (Daniel's) personal Stash project. We can
+*Note:* Temporarily creating this repo in my (Daniel's) personal Stash project. We can
 move or clone it later when there is a better location.
 
+*Todo:* Insert actual description of Sambuca here.
+*Todo:* Insert description of Python modules/packages here.
 ---
 
 ## Description of Reference Folders
