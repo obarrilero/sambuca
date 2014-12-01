@@ -8,6 +8,14 @@ project. We can move or clone it later when there is a better location.
 *Todo:* Insert
 description of Python modules/packages here. ---
 
+Documentation
+-------------
+*Todo:* Link to documentation (ReadTheDocs?)
+
+Quickstart
+----------
+*Todo*
+
 Description of Reference Folders
 --------------------------------
 
@@ -33,5 +41,3 @@ Description of Reference Folders
 
    -  fSambuca.m: forward model
    -  SinglePixSpecMCMC.m: sampling algorithm
-
-
