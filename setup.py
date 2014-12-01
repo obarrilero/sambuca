@@ -22,13 +22,13 @@ setup(
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/development.html#single-sourcing-the-version
     # Read the version number directly from the package, to avoid duplicate maintenance.
-    version=sambuca.__version__
+    version=sambuca.__version__,
 
     description='TODO: Sambuca short description',
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://stash.csiro.au/users/col52j/repos/sambuca/browse'
+    url='https://stash.csiro.au/users/col52j/repos/sambuca/browse',
 
     # Author details
     author='Daniel Collins',
@@ -73,11 +73,11 @@ setup(
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
     # packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
-    packages = ['sambuca']
+    packages = ['sambuca'],
 
     include_package_data=True,
 
-    cmdclass={'tests': PyTest}
+    cmdclass={'tests': PyTest},
 
     platforms='any',
 
@@ -109,7 +109,7 @@ setup(
     # see http://docs.python.org/3.4/distutils/setupscript.html#installing-additional-files
     # In this case, 'data_file' will be installed into '<sys.prefix>/my_data'
     # data_files=[('my_data', ['data/data_file'])],
-    data_files = []
+    data_files = [],
 
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
