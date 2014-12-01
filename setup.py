@@ -1,4 +1,5 @@
 from setuptools import setup, find_packages  # Always prefer setuptools over distutils
+from setuptools.command.test import test as TestCommand # do I need this?
 from codecs import open  # To use a consistent encoding
 from os import path
 
@@ -10,6 +11,9 @@ here = path.abspath(path.dirname(__file__))
 # Get the long description from the relevant file
 with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
+
+class PyTest(TestCommand):
+    pass
 
 setup(
     name='sambuca',
@@ -68,7 +72,16 @@ setup(
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
-    packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
+    # packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
+    packages = ['sambuca']
+
+    include_package_data=True,
+
+    cmdclass={'tests': PyTest}
+
+    platforms='any',
+
+    test_suite='sambuca.tests.test_sambuca',
 
     # List run-time dependencies here.  These will be installed by pip when your
     # project is installed. For an analysis of "install_requires" vs pip's
@@ -81,7 +94,7 @@ setup(
     # $ pip install -e .[dev,test]
     extras_require = {
         'dev': ['check-manifest'],
-        'test': ['coverage'],
+        'test': ['coverage', 'pytest'],
     },
 
     # If there are data files included in your packages that need to be
