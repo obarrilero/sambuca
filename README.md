@@ -87,10 +87,10 @@ and have it "just work".
 - Tests are implemented with the pytest framework. However, running :
 
         $ py.test
-   does not work. You need to run :
+  does not work. You need to run :
 
         $ python setup.py tests
-   in the root project directory (there is a helper script 'tests').
+  in the root project directory (there is a helper script 'tests').
 
 - tox tests do not currently work.
     - I don't see an easy way to make them work with the module system
