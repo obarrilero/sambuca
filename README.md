@@ -89,8 +89,8 @@ and have it "just work".
 ## Packaging Sambuca
 1. Generate the README.rst file :
 
-    $ module load pandoc
-    $ pandoc -o README.rst README.md
+        $ module load pandoc
+        $ pandoc -o README.rst README.md
 
 2. Todo
 
