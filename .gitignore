@@ -3,3 +3,5 @@ tags
 reference/IDL/*/
 .project
 *.pyc
+readme.html
+README.rst
