@@ -58,10 +58,10 @@ and have it "just work".
 1.  Load the Python version used for development :
 
         $ module load python/2.7.6
-2.  Activate the virtualenvwrapper scripts: :
+2.  Activate the virtualenvwrapper scripts :
 
         $ source /apps/python/2.7.6/bin/virtualenvwrapper_lazy.sh
-3.  Activate the sambuca virtual environment: :
+3.  Activate the sambuca virtual environment :
 
         $ workon sambuca
 4.  You can now work on the sambuca python code. Any Python packages you
