@@ -19,32 +19,26 @@ and have it "just work".
 1.  load the git module :
 
         $ module load git
-
 2.  Setup virtualenvwrapper by adding the following 2 lines to your
     .bashrc (substituting your own desired locations) :
 
         export WORKON_HOME=$HOME/.virtualenvs
         export PROJECT_HOME=~/projects
-
 3.  If they don't already exist, create the .virtualenvs and projects
     directories.
 4.  Clone the Git repository :
 
         $ cd ~/projects
         $ git clone https://col52j@stash.csiro.au/scm/~col52j/sambuca.git
-
 5.  Load the Python version used for development :
 
         $ module load python/2.7.6
-
 6.  Activate the virtualenvwrapper scripts :
 
         $ source /apps/python/2.7.6/bin/virtualenvwrapper_lazy.sh
-
 7.  Change to the sambuca directory :
 
         $ cd ~/projects/sambuca
-
 8.  Make the virtual environment for Sambuca, associate it with the
     project directory created by the git clone operation, and allow the
     virtual environment to access the system site packages :
@@ -55,15 +49,12 @@ and have it "just work".
 1.  Load the Python version used for development :
 
         $ module load python/2.7.6
-
 2.  Activate the virtualenvwrapper scripts: :
 
         $ source /apps/python/2.7.6/bin/virtualenvwrapper_lazy.sh
-
 3.  Activate the sambuca virtual environment: :
 
         $ workon sambuca
-
 4.  You can now work on the sambuca python code. Any Python packages you
     install with pip will be installed into the virtual environment.
     System packages are still available.
@@ -74,6 +65,13 @@ and have it "just work".
 
 ## Documentation
 *Todo:* Link to documentation (ReadTheDocs?)
+
+## Packaging Sambuca
+1. Generate the README.rst file :
+
+    $ module load pandoc
+    $ pandoc -o README.rst README.md
+2. Todo
 
 ## Quickstart
 *Todo*

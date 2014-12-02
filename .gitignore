@@ -5,3 +5,6 @@ reference/IDL/*/
 *.pyc
 readme.html
 README.rst
+build/
+dist/
+sambuca.egg-info/
