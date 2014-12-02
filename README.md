@@ -44,6 +44,15 @@ and have it "just work".
     virtual environment to access the system site packages :
 
         $ mkvirtualenv -a . --system-site-packages sambuca
+9.  Install the Sambuca package into your virtual environment in development
+    mode. This makes the package available via symlinks to your development
+    code, so that code changes are reflected in the package without
+    reinstallation (although you need to restart your python environment, or use
+    the IPython %autoreload extension) :
+
+        $ workon sambuca
+        $ cdproject
+        $ python setup.py develop
 
 ### Every time
 1.  Load the Python version used for development :
