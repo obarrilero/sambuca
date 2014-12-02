@@ -1,9 +1,11 @@
-from setuptools import setup, find_packages  # Always prefer setuptools over distutils
+# Always prefer setuptools over distutils
+from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 from codecs import open  # To use a consistent encoding
 from os import path
+import sys
 
-#import our own code so we can reference sambuca.__version__
+# import our own code so we can reference sambuca.__version__
 import sambuca
 
 here = path.abspath(path.dirname(__file__))
@@ -12,9 +14,20 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
+
 class PyTest(TestCommand):
-    pass
-    #TODO : implement the test runner
+    # Entry point for py.test that allows 'python setup.py test'
+    # to work correctly
+
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+    def run_tests(self):
+        import pytest
+        errcode = pytest.main(self.test_args)
+        sys.exit(errcode)
 
 setup(
     name='sambuca',
@@ -54,7 +67,8 @@ setup(
 
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
-        # todo: which languages can we actually support? Edit as this becomes clear
+        # todo: which languages can we actually support?
+        # Edit as this becomes clear
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
@@ -70,7 +84,7 @@ setup(
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
     # packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
-    packages = ['sambuca'],
+    packages=['sambuca'],
 
     include_package_data=True,
 
@@ -86,10 +100,11 @@ setup(
     # https://packaging.python.org/en/latest/technical.html#install-requires-vs-requirements-files
     install_requires=[''],
 
-    # List additional groups of dependencies here (e.g. development dependencies).
+    # List additional groups of dependencies here (e.g. development
+    # dependencies).
     # You can install these using the following syntax, for example:
     # $ pip install -e .[dev,test]
-    extras_require = {
+    extras_require={
         'dev': ['check-manifest'],
         'test': ['coverage', 'pytest'],
     },
@@ -106,7 +121,7 @@ setup(
     # see http://docs.python.org/3.4/distutils/setupscript.html#installing-additional-files
     # In this case, 'data_file' will be installed into '<sys.prefix>/my_data'
     # data_files=[('my_data', ['data/data_file'])],
-    data_files = [],
+    data_files=[],
 
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
