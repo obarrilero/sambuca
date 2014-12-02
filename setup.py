@@ -14,16 +14,11 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 class PyTest(TestCommand):
     pass
+    #TODO : implement the test runner
 
 setup(
     name='sambuca',
-
-    # Versions should comply with PEP440.  For a discussion on single-sourcing
-    # the version across setup.py and the project code, see
-    # https://packaging.python.org/en/latest/development.html#single-sourcing-the-version
-    # Read the version number directly from the package, to avoid duplicate maintenance.
     version=sambuca.__version__,
-
     description='TODO: Sambuca short description',
     long_description=long_description,
 
@@ -31,6 +26,7 @@ setup(
     url='https://stash.csiro.au/users/col52j/repos/sambuca/browse',
 
     # Author details
+    # todo: actual author probably shouldn't be DC
     author='Daniel Collins',
     author_email='daniel.collins@csiro.au',
 
@@ -58,6 +54,7 @@ setup(
 
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
+        # todo: which languages can we actually support? Edit as this becomes clear
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
@@ -115,8 +112,6 @@ setup(
     # "scripts" keyword. Entry points provide cross-platform support and allow
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
-        'console_scripts': [
-            'sambuca=sambuca:main',
-        ],
+        # 'console_scripts': ['sambuca=sambuca:main',],
     },
 )
