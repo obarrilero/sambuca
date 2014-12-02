@@ -83,6 +83,14 @@ and have it "just work".
 
         $ deactivate
 
+## Testing
+- tox tests do not currently work.
+    - I don't see an easy way to make them work with the module system
+    - not currently configured correctly
+- switching the python module while a virtual env is running is broken
+- To test on Python 2.7 and 3.4, create a new terminal, load the appropriate
+  module first, and then run the tests
+
 ## Documentation
 *Todo:* Link to documentation (ReadTheDocs?)
 
