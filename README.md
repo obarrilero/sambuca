@@ -7,7 +7,7 @@ project. We can move or clone it later when there is a better location.
 *Todo:* Insert description of Python modules/packages here.
 
 ## Development on Bragg-l
-Note that Sambuca development is using virtual environments to facilitate 
+Note that Sambuca development is using virtual environments to facilitate
 testing and development of the Sambuca package. To enable use of the optimised
 numpy and scipy packages, the virtual environment is created with
 --system-site-packages. However, for testing the package installation and
@@ -36,7 +36,7 @@ and have it "just work".
 5.  Load the Python version used for development :
 
         $ module load python/2.7.6
-        
+
 6.  Activate the virtualenvwrapper scripts :
 
         $ source /apps/python/2.7.6/bin/virtualenvwrapper_lazy.sh
@@ -85,18 +85,23 @@ and have it "just work".
 
 ## Testing
 - Tests are implemented with the pytest framework. However, running :
-    
+
         $ py.test
    does not work. You need to run :
+
         $ python setup.py tests
    in the root project directory (there is a helper script 'tests').
 
 - tox tests do not currently work.
     - I don't see an easy way to make them work with the module system
     - not currently configured correctly
-- switching the python module while a virtual env is running is broken
+- switching the python module while a virtual env is running works, but it
+  breaks the virtual environment encapsulation. Probably not a good idea.
 - To test on Python 2.7 and 3.4, create a new terminal, load the appropriate
-  module first, and then run the tests
+  module first, and then run the tests.
+    - It might be better to create two separate virtualenvs, one for Python 2.7
+      and one for 3.4 (sambuca3?), although having tox work would be the best
+      solution.
 
 ## Documentation
 *Todo:* Link to documentation (ReadTheDocs?)
