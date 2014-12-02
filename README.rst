@@ -4,9 +4,76 @@ SAMBUCA Python and AGDC Project
 *Note:* Temporarily creating this repo in my (Daniel's) personal Stash
 project. We can move or clone it later when there is a better location.
 
-*Todo:* Insert actual description of Sambuca here. 
-*Todo:* Insert
-description of Python modules/packages here. ---
+*Todo:* Insert actual description of Sambuca here.
+
+*Todo:* Insert description of Python modules/packages here.
+
+Development on Bragg-l
+----------------------
+Note that Sambuca development is using virtual environments to facilitate
+testing and development of the Sambuca package. To enable use of the optimised
+numpy and scipy packages, the virtual environment is created with
+--system-site-packages. However, for testing the package installation and
+dependencies, a clean virtual environment should be used. The goal is to create
+a Sambuca package that will install cleanly using standard Python tools and
+have it "just work".
+
+*Once only*
+
+#. load the git module
+   ::
+
+    $ module load git
+#. Setup virtualenvwrapper by adding the following 2 lines to your .bashrc (substituting your own desired locations)
+   ::
+
+    export WORKON_HOME=$HOME/.virtualenvs
+    export PROJECT_HOME=~/projects
+#. If they don't already exist, create the .virtualenvs and projects directories.
+#. Clone the Git repository
+   ::
+
+    $ cd ~/projects
+    $ git clone https://col52j@stash.csiro.au/scm/~col52j/sambuca.git
+#. Load the Python version used for development
+   ::
+
+    $ module load python/2.7.6
+#. Activate the virtualenvwrapper scripts
+   ::
+
+    $ source /apps/python/2.7.6/bin/virtualenvwrapper_lazy.sh
+#. Change to the sambuca directory
+   ::
+
+    $ cd ~/projects/sambuca
+#. Make the virtual environment for Sambuca, associate it with the project directory created by the git clone operation, and allow the virtual environment to access the system site packages
+   ::
+
+    $ mkvirtualenv -a . --system-site-packages sambuca
+
+*Every time*
+
+#. Load the Python version used for development
+   ::
+
+    $ module load python/2.7.6
+#. Activate the virtualenvwrapper scripts:
+   ::
+
+    $ source /apps/python/2.7.6/bin/virtualenvwrapper_lazy.sh
+#. Activate the sambuca virtual environment:
+   ::
+
+    $ workon sambuca
+#. You can now work on the sambuca python code. Any Python packages you install
+   with pip will be installed into the virtual environment. System packages are
+   still available.
+#. To deactivate the virtual environment, simply use the virtualenvwrapper
+   command (or simply close the terminal window)
+   ::
+
+    $ deactivate
 
 Documentation
 -------------
