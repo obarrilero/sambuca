@@ -1,2 +1,3 @@
 #!/bin/bash
+# Simple helper script for running the Sambuca unit tests.
 python setup.py tests
