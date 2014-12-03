@@ -16,8 +16,9 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 
 class PyTest(TestCommand):
-    # Entry point for py.test that allows 'python setup.py test'
-    # to work correctly
+    ''' Entry point for py.test that allows 'python setup.py test'
+    to work correctly
+    '''
 
     def finalize_options(self):
         TestCommand.finalize_options(self)
