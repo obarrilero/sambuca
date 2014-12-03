@@ -1,6 +1,10 @@
 """ Sambuca modeling system
 """
 
+# import the exceptions
+from .exceptions import SambucaException, UnsupportedDataFormatError
+
+# import everything else
 from . import sambuca
 
 # Versioning: major.minor.patch

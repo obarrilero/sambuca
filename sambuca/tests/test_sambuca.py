@@ -1,7 +1,9 @@
-import sambuca
+import sambuca as sb
+import pytest
 
 
 class TestSambuca:
+
     """Sambuca test class"""
 
     def setup_class(cls):
@@ -16,5 +18,10 @@ class TestSambuca:
     def teardown_method(self, method):
         pass
 
-    def test_version(self):
-        assert sambuca.__version__ == '0.1.0'
+    def test_exception(self):
+        '''Toy test for Sambuca Exceptions. Really just tests that they exist
+        and are exported correctly
+        '''
+        with pytest.raises(sb.SambucaException) as ex:
+            raise sb.SambucaException('pass')
+        assert 'pass' in str(ex.value)
