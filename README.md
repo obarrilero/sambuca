@@ -92,16 +92,12 @@ and have it "just work".
         $ python setup.py tests
   in the root project directory (there is a helper script 'tests').
 
-- tox tests do not currently work.
-    - I don't see an easy way to make them work with the module system
-    - not currently configured correctly
-- switching the python module while a virtual env is running works, but it
-  breaks the virtual environment encapsulation. Probably not a good idea.
-- To test on Python 2.7 and 3.4, create a new terminal, load the appropriate
-  module first, and then run the tests.
-    - It might be better to create two separate virtualenvs, one for Python 2.7
-      and one for 3.4 (sambuca3?), although having tox work would be the best
-      solution.
+- Tox tests appear to be working on bragg-l. The tox.ini file is hardcoded to
+  Python locations on bragg-l. It will need updating to test in other locations.
+    - It requires tox installed into your sambuca virtual environment :
+
+        $ workon sambuca
+        $ pip install tox
 
 ## Documentation
 *Todo:* Link to documentation (ReadTheDocs?)

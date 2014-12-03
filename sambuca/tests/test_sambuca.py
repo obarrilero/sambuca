@@ -17,5 +17,4 @@ class TestSambuca:
         pass
 
     def test_version(self):
-
-        assert(sambuca.__version__ == '0.1.0')
+        assert sambuca.__version__ == '0.1.0'
