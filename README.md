@@ -84,13 +84,10 @@ and have it "just work".
         $ deactivate
 
 ## Testing
-- Tests are implemented with the pytest framework. However, running :
-
-        $ py.test
-  does not work. You need to run :
+- Tests are implemented with the pytest and tox frameworks, with integration
+  into the setup.py script :
 
         $ python setup.py tests
-  in the root project directory (there is a helper script 'tests').
 
 - Tox tests appear to be working on bragg-l. The tox.ini file is hardcoded to
   Python locations on bragg-l. It will need updating to test in other locations.
@@ -98,6 +95,8 @@ and have it "just work".
 
         $ workon sambuca
         $ pip install tox
+- tox is the preferred test runner, as it runs all unit tests against both
+  Python 2.7 and 3.4
 
 ## Documentation
 *Todo:* Link to documentation (ReadTheDocs?)
