@@ -9,3 +9,4 @@ build/
 dist/
 sambuca.egg-info/
 .tox/
+__pycache__/
