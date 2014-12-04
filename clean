@@ -1,0 +1,4 @@
+#!/bin/bash
+#rm -rf build/ dist/
+find ./sambuca -name "__pycache__" -exec rm -rf {} \;
+find ./sambuca -name "*.pyc" -exec rm -rf {} \;

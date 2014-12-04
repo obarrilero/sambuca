@@ -130,4 +130,6 @@ setup(
     entry_points={
         # 'console_scripts': ['sambuca=sambuca:main',],
     },
+
+    zip_safe=True,
 )
