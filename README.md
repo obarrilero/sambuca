@@ -15,6 +15,9 @@ dependencies, a clean virtual environment should be used. The goal is to
 create a Sambuca package that will install cleanly using standard Python tools
 and have it "just work".
 
+It shouldn't be much work to adapt this setup to other locations. I just haven't
+needed to do so yet :)
+
 ### Once only
 1.  load the git module :
 
@@ -28,10 +31,17 @@ and have it "just work".
 3.  If they don't already exist, create the .virtualenvs and projects
     directories.
 
-4.  Clone the Git repository :
+3.  Create a directory in projects to act as the top level sambuca directory :
+    
+        $ cd ~/projects/
+        $ mkdir sambuca_project
 
-        $ cd ~/projects
+4.  Clone the Git repositories for sambuca and sambuca_agdc into the
+    sambuca_project directory :
+
+        $ cd ~/projects/sambuca_project/
         $ git clone https://col52j@stash.csiro.au/scm/~col52j/sambuca.git
+        $ git clone https://col52j@stash.csiro.au/scm/~col52j/sambuca_agdc.git
 
 5.  Load the Python version used for development :
 
@@ -41,19 +51,20 @@ and have it "just work".
 
         $ source /apps/python/2.7.6/bin/virtualenvwrapper_lazy.sh
 
-7.  Change to the sambuca directory :
+7.  Change to the top-level sambuca project directory :
 
-        $ cd ~/projects/sambuca
+        $ cd ~/projects/sambuca_project/
 
-8.  Make the virtual environment for Sambuca, associate it with the
-    project directory created by the git clone operation, and allow the
-    virtual environment to access the system site packages :
+8.  Make a virtual environment called sambuca that will be shared by sambuca and
+    sambuca_agdc, associate it with the project directory, and allow the virtual
+    environment to access the system site packages (required for access to
+    site-optimised packages like numpy and scipy). :
 
         $ mkvirtualenv -a . --system-site-packages sambuca
 
-9.  Install the Sambuca package into your virtual environment in development
-    mode. This makes the package available via symlinks to your development
-    code, so that code changes are reflected in the package without
+9.  Install the sambuca and sambuca_agdc packages into your virtual environment
+    in development mode. This makes the packages available via symlinks to your
+    development code, so that code changes are reflected in the package without
     reinstallation (although you need to restart your python environment, or use
     the IPython %autoreload extension) :
 
