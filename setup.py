@@ -99,7 +99,7 @@ setup(
     # project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/technical.html#install-requires-vs-requirements-files
-    install_requires=[''],
+    install_requires=['scipy', 'numpy'],
 
     # List additional groups of dependencies here (e.g. development
     # dependencies).
@@ -107,13 +107,13 @@ setup(
     # $ pip install -e .[dev,test]
     extras_require={
         'dev': ['check-manifest'],
-        'test': ['coverage', 'pytest', 'pytest-cov'],
+        'test': ['coverage', 'pytest', 'pytest-cov', 'scipy'],
     },
 
     # If there are data files included in your packages that need to be
     # installed, specify them here.
     package_data={
-        # 'sample': ['package_data.dat'],
+        # 'sambuca.tests': ['./data/*.mat'],
     },
 
     # Although 'package_data' is the preferred approach, in some case you may
