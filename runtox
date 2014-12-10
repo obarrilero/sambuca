@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# specific hosts require different paths to the Python executables, and Tox does
+# not provide a neat way of dealing with this.
+HOSTNAME=`hostname`
+
+if [[ $HOSTNAME = 'bragg-l' || $HOSTNAME = 'bragg-l-test' ]]; then
+    PY27=/apps/python/2.7.6/bin/python
+    PY34=/apps/python/3.4.1/bin/python
+#TODO: NCI specific settings
+else
+    # Default values
+    PY27=python2
+    PY34=python
+fi
+
+export PY27
+export PY34
+
+tox
