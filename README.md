@@ -70,6 +70,7 @@ install cleanly using standard Python tools and have it "just work".
         $ python setup.py develop
 
 10. Install additional packages specified in the setup.py script :
+
         $ cd sambuca
         $ pip install --upgrade -e.[dev,test]
         $ cd ../sambuca_agdc
