@@ -11,3 +11,4 @@ sambuca.egg-info/
 .tox/
 __pycache__/
 .coverage
+htmlcov/
