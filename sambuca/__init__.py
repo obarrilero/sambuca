@@ -4,6 +4,9 @@
 # import the exceptions
 from .exceptions import SambucaException, UnsupportedDataFormatError
 
+# import the forward model
+from .forward_model import ForwardModel
+
 # import everything else
 from . import sambuca
 
