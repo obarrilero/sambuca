@@ -6,17 +6,14 @@ project. We can move or clone it later when there is a better location.
 
 *Todo:* Insert description of Python modules/packages here.
 
-## Development on Bragg-l
+## Development
+*Tested on Bragg-l, but should also work on other enviroments*
 Note that Sambuca development is using virtual environments to facilitate
-testing and development of the Sambuca package. To enable use of the optimised
-numpy and scipy packages, the virtual environment is created with
---system-site-packages. However, for testing the package installation and
-dependencies, a clean virtual environment should be used. The goal is to
-create a Sambuca package that will install cleanly using standard Python tools
-and have it "just work".
-
-It shouldn't be much work to adapt this setup to other locations. I just haven't
-needed to do so yet :)
+testing and development. To enable use of the optimised numpy and scipy
+packages, the virtual environment is created with --system-site-packages.
+However, for testing the package installation and dependencies, a clean virtual
+environment should be used. The goal is to create a Sambuca package that will
+install cleanly using standard Python tools and have it "just work".
 
 ### Once only
 1.  load the git module :
@@ -29,10 +26,10 @@ needed to do so yet :)
         export PROJECT_HOME=~/projects
 
 3.  If they don't already exist, create the .virtualenvs and projects
-    directories.
+    directories specified in the previous step.
 
 3.  Create a directory in projects to act as the top level sambuca directory :
-    
+
         $ cd ~/projects/
         $ mkdir sambuca_project
 
@@ -72,6 +69,12 @@ needed to do so yet :)
         $ cdproject
         $ python setup.py develop
 
+10. Install additional packages specified in the setup.py script :
+        $ cd sambuca
+        $ pip install --upgrade -e.[dev,test]
+        $ cd ../sambuca_agdc
+        $ pip install --upgrade -e.[dev,test]
+
 ### Every time
 1.  Load the Python version used for development :
 
@@ -95,20 +98,19 @@ needed to do so yet :)
         $ deactivate
 
 ## Testing
-- Tests are implemented with the pytest and tox frameworks, with integration
-  into the setup.py script :
+- Tests are implemented with pytest, with integration into the setup.py script :
 
         $ python setup.py tests
 
-- Tox tests appear to be working on bragg-l. The tox.ini file is hardcoded to
-  Python locations on bragg-l. It will need updating to test in other locations.
-    - It requires tox installed into your sambuca virtual environment :
-
-        $ workon sambuca
-        $ pip install tox
-- tox is the preferred test runner, as it runs all unit tests against both
-  Python 2.7 and 3.4
-
+- The tox framework was tested, as it provides automated testing against
+  multiple Python versions (2 & 3). However, tox did not work correctly with the
+  system-site-packages setting. The system-site-packages setting is required to
+  access the system packages numpy and scipy. Compiling these packages is
+  difficult and makes the use of fully encapsulated virtual enviroments
+  problematic.
+    - A workaround is to create separate virtual environments based on Python
+      2.7 and Python 3.4, and then run the tests within both environments.
+      A helper script makes this easier.
 ## Documentation
 *Todo:* Link to documentation (ReadTheDocs?)
 
