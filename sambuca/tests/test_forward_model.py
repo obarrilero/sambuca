@@ -1,4 +1,5 @@
 import sambuca as sb
+import numpy as np
 from scipy.io import loadmat
 from pkg_resources import resource_filename
 
@@ -31,8 +32,7 @@ class TestForwardModel(object):
         assert len(self.__data['substrate2']) == bands
         assert len(self.__data['aphy_star']) == bands
 
-    def test_forward_model(self):
-        # for readability, alias the dictionary entries
+    def test_forward_model_against_matlab_results(self):
         expected_spectra = self.__data['modelled_spectra']
 
         modelled_spectra = sb.forward_model(
@@ -45,7 +45,11 @@ class TestForwardModel(object):
             substrate2=self.__data['substrate2'],
             wav=self.__data['wav'],
             awater=self.__data['awater'],
-            aphy_star=self.__data['aphy_star'],)
-            # d_wls=self.data['d_wls'],)
+            aphy_star=self.__data['aphy_star'],
+            d_wls=self.__data['d_wls'],)
 
-        assert modelled_spectra == expected_spectra
+        assert np.allclose(
+            modelled_spectra,
+            expected_spectra,
+            rtol=1.e-5,
+            atol=1.e-20)
