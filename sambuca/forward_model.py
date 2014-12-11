@@ -9,6 +9,8 @@ def forward_model(
         # pylint: disable=too-many-arguments
         # pylint: disable=invalid-name
         # pylint: disable=too-many-locals
+        # Squelch errors from the well-known issues that pylint has with numpy:
+        # pylint: disable=no-member
         chl,
         cdom,
         tr,
