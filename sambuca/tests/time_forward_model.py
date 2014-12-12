@@ -28,7 +28,10 @@ if __name__ == '__main__':
             aphy_star=data['aphy_star'],
             d_wls=data['d_wls'],)
 
-    iterations = 10000
+    # warmup
+    forward_model()
+    forward_model()
+    iterations = 30000
     t = timeit.Timer("forward_model()", "from __main__ import forward_model")
     time = t.timeit(iterations)
     avg = time / iterations * 1000
