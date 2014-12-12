@@ -1,6 +1,7 @@
 import sambuca as sb
 import numpy as np
 from scipy.io import loadmat
+from scipy.signal import resample
 from pkg_resources import resource_filename
 
 
@@ -21,24 +22,14 @@ class TestSpectralResampling(object):
         assert 'filtsum' in self.__data
 
     def test_scipy_resampling(self):
-        assert False
-        # expected_spectra = self.__data['modelled_spectra']
+        # grab the data
+        src_spectra = self.__data['modelled_spectra']
+        expected_spectra = self.__data['resampled_spectra']
+        destination_bands = len(expected_spectra)
 
-        # modelled_spectra = sb.forward_model(
-            # chl=self.__data['chl'],
-            # cdom=self.__data['cdom'],
-            # tr=self.__data['tr'],
-            # h=self.__data['h'],
-            # q=self.__data['q'],
-            # substrate1=self.__data['substrate1'],
-            # substrate2=self.__data['substrate2'],
-            # wav=self.__data['wav'],
-            # awater=self.__data['awater'],
-            # aphy_star=self.__data['aphy_star'],
-            # d_wls=self.__data['d_wls'],)
+        # resample
+        resampled_spectra = resample(src_spectra, destination_bands)
 
-        # assert np.allclose(
-            # modelled_spectra,
-            # expected_spectra,
-            # rtol=1.e-5,
-            # atol=1.e-20)
+        # test
+        assert len(expected_spectra) == len(resampled_spectra)
+        # assert np.allclose(expected_spectra, resampled_spectra)
