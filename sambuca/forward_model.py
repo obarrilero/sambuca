@@ -5,6 +5,7 @@ import numpy as np
 
 
 # TODO: is the substrate loop inside or outside this function?
+# TODO: Should any of the magic numbers here actually be parameters?
 def forward_model(
         # pylint: disable=too-many-arguments
         # pylint: disable=invalid-name
@@ -69,14 +70,13 @@ def forward_model(
     # wavelengths that are are actually part of the user defined SIOP set
     # TODO: 550 == lambda0cdom?
     # TODO: what is the name of the second reference frequency?
-    # TODO: I think this direct port from Matlab is creating too many
-    # intermediate arrays
-    # TODO: some terms are reused and could be calculated just once
+    wav_sub_lambda0cdom = wav - lambda0cdom
+    temp1 = np.power(546. / wav, y)
     bbwater = (0.00194/2.) * np.power(lambda0cdom / wav, 4.32)
-    acdom_star = a_cdom_lambda0cdom * np.exp(-sc * (wav - lambda0cdom))
-    atr_star = a_tr_lambda0tr * np.exp(-str_ * (wav - lambda0cdom))
-    bbph_star = x_ph_lambda0x * np.power(546. / wav, y)
-    bbtr_star = x_tr_lambda0x * np.power(546. / wav, y)
+    acdom_star = a_cdom_lambda0cdom * np.exp(-sc * wav_sub_lambda0cdom)
+    atr_star = a_tr_lambda0tr * np.exp(-str_ * wav_sub_lambda0cdom)
+    bbph_star = x_ph_lambda0x * temp1
+    bbtr_star = x_tr_lambda0x * temp1
 
     a = awater + chl * aphy_star + cdom * acdom_star + tr * atr_star
     bb = bbwater + chl * bbph_star + tr * bbtr_star
@@ -97,12 +97,12 @@ def forward_model(
     # kub = kappa * (du_bottom / np.cos(thetao))
 
     inv_cos_thetaw = 1. / math.cos(thetaw)
-    du_column_scaled = du_column / math.cos(thetao)
-    du_bottom_scaled = du_bottom / math.cos(thetao)
-    kappa_h = kappa * h
-    rrs = rrsdp * \
-        (1. - np.exp(-(inv_cos_thetaw + du_column_scaled) * kappa_h)) + \
-        ((1. / math.pi) * r *
-         np.exp(-(inv_cos_thetaw + du_bottom_scaled) * kappa_h))
+    # scale du_column and du_bottom in place to avoid creating new arrays
+    du_column /= math.cos(thetao)
+    du_bottom /= math.cos(thetao)
+    # scale kappa in place
+    kappa *= h
+    rrsdp *= 1. - np.exp(-(inv_cos_thetaw + du_column) * kappa)
+    rrsdp += (1. / math.pi) * r * np.exp(-(inv_cos_thetaw + du_bottom) * kappa)
 
-    return rrs
+    return rrsdp
