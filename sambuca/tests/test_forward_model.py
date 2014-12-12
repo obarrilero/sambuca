@@ -17,8 +17,8 @@ class TestForwardModel(object):
     def setup_method(self, method):
         # load the test values generated from the Matlab code
         filename = resource_filename(
-            __name__,
-            './data/forwardModelTestValues.mat')
+            sb.__name__,
+            'tests/data/forwardModelTestValues.mat')
         self.__data = loadmat(filename, squeeze_me=True)
 
     def teardown_method(self, method):

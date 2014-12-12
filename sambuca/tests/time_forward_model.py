@@ -1,5 +1,6 @@
 import sambuca
 from scipy.io import loadmat
+from pkg_resources import resource_filename
 import timeit
 
 
@@ -8,7 +9,11 @@ if __name__ == '__main__':
     experiments on the forward model.
     '''
 
-    data = loadmat('./data/forwardModelTestValues.mat', squeeze_me=True)
+    filename = resource_filename(
+        sambuca.__name__,
+        'tests/data/forwardModelTestValues.mat')
+    print(filename)
+    data = loadmat(filename, squeeze_me=True)
 
     def forward_model():
         return sambuca.forward_model(
