@@ -12,7 +12,6 @@ if __name__ == '__main__':
     filename = resource_filename(
         sambuca.__name__,
         'tests/data/forwardModelTestValues.mat')
-    print(filename)
     data = loadmat(filename, squeeze_me=True)
 
     def forward_model():
