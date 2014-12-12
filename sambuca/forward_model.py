@@ -2,6 +2,7 @@
 '''
 import math
 import numpy as np
+import numexpr as ne
 
 
 # TODO: is the substrate loop inside or outside this function?
@@ -72,37 +73,34 @@ def forward_model(
     # TODO: I think this direct port from Matlab is creating too many
     # intermediate arrays
     # TODO: some terms are reused and could be calculated just once
-    bbwater = (0.00194/2.) * np.power(lambda0cdom / wav, 4.32)
-    acdom_star = a_cdom_lambda0cdom * np.exp(-sc * (wav - lambda0cdom))
-    atr_star = a_tr_lambda0tr * np.exp(-str_ * (wav - lambda0cdom))
-    bbph_star = x_ph_lambda0x * np.power(546. / wav, y)
-    bbtr_star = x_tr_lambda0x * np.power(546. / wav, y)
-
-    a = awater + chl * aphy_star + cdom * acdom_star + tr * atr_star
-    bb = bbwater + chl * bbph_star + tr * bbtr_star
+    bbwater = ne.evaluate("(0.00194 / 2.) * ((lambda0cdom / wav) ** 4.32)")
+    acdom_star = ne.evaluate("a_cdom_lambda0cdom * exp(-sc * (wav - lambda0cdom))")
+    atr_star = ne.evaluate("a_tr_lambda0tr * exp(-str_ * (wav - lambda0cdom))")
+    bbph_star = ne.evaluate("x_ph_lambda0x * ((546. / wav) ** y)")
+    bbtr_star = ne.evaluate("x_tr_lambda0x * ((546. / wav) ** y)")
+    a = ne.evaluate("awater + chl * aphy_star + cdom * acdom_star + tr * atr_star")
+    bb = ne.evaluate("bbwater + chl * bbph_star + tr * bbtr_star")
 
     # Calculates total bottom reflectance from the two substrates and the
     # proportion of q and (1-q)
-    r = q * substrate1 + (1. - q) * substrate2
-    u = bb / (a + bb)
-    kappa = a + bb
+    r = ne.evaluate("q * substrate1 + (1. - q) * substrate2")
+    u = ne.evaluate("bb / (a + bb)")
+    kappa = ne.evaluate("a + bb")
 
-    du_column = 1.03 * np.power(1. + (2.4 * u), 0.5)
-    du_bottom = 1.04 * np.power(1. + (5.4 * u), 0.5)
+    du_column = ne.evaluate("1.03 * ((1. + (2.4 * u)) ** 0.5)")
+    du_bottom = ne.evaluate("1.04 * ((1. + (5.4 * u)) ** 0.5)")
 
-    rrsdp = (0.084 + 0.17 * u) * u
+    rrsdp = ne.evaluate("(0.084 + 0.17 * u) * u")
     # TODO: Ask Steve why these are unused
     # kd = kappa * (1.0 / np.cos(thetaw))
     # kuc = kappa * (du_column / np.cos(thetao))
     # kub = kappa * (du_bottom / np.cos(thetao))
 
     inv_cos_thetaw = 1. / math.cos(thetaw)
-    du_column_scaled = du_column / math.cos(thetao)
-    du_bottom_scaled = du_bottom / math.cos(thetao)
-    kappa_h = kappa * h
-    rrs = rrsdp * \
-        (1. - np.exp(-(inv_cos_thetaw + du_column_scaled) * kappa_h)) + \
-        ((1. / math.pi) * r *
-         np.exp(-(inv_cos_thetaw + du_bottom_scaled) * kappa_h))
+    du_column_scaled = ne.evaluate("du_column / cos(thetao)")
+    du_bottom_scaled = ne.evaluate("du_bottom / cos(thetao)")
+    kappa_h = ne.evaluate("kappa * h")
+    pi = math.pi # required as numexpr does not understand pi or np.pi
+    rrs = ne.evaluate("rrsdp * (1. - exp(-(inv_cos_thetaw + du_column_scaled) * kappa_h)) + ((1. / pi) * r * exp(-(inv_cos_thetaw + du_bottom_scaled) * kappa_h))")
 
     return rrs
