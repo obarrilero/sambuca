@@ -31,7 +31,8 @@ if __name__ == '__main__':
 
     iterations = 10000
     t = timeit.Timer("forward_model()", "from __main__ import forward_model")
-    print(
-        "Forward model, {0} iterations:     {1}".format(
-            iterations,
-            t.timeit(iterations)))
+    time = t.timeit(iterations)
+    avg = time / iterations * 1000
+    print("Forward model, {0} iterations".format(iterations))
+    print("Total: {}".format(time))
+    print("Avg: {} ms".format(avg))
