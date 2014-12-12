@@ -1,31 +1,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Test data generation script for the first Python implementation of the
-% Sambuca forward model
+% Test data generation script for spectral resampling
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
 clear all
-% close all
 
 load('Inputs.mat')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Define the Bounds For the 5 Shallow water paramters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%chl_min=0.01; %CHL
-%chl_max=0.22;
-%cdom_min=0.0005; %CDOM
-%cdom_max=0.015;
-%tr_min=0.2; %TR
-%tr_max=2.4;
-%q_min=0; %Q
-%q_max=1;
-%h_min=0; %H
-%h_max=17.4;
-
-%make it close
 chl_min=0.12; %CHL
 chl_max=0.18;
 cdom_min=0.001; %CDOM
@@ -50,7 +32,20 @@ h=h_min + rand *(h_max-h_min);
 % Call to the forward SAMBUCA model to generate data
 modelled_spectra(1:d_wls)=fSambucaNativeResolution(chl,cdom,tr,q,h,UQSubs,wav, awater, aphy_star,d_wls);
 
-substrate1 = UQSubs(:,1);
-substrate2 = UQSubs(:,2);
+% resample using Steve's code (from fSambuca.m)
+bandsum(1:36)=0;
+calc(1:551,1:36) = 0;
 
-save 'test.mat' UQSubs wav awater aphy_star d_wls n_wls chl cdom tr q h modelled_spectra substrate1 substrate2;
+for j=1:n_wls
+	for i=1:d_wls
+		calc(i,j) = modelled_spectra(i) * filt(i,j);
+		bandsum(j) = bandsum(j)+ calc(i,j);
+    end
+end
+
+resampled_spectra(1:n_wls)=0;
+for i=1:n_wls
+    resampled_spectra(i) = bandsum(i)/filtsum(i);
+end
+
+save 'test_resample.mat' modelled_spectra resampled_spectra filt filtsum;

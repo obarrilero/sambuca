@@ -73,7 +73,7 @@ rrs(i) = rrsdp(i) * (1.00 - exp(-( (1.00/cos(thetaw)) + (DuColumn(i) / cos(theta
 end
 
 bandsum(1:36)=0;
- calc(1:551,1:36) = 0;
+calc(1:551,1:36) = 0;
 
 %----------------------------------------------------------------------------- 
 % This is the application of the Sensor filter, turning the full spectrum
