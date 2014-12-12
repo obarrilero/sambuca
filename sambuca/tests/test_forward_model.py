@@ -5,14 +5,7 @@ from pkg_resources import resource_filename
 
 
 class TestForwardModel(object):
-
     """Sambuca forward model test class"""
-
-    def setup_class(cls):
-        pass
-
-    def teardown_class(cls):
-        pass
 
     def setup_method(self, method):
         # load the test values generated from the Matlab code
@@ -20,9 +13,6 @@ class TestForwardModel(object):
             sb.__name__,
             'tests/data/forwardModelTestValues.mat')
         self.__data = loadmat(filename, squeeze_me=True)
-
-    def teardown_method(self, method):
-        pass
 
     def test_validate_data(self):
         bands = self.__data['d_wls']

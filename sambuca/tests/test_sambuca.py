@@ -2,7 +2,7 @@ import sambuca as sb
 import pytest
 
 
-class TestSambuca:
+class TestSambuca(object):
 
     """Sambuca test class"""
 
