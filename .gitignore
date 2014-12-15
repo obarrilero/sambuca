@@ -12,3 +12,4 @@ sambuca.egg-info/
 __pycache__/
 .coverage
 htmlcov/
+.ipynb*
