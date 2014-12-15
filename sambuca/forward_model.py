@@ -1,10 +1,20 @@
 ''' Implementation of the Sambuca forward model.
 '''
+# Ensure compatibility of Python 2 with Python 3 constructs
+from __future__ import (
+    absolute_import,
+    division,
+    print_function,
+    unicode_literals)
+# pylint: disable=wildcard-import
+# pylint: disable=unused-wildcard-import
+# pylint: disable=redefined-builtin
+from builtins import *
+
 import math
 import numpy as np
 
 
-# TODO: is the substrate loop inside or outside this function?
 def forward_model(
         chl,
         cdom,
@@ -53,8 +63,6 @@ def forward_model(
     # pylint: disable=too-many-arguments
     # pylint: disable=invalid-name
     # pylint: disable=too-many-locals
-    # Squelch errors from the well-known issues that pylint has with numpy:
-    # pylint: disable=no-member
 
     assert len(substrate1) == d_wls
     assert len(substrate2) == d_wls
