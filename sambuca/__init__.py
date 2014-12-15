@@ -1,15 +1,11 @@
 """ Sambuca modeling system
 """
 
-# import the exceptions
 from .exceptions import SambucaException, UnsupportedDataFormatError
-
-# import the forward model
 from .forward_model import forward_model
-
 from .sensor_filter import sensor_filter_ml
+# from .error import lsq_no_error
 
-# import everything else
 from . import sambuca
 
 # Versioning: major.minor.patch
