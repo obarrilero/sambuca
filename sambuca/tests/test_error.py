@@ -28,11 +28,12 @@ class TestErrorFunctions(object):
         os = self.__data['observed_spectra']
         ms = self.__data['modelled_spectra']
         expected_error = self.__data['error']
-        noise = self.__data['noise']
-        assert os.shape[0] == 36
-        assert ms.shape[0] == 36
-        assert expected_error.shape[0] == 36
-        assert noise.shape[0] == 36
+        noise = self.__data['nedr_36band']
+        num_bands = self.__data['num_bands']
+        assert os.shape[0] == num_bands
+        assert ms.shape[0] == num_bands
+        assert expected_error.shape[0] == num_bands
+        assert noise.shape[0] == num_bands
 
     def lsq_no_noise(self):
         os = self.__data['observed_spectra']
