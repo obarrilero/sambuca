@@ -48,4 +48,4 @@ for i=1:n_wls
     resampled_spectra(i) = bandsum(i)/filtsum(i);
 end
 
-save 'test_resample.mat' modelled_spectra resampled_spectra filt filtsum;
+save 'test_resample.mat' modelled_spectra resampled_spectra filt filtsum calc bandsum;

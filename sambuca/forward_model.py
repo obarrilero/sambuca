@@ -6,11 +6,6 @@ import numpy as np
 
 # TODO: is the substrate loop inside or outside this function?
 def forward_model(
-        # pylint: disable=too-many-arguments
-        # pylint: disable=invalid-name
-        # pylint: disable=too-many-locals
-        # Squelch errors from the well-known issues that pylint has with numpy:
-        # pylint: disable=no-member
         chl,
         cdom,
         tr,
@@ -55,6 +50,11 @@ def forward_model(
     :param theta_air: solar zenith
     :param offnad: off-nadir angle
     """
+    # pylint: disable=too-many-arguments
+    # pylint: disable=invalid-name
+    # pylint: disable=too-many-locals
+    # Squelch errors from the well-known issues that pylint has with numpy:
+    # pylint: disable=no-member
 
     assert len(substrate1) == d_wls
     assert len(substrate2) == d_wls

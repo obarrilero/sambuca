@@ -98,7 +98,7 @@ setup(
     # project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/technical.html#install-requires-vs-requirements-files
-    install_requires=['scipy', 'numpy'],
+    install_requires=['future', 'scipy', 'numpy'],
 
     # List additional groups of dependencies here (e.g. development
     # dependencies).
