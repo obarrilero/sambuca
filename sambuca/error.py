@@ -64,12 +64,12 @@ def error_af(observed_spectra, modelled_spectra, noise=None):
     # error_a = alpha_val
     # error_f = f_val
     # TODO: why is this fudge factor added to alpha_val?
-    error_af = f_val*(0.00000001+alpha_val)
+    error_af_ = f_val*(0.00000001+alpha_val)
 
     return (
         distance_alpha,
         distance_alpha_f,
         distance_f,
         distance_lsq,
-        error_af,
+        error_af_,
         )

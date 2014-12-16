@@ -68,9 +68,11 @@ end
 LSQ = sum((observed_spectra - modelled_spectra).^2)^0.5;
 
 % toggle noise
-filename='test_error_no_noise.mat'
+filename='test_error_no_noise.mat';
 if 1
-    filename='test_error_noise.mat'
+    filename='test_error_noise.mat';
+    observed_spectra_original = observed_spectra;
+    modelled_spectra_original = modelled_spectra;
     modelled_spectra = modelled_spectra./noiserrs;
     observed_spectra = observed_spectra./noiserrs;
 end
@@ -81,7 +83,7 @@ botline1 = (sum(observed_spectra.^2))^0.5;
 botline2 = (sum(modelled_spectra.^2))^0.5;
 
 rat = 0;
-if botline1 == 0 | botline2 == 0
+if botline1 == 0 || botline2 == 0
     rat = 0;
 else
     rat = topline / (botline1 * botline2);
@@ -103,4 +105,4 @@ error_f = f_val;
 error_af = f_val*(0.00000001+alpha_val);
 
 %output results
-save filename observed_spectra modelled_spectra num_bands noiserrs error_a error_f error_af distance_lsq distance_alpha distance_f distance_alpha_f;
+save filename observed_spectra_original modelled_spectra_original num_bands noiserrs error_a error_f error_af distance_lsq distance_alpha distance_f distance_alpha_f;
