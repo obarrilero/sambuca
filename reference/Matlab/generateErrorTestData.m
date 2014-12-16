@@ -68,9 +68,8 @@ end
 LSQ = sum((observed_spectra - modelled_spectra).^2)^0.5;
 
 % toggle noise
-filename='test_error_no_noise.mat';
-if 1
-    filename='test_error_noise.mat';
+use_noise = 1;
+if use_noise
     observed_spectra_original = observed_spectra;
     modelled_spectra_original = modelled_spectra;
     modelled_spectra = modelled_spectra./noiserrs;
@@ -105,4 +104,11 @@ error_f = f_val;
 error_af = f_val*(0.00000001+alpha_val);
 
 %output results
-save filename observed_spectra_original modelled_spectra_original num_bands noiserrs error_a error_f error_af distance_lsq distance_alpha distance_f distance_alpha_f;
+if use_noise
+    observed_spectra = observed_spectra_original;
+    modelled_spectra = modelled_spectra_original;
+    save 'test_error_noise.mat' observed_spectra modelled_spectra num_bands noiserrs error_a error_f error_af distance_lsq distance_alpha distance_f distance_alpha_f;
+else
+    save 'test_error_no_noise.mat' observed_spectra modelled_spectra num_bands noiserrs error_a error_f error_af distance_lsq distance_alpha distance_f distance_alpha_f;
+end
+

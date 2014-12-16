@@ -30,8 +30,6 @@ class TestErrorFunctions(object):
             'tests/data/test_error_no_noise.mat')
         self.__data = loadmat(filename, squeeze_me=True)
 
-        self.__atol = 1.e-3
-
     def unpack_data(self, data):
         return (data['observed_spectra'],
                 data['modelled_spectra'],
@@ -94,14 +92,14 @@ class TestErrorFunctions(object):
             actual_distance_f, actual_distance_lsq, actual_error_af, \
             = sb.error_af(os, ms, noise)
 
-        assert np.allclose(actual_distance_alpha, expected_distance_alpha, atol=self.__atol)
-        assert np.allclose(actual_distance_alpha_f, expected_distance_alpha_f, atol=self.__atol)
-        assert np.allclose(actual_distance_f, expected_distance_f, atol=self.__atol)
-        assert np.allclose(actual_distance_lsq, expected_distance_lsq, atol=self.__atol)
-        assert np.allclose(actual_error_af, expected_error_af, atol=self.__atol)
+        assert np.allclose(actual_distance_alpha, expected_distance_alpha)
+        assert np.allclose(actual_distance_alpha_f, expected_distance_alpha_f)
+        assert np.allclose(actual_distance_f, expected_distance_f)
+        assert np.allclose(actual_distance_lsq, expected_distance_lsq)
+        assert np.allclose(actual_error_af, expected_error_af)
 
         # The IDL code was returning some identical values with different names
         # These tests ensure that we still have access to all the required
         # values
-        assert np.allclose(actual_distance_alpha, expected_error_a, atol=self.__atol)
-        assert np.allclose(actual_distance_f, expected_error_f, atol=self.__atol)
+        assert np.allclose(actual_distance_alpha, expected_error_a)
+        assert np.allclose(actual_distance_f, expected_error_f)
