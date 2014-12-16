@@ -10,6 +10,7 @@ import sambuca as sb
 import numpy as np
 from scipy.io import loadmat
 from pkg_resources import resource_filename
+import pytest
 
 
 class TestErrorFunctions(object):
@@ -58,3 +59,28 @@ class TestErrorFunctions(object):
 
     def test_validate_noise_data(self):
         self.validate_data(self.__noisedata)
+
+    def test_error_no_noise(self):
+        os, ms, _, _, expected_distance_alpha, expected_distance_alpha_f, \
+            expected_distance_f, expected_distance_lsq, expected_error_a, \
+            expected_error_af, expected_error_f \
+            = self.unpack_data(self.__data)
+
+        actual_distance_alpha, actual_distance_alpha_f, \
+            actual_distance_f, actual_distance_lsq, actual_error_af, \
+            = sb.error_af(os, ms)
+
+        np.allclose(actual_distance_alpha, expected_distance_alpha)
+        np.allclose(actual_distance_alpha_f, expected_distance_alpha_f)
+        np.allclose(actual_distance_f, expected_distance_f)
+        np.allclose(actual_distance_lsq, expected_distance_lsq)
+        np.allclose(actual_error_af, expected_error_af)
+
+        # The IDL code was returning some identical values with different names
+        # These tests ensure that we still have access to all the required
+        # values
+        np.allclose(actual_distance_alpha, expected_error_a)
+        np.allclose(actual_distance_f, expected_error_f)
+
+    def test_error_noise(self):
+        pytest.fail()
