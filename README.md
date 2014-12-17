@@ -99,9 +99,11 @@ install cleanly using standard Python tools and have it "just work".
         $ deactivate
 
 ## Testing
-- Tests are implemented with pytest, with integration into the setup.py script :
+- Tests are implemented with pytest, with integration into the setup.py script.
+  The simplest way to run the tests is to call py.test from the project
+  directory :
 
-        $ python setup.py tests
+        $ py.test
 
 - The tox framework was tested, as it provides automated testing against
   multiple Python versions (2 & 3). However, tox did not work correctly with the
