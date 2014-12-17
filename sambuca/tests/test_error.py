@@ -4,16 +4,16 @@ from __future__ import (
     division,
     print_function,
     unicode_literals)
-from builtins import range
+from builtins import *
 
 import sambuca as sb
 import numpy as np
 from scipy.io import loadmat
 from pkg_resources import resource_filename
-import pytest
 
 
 class TestErrorFunctions(object):
+
     """ Test the error functions used to assess model closure
     """
 

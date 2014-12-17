@@ -18,6 +18,8 @@ import numpy as np
 def error_af(observed_spectra, modelled_spectra, noise=None):
     # TODO: Fix the doc string. Update descriptions and add return values.
     """
+    Calculates all error variations in the current IDL code, and returns them
+    as a tuple. Client code can then select the required values.
 
     :param observed_spectra: Array-like. The observed spectra
     :param modelled_spectra: Array-like. The modelled spectra
@@ -50,9 +52,9 @@ def error_af(observed_spectra, modelled_spectra, noise=None):
     botline1 = np.power(np.sum(np.power(observed_spectra, 2)), 0.5)
     botline2 = np.power(np.sum(np.power(modelled_spectra, 2)), 0.5)
 
-    rat = topline / (botline1 * botline2) \
-        if botline1 > 0 and botline2 > 0 \
-        else 0
+    rat = (topline / (botline1 * botline2)
+           if botline1 > 0 and botline2 > 0
+           else 0)
 
     alpha_val = np.arccos(rat) if rat <= 1.0 else 100.0
 
@@ -66,10 +68,8 @@ def error_af(observed_spectra, modelled_spectra, noise=None):
     # TODO: why is this fudge factor added to alpha_val?
     error_af_ = f_val*(0.00000001+alpha_val)
 
-    return (
-        distance_alpha,
-        distance_alpha_f,
-        distance_f,
-        distance_lsq,
-        error_af_,
-        )
+    return (distance_alpha,
+            distance_alpha_f,
+            distance_f,
+            distance_lsq,
+            error_af_)

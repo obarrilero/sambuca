@@ -108,9 +108,9 @@ def forward_model(
     du_column_scaled = du_column / math.cos(thetao)
     du_bottom_scaled = du_bottom / math.cos(thetao)
     kappa_h = kappa * h
-    rrs = rrsdp * \
-        (1. - np.exp(-(inv_cos_thetaw + du_column_scaled) * kappa_h)) + \
-        ((1. / math.pi) * r *
-         np.exp(-(inv_cos_thetaw + du_bottom_scaled) * kappa_h))
+    rrs = (rrsdp *
+           (1. - np.exp(-(inv_cos_thetaw + du_column_scaled) * kappa_h)) +
+           ((1. / math.pi) * r *
+            np.exp(-(inv_cos_thetaw + du_bottom_scaled) * kappa_h)))
 
     return rrs

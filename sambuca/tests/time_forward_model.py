@@ -1,10 +1,19 @@
+# Ensure compatibility of Python 2 with Python 3 constructs
+from __future__ import (
+    absolute_import,
+    division,
+    print_function,
+    unicode_literals)
+from builtins import *
+
 import sambuca
+import sys
 from scipy.io import loadmat
 from pkg_resources import resource_filename
 import timeit
 
 
-if __name__ == '__main__':
+def main():
     '''Simple script for testing the optimisation
     experiments on the forward model.
     '''
@@ -31,10 +40,18 @@ if __name__ == '__main__':
     # warmup
     forward_model()
     forward_model()
+
+    # time it
     iterations = 30000
-    t = timeit.Timer("forward_model()", "from __main__ import forward_model")
+    t = timeit.Timer(forward_model)
     time = t.timeit(iterations)
     avg = time / iterations * 1000
     print("Forward model, {0} iterations".format(iterations))
     print("Total: {}".format(time))
     print("Avg: {} ms".format(avg))
+
+    return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())

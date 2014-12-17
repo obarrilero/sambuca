@@ -1,3 +1,11 @@
+# Ensure compatibility of Python 2 with Python 3 constructs
+from __future__ import (
+    absolute_import,
+    division,
+    print_function,
+    unicode_literals)
+from builtins import *
+
 import sambuca as sb
 import numpy as np
 from scipy.io import loadmat
@@ -5,6 +13,7 @@ from pkg_resources import resource_filename
 
 
 class TestForwardModel(object):
+
     """Sambuca forward model test class
     """
 
