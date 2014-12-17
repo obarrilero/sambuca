@@ -6,8 +6,8 @@
 
 
 
-% clear all
-% close all
+%clear all
+%close all
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Define the Bounds For the 5 Shallow water paramters
@@ -90,7 +90,7 @@ pert(4) = 0.02;  % sdt deviation for perturbation on Q
 pert(5) = 0.13;  % sdt deviation for perturbation on H
 
 burn_in = 15000;  % Lenght of the burn-in period
-nsamples = 40000; % Total number of samples
+nsamples = 80000; % Total number of samples
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -169,9 +169,10 @@ for i=1:nsamples
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Show statistics of the chain every 15000 models
-    if(mod(i,200)==0)
+    if(mod(i,2000)==0)
         sample_number=i
         current_model_parameters=p
+        current_like=like
 %         Acc_Rate_x=100*ARx(2)/ARx(1)
 %         Acc_Rate_y=100*ARy(2)/ARy(1)
         
