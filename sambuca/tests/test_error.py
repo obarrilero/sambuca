@@ -14,7 +14,6 @@ import pytest
 
 
 class TestErrorFunctions(object):
-
     """ Test the error functions used to assess model closure
     """
 
@@ -30,7 +29,8 @@ class TestErrorFunctions(object):
             'tests/data/test_error_no_noise.mat')
         self.__data = loadmat(filename, squeeze_me=True)
 
-    def unpack_data(self, data):
+    @staticmethod
+    def unpack_data(data):
         return (data['observed_spectra'],
                 data['modelled_spectra'],
                 data['noiserrs'],

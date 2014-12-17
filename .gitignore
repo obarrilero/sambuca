@@ -13,3 +13,6 @@ __pycache__/
 .coverage
 htmlcov/
 .ipynb*
+
+# PyCharm Project files contain local settings, and so are not appropriate for Git
+.idea/

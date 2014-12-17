@@ -5,7 +5,8 @@ from pkg_resources import resource_filename
 
 
 class TestForwardModel(object):
-    """Sambuca forward model test class"""
+    """Sambuca forward model test class
+    """
 
     def setup_method(self, method):
         # load the test values generated from the Matlab code
