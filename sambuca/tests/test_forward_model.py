@@ -46,7 +46,7 @@ class TestForwardModel(object):
             wav=self.__data['wav'],
             awater=self.__data['awater'],
             aphy_star=self.__data['aphy_star'],
-            d_wls=self.__data['d_wls'],)
+            num_bands=self.__data['d_wls'],)
 
         assert np.allclose(
             modelled_spectra,

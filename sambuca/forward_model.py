@@ -26,7 +26,7 @@ def forward_model(
         wav,
         awater,
         aphy_star,
-        d_wls,
+        num_bands,
         x_ph_lambda0x=0.00157747,
         x_tr_lambda0x=0.0225353,
         sc=0.0168052,
@@ -64,11 +64,11 @@ def forward_model(
     # pylint: disable=invalid-name
     # pylint: disable=too-many-locals
 
-    assert len(substrate1) == d_wls
-    assert len(substrate2) == d_wls
-    assert len(wav) == d_wls
-    assert len(awater) == d_wls
-    assert len(aphy_star) == d_wls
+    assert len(substrate1) == num_bands
+    assert len(substrate2) == num_bands
+    assert len(wav) == num_bands
+    assert len(awater) == num_bands
+    assert len(aphy_star) == num_bands
 
     thetaw = math.asin(1 / 1.333 * math.sin(math.pi / 180. * theta_air))
     thetao = math.asin(1 / 1.333 * math.sin(math.pi / 180. * offnad))
