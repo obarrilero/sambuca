@@ -1,4 +1,5 @@
 #!/bin/bash
 rm -rf build/
-find ./sambuca -name "__pycache__" -exec rm -rf {} \;
-find ./sambuca -name "*.pyc" -exec rm -rf {} \;
+rm -rf htmlcov/
+find . -name "__pycache__" -exec rm -rf {} \;
+find . -name "*.pyc" -exec rm -rf {} \;
