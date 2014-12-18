@@ -68,7 +68,7 @@ class TestErrorFunctions(object):
 
         actual_distance_alpha, actual_distance_alpha_f, \
             actual_distance_f, actual_distance_lsq, actual_error_af, \
-            = sb.error_af(os, ms)
+            = sb.error_all(os, ms)
 
         assert np.allclose(actual_distance_alpha, expected_distance_alpha)
         assert np.allclose(actual_distance_alpha_f, expected_distance_alpha_f)
@@ -90,7 +90,7 @@ class TestErrorFunctions(object):
 
         actual_distance_alpha, actual_distance_alpha_f, \
             actual_distance_f, actual_distance_lsq, actual_error_af, \
-            = sb.error_af(os, ms, noise)
+            = sb.error_all(os, ms, noise)
 
         assert np.allclose(actual_distance_alpha, expected_distance_alpha)
         assert np.allclose(actual_distance_alpha_f, expected_distance_alpha_f)

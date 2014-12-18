@@ -15,7 +15,7 @@ from builtins import *
 import numpy as np
 
 
-def error_af(observed_spectra, modelled_spectra, noise=None):
+def error_all(observed_spectra, modelled_spectra, noise=None):
     # TODO: Fix the doc string. Update descriptions and add return values.
     """
     Calculates all error variations in the current IDL code, and returns them
