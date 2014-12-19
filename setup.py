@@ -114,7 +114,7 @@ setup(
     # If there are data files included in your packages that need to be
     # installed, specify them here.
     package_data={
-        # 'sambuca.tests': ['./data/*.mat'],
+        # 'sambuca': ['./tests/data/*.mat'],
     },
 
     # Although 'package_data' is the preferred approach, in some case you may
