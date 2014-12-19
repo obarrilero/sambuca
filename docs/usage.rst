@@ -2,6 +2,6 @@
 Usage
 =====
 
-To use Nameless in a project::
+To use Sambuca in a project::
 
-	import nameless
+	import sambuca

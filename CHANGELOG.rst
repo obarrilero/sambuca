@@ -2,7 +2,7 @@
 Changelog
 =========
 
-0.1.0 (2014-06-10)
+0.1.0 (2014-12-19)
 -----------------------------------------
 
-* First release on PyPI.
+* Minimal Sambuca model based on the cut-down Matlab code.

@@ -17,7 +17,7 @@ if os.getenv('SPELLCHECK'):
 
 source_suffix = '.rst'
 master_doc = 'index'
-project = u'Nameless'
+project = u'Sambuca'
 copyright = u'2014, Daniel Collins'
 version = release = re.findall(
     'version="(.*)"',
@@ -38,5 +38,6 @@ html_sidebars = {
 }
 html_short_title = '%s-%s' % (project, version)
 html_theme_options = {
-    'githuburl': 'https://github.com/dc23/python-nameless/'
+    # TODO: real project url
+    # 'githuburl': 'https://github.com/dc23/python-nameless/'
 }
