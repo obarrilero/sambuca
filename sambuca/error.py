@@ -12,19 +12,19 @@ from __future__ import (
 # pylint: disable=redefined-builtin
 from builtins import *
 
+from collections import namedtuple
 import numpy as np
 
 
 def error_all(observed_spectra, modelled_spectra, noise=None):
     # TODO: Fix the doc string. Update descriptions and add return values.
     """
-    Calculates all error variations in the current IDL code, and returns them
-    as a tuple. Client code can then select the required values.
-
-    :param observed_spectra: Array-like. The observed spectra
-    :param modelled_spectra: Array-like. The modelled spectra
-    :param noise: Array-like. Optional noise values
+    :param observed_spectra: The observed spectra.
+    :param modelled_spectra: The modelled spectra.
+    :param noise: Optional
+    :return: A named tuple of error values.
     """
+
     # LSQ = sum((observed_spectra - modelled_spectra).^2)^0.5;
     lsq = np.power(
         np.sum(
@@ -58,18 +58,19 @@ def error_all(observed_spectra, modelled_spectra, noise=None):
 
     alpha_val = np.arccos(rat) if rat <= 1.0 else 100.0
 
-    distance_lsq = lsq
-    distance_alpha = alpha_val
-    distance_f = f_val
-    distance_alpha_f = f_val * alpha_val
-
+    results = namedtuple('SambucaErrors',
+                         ['distance_alpha',
+                          'distance_alpha_f',
+                          'distance_f',
+                          'distance_lsq',
+                          'error_af'])
+    results.distance_lsq = lsq
+    results.distance_alpha = alpha_val
+    results.distance_f = f_val
+    results.distance_alpha_f = f_val * alpha_val
     # error_a = alpha_val
     # error_f = f_val
     # TODO: why is this fudge factor added to alpha_val?
-    error_af_ = f_val*(0.00000001+alpha_val)
+    results.error_af = f_val*(0.00000001+alpha_val)
 
-    return (distance_alpha,
-            distance_alpha_f,
-            distance_f,
-            distance_lsq,
-            error_af_)
+    return results

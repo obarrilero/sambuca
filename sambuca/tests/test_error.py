@@ -66,21 +66,19 @@ class TestErrorFunctions(object):
             expected_error_af, expected_error_f \
             = self.unpack_data(self.__data)
 
-        actual_distance_alpha, actual_distance_alpha_f, \
-            actual_distance_f, actual_distance_lsq, actual_error_af, \
-            = sb.error_all(os, ms)
+        actual = sb.error_all(os, ms)
 
-        assert np.allclose(actual_distance_alpha, expected_distance_alpha)
-        assert np.allclose(actual_distance_alpha_f, expected_distance_alpha_f)
-        assert np.allclose(actual_distance_f, expected_distance_f)
-        assert np.allclose(actual_distance_lsq, expected_distance_lsq)
-        assert np.allclose(actual_error_af, expected_error_af)
+        assert np.allclose(actual.distance_alpha, expected_distance_alpha)
+        assert np.allclose(actual.distance_alpha_f, expected_distance_alpha_f)
+        assert np.allclose(actual.distance_f, expected_distance_f)
+        assert np.allclose(actual.distance_lsq, expected_distance_lsq)
+        assert np.allclose(actual.error_af, expected_error_af)
 
         # The IDL code was returning some identical values with different names
         # These tests ensure that we still have access to all the required
         # values
-        assert np.allclose(actual_distance_alpha, expected_error_a)
-        assert np.allclose(actual_distance_f, expected_error_f)
+        assert np.allclose(actual.distance_alpha, expected_error_a)
+        assert np.allclose(actual.distance_f, expected_error_f)
 
     def test_error_noise(self):
         os, ms, noise, _, expected_distance_alpha, expected_distance_alpha_f, \
@@ -88,18 +86,16 @@ class TestErrorFunctions(object):
             expected_error_af, expected_error_f \
             = self.unpack_data(self.__noisedata)
 
-        actual_distance_alpha, actual_distance_alpha_f, \
-            actual_distance_f, actual_distance_lsq, actual_error_af, \
-            = sb.error_all(os, ms, noise)
+        actual = sb.error_all(os, ms, noise)
 
-        assert np.allclose(actual_distance_alpha, expected_distance_alpha)
-        assert np.allclose(actual_distance_alpha_f, expected_distance_alpha_f)
-        assert np.allclose(actual_distance_f, expected_distance_f)
-        assert np.allclose(actual_distance_lsq, expected_distance_lsq)
-        assert np.allclose(actual_error_af, expected_error_af)
+        assert np.allclose(actual.distance_alpha, expected_distance_alpha)
+        assert np.allclose(actual.distance_alpha_f, expected_distance_alpha_f)
+        assert np.allclose(actual.distance_f, expected_distance_f)
+        assert np.allclose(actual.distance_lsq, expected_distance_lsq)
+        assert np.allclose(actual.error_af, expected_error_af)
 
         # The IDL code was returning some identical values with different names
         # These tests ensure that we still have access to all the required
         # values
-        assert np.allclose(actual_distance_alpha, expected_error_a)
-        assert np.allclose(actual_distance_f, expected_error_f)
+        assert np.allclose(actual.distance_alpha, expected_error_a)
+        assert np.allclose(actual.distance_f, expected_error_f)

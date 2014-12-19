@@ -39,10 +39,12 @@ def forward_model(
         offnad=10):
     """Semi analytical Lee/Sambuca forward model.
 
-    :param cdom: Model parameter. ...
-    :param tr: Model parameter. ...
-    :param h: Model parameter. ...
-    :param q: Model parameter. ...
+    :param chl: Chlorophyll. Algal organic particles
+    :param cdom: Dissolved organic particulates
+    :param tr: Trypton or NAP (Non-Algal Particles)
+    :param h: Depth
+    :param q: Substrate proportion.
+            Substrate used = q*substrate1 + (1-q)*substrate2
     :param substrate1:
     :param substrate2:
     :param wav:
