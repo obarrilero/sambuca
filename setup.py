@@ -6,7 +6,7 @@ from os import path
 import sys
 
 # import our own code so we can reference sambuca.__version__
-import sambuca
+# import src.sambuca
 
 here = path.abspath(path.dirname(__file__))
 
@@ -32,7 +32,8 @@ class PyTest(TestCommand):
 
 setup(
     name='sambuca',
-    version=sambuca.__version__,
+    # version=sambuca.__version__,
+    version='0.1.0',
     description='TODO: Sambuca short description',
     long_description=long_description,
 
@@ -85,6 +86,7 @@ setup(
     # simple. Or you can use find_packages().
     # packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     packages=['sambuca'],
+    package_dir={"": "src"},
 
     include_package_data=True,
 
@@ -92,7 +94,7 @@ setup(
 
     platforms='any',
 
-    test_suite='sambuca.tests.test_sambuca',
+    test_suite='tests.test_sambuca',
 
     # List run-time dependencies here.  These will be installed by pip when your
     # project is installed. For an analysis of "install_requires" vs pip's

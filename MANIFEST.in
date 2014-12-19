@@ -1,8 +1,15 @@
+graft docs
+graft examples
+graft src
+graft tests
+
+include .coverage
+include .pylintrc
+
+include AUTHORS.rst
+include CHANGELOG.rst
+include CONTRIBUTING.rst
+include LICENSE
 include README.rst
 
-# Include the test suite (FIXME: does not work yet)
-# recursive-include tests *
-
-# If using Python 2.6 or less, then have to include package data, even though
-# it's already declared in setup.py
-#include sample/*.dat
+global-exclude *.py[co] __pycache__ *.so *.pyd

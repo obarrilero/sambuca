@@ -13,12 +13,13 @@ if [[ $HOSTNAME = bragg-l || $HOSTNAME = bragg-l-test ]]; then
     module load pandoc
 fi
 
-if command_exists pandoc ; then
-    echo 'Converting README.md to rst format ...'
-    pandoc -o README.rst README.md
-else
-    echo '*** README.md not converted to rst: pandoc not found ***'
-fi
+# TODO: Switch over to generation of md and maintain rst for Sphinx
+#if command_exists pandoc ; then
+    #echo 'Converting README.md to rst format ...'
+    #pandoc -o README.rst README.md
+#else
+    #echo '*** README.md not converted to rst: pandoc not found ***'
+#fi
 
 echo 'Installing sambuca in' $1 'mode'
 python setup.py $1
