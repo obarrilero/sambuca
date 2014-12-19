@@ -1,10 +1,10 @@
 graft docs
 graft examples
 graft src
-graft tests
 
+include .bumpversion.cfg
 include .coverage
-include .pylintrc
+include pylintrc
 
 include AUTHORS.rst
 include CHANGELOG.rst
