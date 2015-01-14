@@ -22,6 +22,10 @@ To run the all tests run::
 
     py.test
 
+To run pylint, run::
+
+    pylint src/sambuca
+
 To generate a Stash compatible README.md file from an rst file, use pandoc
 prior to a Git commit. The CONTRIBUTING.rst file is probably most appropriate
 during the pre-release phase of development::
