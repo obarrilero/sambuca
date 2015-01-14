@@ -4,4 +4,4 @@ Reference
 .. toctree::
     :glob:
 
-    nameless*
+    sambuca*

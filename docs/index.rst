@@ -1,4 +1,4 @@
-Welcome to Nameless's documentation!
+Welcome to Sambuca's documentation!
 ======================================
 
 Contents:

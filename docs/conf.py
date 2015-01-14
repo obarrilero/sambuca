@@ -18,7 +18,7 @@ if os.getenv('SPELLCHECK'):
 source_suffix = '.rst'
 master_doc = 'index'
 project = u'Sambuca'
-copyright = u'2014, Daniel Collins'
+copyright = u'2014-15, CSIRO'
 version = release = re.findall(
     'version="(.*)"',
     open(os.path.join(os.path.dirname(__file__), '../setup.py')).read()

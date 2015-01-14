@@ -1,5 +1,5 @@
-nameless
+sambuca
 =============================
 
-.. automodule:: nameless
+.. automodule:: sambuca
     :members:
