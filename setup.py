@@ -5,9 +5,6 @@ from codecs import open  # To use a consistent encoding
 from os import path
 import sys
 
-# import our own code so we can reference sambuca.__version__
-import sambuca
-
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the relevant file
@@ -32,7 +29,7 @@ class PyTest(TestCommand):
 
 setup(
     name='sambuca',
-    version=sambuca.__version__,
+    version='0.1.0',
     description='TODO: Sambuca short description',
     long_description=long_description,
 
@@ -85,6 +82,7 @@ setup(
     # simple. Or you can use find_packages().
     # packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     packages=['sambuca'],
+    package_dir={"": "src"},
 
     include_package_data=True,
 
@@ -92,7 +90,7 @@ setup(
 
     platforms='any',
 
-    test_suite='sambuca.tests.test_sambuca',
+    test_suite='tests.test_sambuca',
 
     # List run-time dependencies here.  These will be installed by pip when your
     # project is installed. For an analysis of "install_requires" vs pip's
@@ -105,14 +103,14 @@ setup(
     # You can install these using the following syntax, for example:
     # $ pip install -e .[dev,test]
     extras_require={
-        'dev': ['check-manifest'],
+        'dev': ['bumpversion', 'check-manifest'],
         'test': ['coverage', 'pytest', 'pytest-cov', 'pytest-sugar'],
     },
 
     # If there are data files included in your packages that need to be
     # installed, specify them here.
     package_data={
-        # 'sambuca.tests': ['./data/*.mat'],
+        # 'sambuca': ['./tests/data/*.mat'],
     },
 
     # Although 'package_data' is the preferred approach, in some case you may
