@@ -39,5 +39,5 @@ html_sidebars = {
 html_short_title = '%s-%s' % (project, version)
 html_theme_options = {
     # TODO: real project url
-    # 'githuburl': 'https://github.com/dc23/python-nameless/'
+    # 'githuburl': 'https://github.com/dc23/sambuca/'
 }
