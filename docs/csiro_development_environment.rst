@@ -132,7 +132,10 @@ targets:
    environment (be sure to activate it first).
 #. develop: installs sambuca in development mode.
 #. lint: runs pylint.
-#. docs: builds the documentation.
+#. htmldocs: builds the HTML documentation.
+#. pdfdocs: builds the documentation in PDF format.
+#. latexdocs: builds LaTeX source, used to generate other formats.
+#. alldocs: builds all documentation formats.
 #. sdist: builds a source distribution.
 #. bdist_wheel: builds a universal wheel distribution.
 

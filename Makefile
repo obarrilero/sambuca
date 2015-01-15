@@ -32,6 +32,15 @@ sdist:
 bdist_wheel:
 	python setup.py bdist_wheel
 
-.PHONY: docs
-docs:
-	sphinx-build -b html docs build/docs
+.PHONY: htmldocs
+htmldocs:
+	sphinx-build -b html docs build/docs/html
+
+.PHONY: latexdocs
+latexdocs:
+	sphinx-build -b latex docs build/docs/latex
+
+pdfdocs: latexdocs
+	$(MAKE) -C build/docs/latex all-pdf
+
+alldocs: htmldocs latexdocs pdfdocs
