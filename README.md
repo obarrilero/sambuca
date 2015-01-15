@@ -27,13 +27,16 @@ using standard Python tools and have it "just work".
 4.  Create a directory in projects to act as the top level sambuca
     directory :
 
-    > \$ cd \~/projects/ \$ mkdir sambuca\_project
+    > \$ cd \~/projects/ 
+    > \$ mkdir sambuca\_project
 
 5.  Clone the Git repositories for sambuca and sambuca\_agdc into the
     sambuca\_project directory :
 
-    > \$ cd \~/projects/sambuca\_project/ \$ git clone
-    > <https://col52j@stash.csiro.au/scm/~col52j/sambuca.git> \$ git
+    > \$ cd \~/projects/sambuca\_project/ 
+    > \$ git clone
+    > <https://col52j@stash.csiro.au/scm/~col52j/sambuca.git> 
+    > \$ git
     > clone <https://col52j@stash.csiro.au/scm/~col52j/sambuca_agdc.git>
 
 6.  Load the Python version used for development :
@@ -63,12 +66,16 @@ using standard Python tools and have it "just work".
     to restart your python environment, or use the IPython %autoreload
     extension) :
 
-    > \$ workon sambuca \$ cdproject \$ python setup.py develop
+    > \$ workon sambuca 
+    > \$ cdproject 
+    > \$ python setup.py develop
 
 11. Install additional packages specified in the setup.py script :
 
-    > \$ cd sambuca \$ pip install --upgrade -e.[dev,test] \$ cd
-    > ../sambuca\_agdc \$ pip install --upgrade -e.[dev,test]
+    > \$ cd sambuca 
+    > \$ pip install --upgrade -e.[dev,test] 
+    > \$ cd ../sambuca\_agdc 
+    > \$ pip install --upgrade -e.[dev,test]
 
 ### Every time
 
