@@ -1,5 +1,5 @@
 # Always prefer setuptools over distutils
-from setuptools import setup, find_packages
+from setuptools import setup
 from setuptools.command.test import test as TestCommand
 from codecs import open  # To use a consistent encoding
 from os import path
@@ -13,6 +13,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 
 class PyTest(TestCommand):
+
     ''' Entry point for py.test that allows 'python setup.py test'
     to work correctly
     '''
@@ -76,7 +77,7 @@ setup(
     ],
 
     # What does your project relate to?
-    keywords='Hydrology Modeling',
+    keywords='Hydrology Modeling Bathymetry',
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
@@ -96,15 +97,31 @@ setup(
     # project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/technical.html#install-requires-vs-requirements-files
-    install_requires=['future', 'scipy', 'numpy'],
+    install_requires=[
+        'future',
+        'scipy',
+        'numpy',
+    ],
 
     # List additional groups of dependencies here (e.g. development
     # dependencies).
     # You can install these using the following syntax, for example:
     # $ pip install -e .[dev,test]
     extras_require={
-        'dev': ['bumpversion', 'check-manifest'],
-        'test': ['coverage', 'pytest', 'pytest-cov', 'pytest-sugar'],
+        'dev': [
+            'bumpversion',
+            'pylint',
+            'check-manifest',
+            'sphinx',
+            'sphinxcontrib-napoleon',
+        ],
+        'test': [
+            'coverage',
+            'pytest',
+            'pytest-cov',
+            'pytest-sugar',
+            'pylint',
+        ],
     },
 
     # If there are data files included in your packages that need to be
