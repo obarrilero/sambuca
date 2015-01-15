@@ -1,10 +1,11 @@
 Welcome to Sambuca's documentation!
 ===================================
 
-Contents:
+Contents
+--------
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     readme
     installation
@@ -16,9 +17,8 @@ Contents:
     changelog
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-

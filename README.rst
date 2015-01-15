@@ -5,26 +5,26 @@ Sambuca
 * Free software: ??? license
 
 Installation
-============
-
+------------
 ::
 
     pip install sambuca
 
 Documentation
-=============
+-------------
 **To Do: insert link to documentation**
 
 Development
-===========
+-----------
 
-To run the all tests run::
+There is makefile in the project root with targets for the most common
+development operations such as lint checks, running unit tests, building the
+documentation, and building installing packages.
 
-    py.test
-
-To run pylint, run::
-
-    pylint src/sambuca
+`Bumpversion <https://pypi.python.org/pypi/bumpversion>`_ is used to manage the
+package version numbers. This ensures that the version number is correctly
+incremented in all required files. Please see the bumpversion documentation for
+usage instructions, and do not edit the version strings directly.
 
 To generate a Stash compatible README.md file from an rst file, use pandoc
 prior to a Git commit. The CONTRIBUTING.rst file is probably most appropriate
