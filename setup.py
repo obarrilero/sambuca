@@ -114,6 +114,7 @@ setup(
             'check-manifest',
             'sphinx',
             'sphinxcontrib-napoleon',
+            'wheel',
         ],
         'test': [
             'coverage',
