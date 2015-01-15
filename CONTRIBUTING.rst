@@ -36,7 +36,7 @@ If you are proposing a feature:
 Or, implement the feature yourself and submit a pull request.
 
 Development
-===========
+-----------
 
 To set up `sambuca` for local development:
 
