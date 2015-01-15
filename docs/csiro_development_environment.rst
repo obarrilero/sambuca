@@ -117,8 +117,10 @@ A workaround is to create separate virtual environments based on Python
 2.7 and Python 3.4, and then run the tests within both environments.
 A helper script makes this easier.
 
-MakeFile
---------
+.. _makefile:
+
+Using the MakeFile
+------------------
 A makefile is in the root folder. It is intended to simply common development 
 tasks. Using it is optional. The makefile supports at a minimum the following
 targets:
