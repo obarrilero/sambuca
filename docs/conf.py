@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-import re
 import os
+
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
@@ -8,7 +8,8 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
-    'sphinxcontrib.napoleon'
+    # 'sphinx.ext.napoleon', # required when sphinx moves to version >=1.3
+    'sphinxcontrib.napoleon',
 ]
 if os.getenv('SPELLCHECK'):
     extensions += 'sphinxcontrib.spelling',
@@ -19,14 +20,12 @@ source_suffix = '.rst'
 master_doc = 'index'
 project = u'Sambuca'
 copyright = u'2014-15, CSIRO'
-version = release = re.findall(
-    'version="(.*)"',
-    open(os.path.join(os.path.dirname(__file__), '../setup.py')).read()
-)[0]
+version = release = '0.1.0'
 
-import sphinx_py3doc_enhanced_theme
-html_theme = "sphinx_py3doc_enhanced_theme"
-html_theme_path = [sphinx_py3doc_enhanced_theme.get_html_theme_path()]
+# TODO: vanilla for now, sort out themes later
+# import sphinx_py3doc_enhanced_theme
+# html_theme = "sphinx_py3doc_enhanced_theme"
+# html_theme_path = [sphinx_py3doc_enhanced_theme.get_html_theme_path()]
 
 pygments_style = 'trac'
 templates_path = ['.']
