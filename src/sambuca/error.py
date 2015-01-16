@@ -27,17 +27,13 @@ def error_all(observed_spectra, modelled_spectra, noise=None):
         noise: Optional spectral noise values.
 
     Returns:
-        A named tuple of error values:
+        namedtuple: The error terms in a named tuple:
 
-        ================ ==============
-        Error Term       Description
-        ================ ==============
-        distance_alpha   Describe me!!!
-        distance_alpha_f Describe me!!!
-        distance_f       Describe me!!!
-        distance_lsq     Describe me!!!
-        error_af         Describe me!!!
-        ================ ==============
+        - **distance_alpha** -- Describe me!!!
+        - **distance_alpha_f** -- Describe me!!!
+        - **distance_f** -- Describe me!!!
+        - **distance_lsq** -- Describe me!!!
+        - **error_af** -- Describe me!!!
     """
 
     # LSQ = sum((observed_spectra - modelled_spectra).^2)^0.5;
