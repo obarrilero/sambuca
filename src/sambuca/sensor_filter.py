@@ -1,4 +1,4 @@
-""" Sambuca Sensor Filtering
+""" Contains functions for working with Sensor Filters.
 """
 # Ensure compatibility of Python 2 with Python 3 constructs
 from __future__ import (
@@ -14,7 +14,7 @@ from builtins import *
 import numpy as np
 
 
-def sensor_filter_ml(spectra, filter_):
+def apply_sensor_filter(spectra, filter_):
     """Resamples a spectra using the given spectral response filter.
 
     Args:

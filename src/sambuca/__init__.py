@@ -3,7 +3,7 @@
 
 from .exceptions import SambucaException, UnsupportedDataFormatError
 from .forward_model import forward_model
-from .sensor_filter import sensor_filter_ml
+from .sensor_filter import apply_sensor_filter
 from .error import error_all
 
 from . import sambuca

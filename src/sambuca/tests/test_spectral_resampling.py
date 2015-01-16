@@ -32,21 +32,6 @@ class TestSpectralResampling(object):
         assert 'filt' in self.__data
         assert 'filtsum' in self.__data
 
-    # def test_scipy_resampling(self):
-        # pytest.skip('I know this test fails. Keep the code for reference, but skip the test')
-
-        # # grab the data
-        # src_spectra = self.__data['modelled_spectra']
-        # expected_spectra = self.__data['resampled_spectra']
-        # destination_bands = len(expected_spectra)
-
-        # # resample
-        # actual_spectra = resample(src_spectra, destination_bands)
-
-        # # test
-        # assert len(expected_spectra) == len(actual_spectra)
-        # assert np.allclose(expected_spectra, actual_spectra)
-
     def test_filter_summation(self):
         ''' Testing my numpy implementation of the Matlab sensor filter summation
         '''
@@ -88,7 +73,7 @@ class TestSpectralResampling(object):
         assert sensor_filter.shape[1] == 36
 
         # resample
-        resampled_spectra = sb.sensor_filter_ml(src_spectra, sensor_filter)
+        resampled_spectra = sb.apply_sensor_filter(src_spectra, sensor_filter)
 
         # test
         assert expected_spectra.shape == resampled_spectra.shape
