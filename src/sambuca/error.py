@@ -1,6 +1,7 @@
-''' Sambuca Error Functions.
-    Used when assessing model closure during parameter optimisation
-'''
+""" Sambuca Error Functions.
+
+    Used when assessing model closure during parameter estimation.
+"""
 # Ensure compatibility of Python 2 with Python 3 constructs
 from __future__ import (
     absolute_import,
@@ -18,11 +19,25 @@ import numpy as np
 
 def error_all(observed_spectra, modelled_spectra, noise=None):
     # TODO: Fix the doc string. Update descriptions and add return values.
-    """
-    :param observed_spectra: The observed spectra.
-    :param modelled_spectra: The modelled spectra.
-    :param noise: Optional
-    :return: A named tuple of error values.
+    """Calculates all common error terms, returning them in a named tuple.
+
+    Args:
+        observed_spectra: The observed spectra.
+        modelled_spectra: The modelled spectra.
+        noise: Optional spectral noise values.
+
+    Returns:
+        A named tuple of error values:
+
+        ================ ==============
+        Error Term       Description
+        ================ ==============
+        distance_alpha   Describe me!!!
+        distance_alpha_f Describe me!!!
+        distance_f       Describe me!!!
+        distance_lsq     Describe me!!!
+        error_af         Describe me!!!
+        ================ ==============
     """
 
     # LSQ = sum((observed_spectra - modelled_spectra).^2)^0.5;

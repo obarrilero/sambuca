@@ -1,5 +1,5 @@
-''' Sambuca exception definitions
-'''
+""" Sambuca exception definitions.
+"""
 # Ensure compatibility of Python 2 with Python 3 constructs
 from __future__ import (
     absolute_import,
@@ -13,13 +13,16 @@ from builtins import *
 
 
 class SambucaException(Exception):
-    '''Root exception class for Sambuca exceptions.
-    Only used to except any Sambuca errors. This exception is never raised.
-    '''
+    """Root exception class for Sambuca exceptions.
+
+    Only used as a base class for any Sambuca errors.
+    This exception is never raised directly.
+    """
     pass
 
 
 class UnsupportedDataFormatError(SambucaException):
-    '''The file format is not supported by Sambuca.
-    '''
+    """The file format is not supported by Sambuca.
+
+    """
     pass
