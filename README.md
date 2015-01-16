@@ -123,8 +123,8 @@ A workaround is to create separate virtual environments based on Python
 2.7 and Python 3.4, and then run the tests within both environments. A
 helper script makes this easier.
 
-MakeFile
---------
+Using the MakeFile
+------------------
 
 A makefile is in the root folder. It is intended to simply common
 development tasks. Using it is optional. The makefile supports at a
@@ -138,7 +138,10 @@ minimum the following targets:
     virtual environment (be sure to activate it first).
 3.  develop: installs sambuca in development mode.
 4.  lint: runs pylint.
-5.  docs: builds the documentation.
-6.  sdist: builds a source distribution.
-7.  bdist\_wheel: builds a universal wheel distribution.
+5.  htmldocs: builds the HTML documentation.
+6.  pdfdocs: builds the documentation in PDF format.
+7.  latexdocs: builds LaTeX source, used to generate other formats.
+8.  alldocs: builds all documentation formats.
+9.  sdist: builds a source distribution.
+10. bdist\_wheel: builds a universal wheel distribution.
 

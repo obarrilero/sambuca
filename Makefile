@@ -21,6 +21,7 @@ help:
 	echo '  * alldocs: builds all documentation formats.'
 	echo '  * sdist: builds a source distribution.'
 	echo '  * bdist_wheel: builds a universal wheel distribution.'
+	echo '  * readme: For CSIRO Stash, builds the README.md file from ./docs/csiro_development_environment.rst'
 
 .PHONY: test
 test:
@@ -62,7 +63,13 @@ htmldocs:
 latexdocs:
 	sphinx-build -b latex docs build/docs/latex
 
-pdfdocs: latexdocs
+pdfdocs: latexdocs 
 	$(MAKE) -C build/docs/latex all-pdf
+	mkdir -p ./build/docs/pdf/
+	mv build/docs/latex/*.pdf build/docs/pdf/
 
 alldocs: htmldocs latexdocs pdfdocs
+
+.PHONY: readme
+readme:
+	pandoc ./docs/csiro_development_environment.rst -o README.md
