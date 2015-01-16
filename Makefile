@@ -3,9 +3,31 @@ SHELL=/bin/sh
 .SILENT:
 .IGNORE:
 
+.PHONY: help
+help:
+	echo
+	echo 'Utility Makefile for Sambuca'
+	echo '============================'
+	echo
+	echo 'Targets supported are:'
+	echo
+	echo '  * clean: removes the build and htmlcov (coverage reports) directories, as well as __pycache__ and *.pyc files. Note that a clean also removes the generated documentation (as this is placed into build/docs).'
+	echo '  * install-deps: installs development and test dependencies into your virtual environment.'
+	echo '  * develop: installs sambuca in development mode.'
+	echo '  * lint: runs pylint.'
+	echo '  * htmldocs: builds the HTML documentation.'
+	echo '  * pdfdocs: builds the documentation in PDF format.'
+	echo '  * latexdocs: builds LaTeX source, used to generate other formats.'
+	echo '  * alldocs: builds all documentation formats.'
+	echo '  * sdist: builds a source distribution.'
+	echo '  * bdist_wheel: builds a universal wheel distribution.'
+
 .PHONY: test
 test:
 	py.test
+
+.PHONY: tests
+tests: test
 
 .PHONY: clean
 clean:
