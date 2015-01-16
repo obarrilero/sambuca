@@ -1,5 +1,5 @@
-''' Implementation of the Sambuca forward model.
-'''
+"""Semi analytical Lee/Sambuca forward model.
+"""
 # Ensure compatibility of Python 2 with Python 3 constructs
 from __future__ import (
     absolute_import,
@@ -39,28 +39,35 @@ def forward_model(
         offnad=10):
     """Semi analytical Lee/Sambuca forward model.
 
-    :param chl: Chlorophyll. Algal organic particles
-    :param cdom: Dissolved organic particulates
-    :param tr: Trypton or NAP (Non-Algal Particles)
-    :param h: Depth
-    :param q: Substrate proportion.
-            Substrate used = q*substrate1 + (1-q)*substrate2
-    :param substrate1:
-    :param substrate2:
-    :param wav:
-    :param awater: SIOP...
-    :param aphy_star: SIOP...
-    :param d_wls: number of spectral bands
-    :param x_ph_lambda0x:
-    :param x_tr_lambda0x:
-    :param sc:
-    :param str_:
-    :param a_tr_lambda0tr:
-    :param y:
-    :param lambda0cdom: Reference frequency?
-    :param a_cdom_lambda0cdom:
-    :param theta_air: solar zenith
-    :param offnad: off-nadir angle
+    TODO: Extended description goes here.
+
+    Args:
+        chl (float): Chlorophyll. Algal organic particles
+        cdom (float): Dissolved organic particulates
+        tr (float): Trypton or NAP (Non-Algal Particles)
+        h (float): Depth
+        q (float): Substrate proportion, used to generate a convex combination
+            of substrate1 and substrate2.
+        substrate1 (array-like):
+        substrate2 (array-like):
+        wav (array-like):
+        awater (array-like): SIOP...
+        aphy_star (array-like): SIOP...
+        num_bands (int): number of spectral bands
+        x_ph_lambda0x (float, optional):
+        x_tr_lambda0x (float, optional):
+        sc (float, optional):
+        str_ (float, optional):
+        a_tr_lambda0tr (float, optional):
+        y (float, optional):
+        lambda0cdom (float, optional): Reference frequency?
+        a_cdom_lambda0cdom (float, optional):
+        theta_air (float, optional): solar zenith
+        offnad (float, optional): off-nadir angle
+
+    Returns:
+        ndarray: The modelled spectra with num_bands bands.
+
     """
     # pylint: disable=too-many-arguments
     # pylint: disable=invalid-name

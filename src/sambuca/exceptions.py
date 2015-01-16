@@ -22,7 +22,5 @@ class SambucaException(Exception):
 
 
 class UnsupportedDataFormatError(SambucaException):
-    """The file format is not supported by Sambuca.
-
-    """
+    """The file format is not supported by Sambuca."""
     pass

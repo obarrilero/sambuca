@@ -1,5 +1,5 @@
-''' Sambuca module
-'''
+""" Sambuca module
+"""
 # Ensure compatibility of Python 2 with Python 3 constructs
 from __future__ import (
     absolute_import,

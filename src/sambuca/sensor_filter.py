@@ -1,5 +1,5 @@
-''' Sambuca Sensor Filtering
-'''
+""" Sambuca Sensor Filtering
+"""
 # Ensure compatibility of Python 2 with Python 3 constructs
 from __future__ import (
     absolute_import,
@@ -15,13 +15,15 @@ import numpy as np
 
 
 def sensor_filter_ml(spectra, filter_):
-    # TODO: fix this function description. My attempt babbles!
-    """sensor_filter_ml
-    Sensor filter, resamples the input spectra using the spectral
-    response function.
+    """Resamples a spectra using the given spectral response filter.
 
-    :param spectra: the input spectra
-    :param filter_: spectral response function
+    Args:
+        spectra (array-like): The input spectra.
+        filter_ (matrix-like): The spectral response filter.
+
+    Returns:
+        ndarray: The resampled spectra.
+
     """
 
     return np.dot(spectra, filter_) / filter_.sum(0)
