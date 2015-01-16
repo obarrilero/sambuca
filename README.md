@@ -9,14 +9,13 @@ environment being used during pre-release development on CSIRO systems.
 > **note**
 >
 > Sambuca development is using virtual environments to facilitate
->
-> :   testing and development. To enable use of the optimised numpy and
->     scipy packages, the virtual environment is created with
->     `--system-site-packages`. However, for testing the package
->     installation and dependencies, a clean virtual environment should
->     be used. The goal is to create a Sambuca package that will install
->     cleanly using standard Python tools and have it "just work".
->
+> testing and development. To enable use of the optimised numpy and
+> scipy packages, the virtual environment is created with
+> `--system-site-packages`. However, for testing the package
+> installation and dependencies, a clean virtual environment should be
+> used. The goal is to create a Sambuca package that will install
+> cleanly using standard Python tools and have it "just work".
+
 Once only
 ---------
 
