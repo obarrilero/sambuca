@@ -16,6 +16,8 @@ from builtins import *
 from collections import namedtuple
 import numpy as np
 
+# TODO: Implement separate error functions for use when only one error term is
+# required. They may be *slightly* faster.
 
 def error_all(observed_spectra, modelled_spectra, noise=None):
     # TODO: Fix the doc string. Update descriptions and add return values.
