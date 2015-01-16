@@ -1,5 +1,0 @@
-sambuca
-=============================
-
-.. automodule:: sambuca
-    :members:
