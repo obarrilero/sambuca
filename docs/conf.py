@@ -21,14 +21,9 @@ master_doc = 'index'
 project = u'Sambuca'
 copyright = u'2014-15, CSIRO'
 version = release = '0.1.0'
-
-# TODO: vanilla for now, sort out themes later
-# import sphinx_py3doc_enhanced_theme
-# html_theme = "sphinx_py3doc_enhanced_theme"
-# html_theme_path = [sphinx_py3doc_enhanced_theme.get_html_theme_path()]
-
 pygments_style = 'trac'
 templates_path = ['.']
+html_theme = 'default'
 html_use_smartypants = True
 html_last_updated_fmt = '%b %d, %Y'
 html_split_index = True
