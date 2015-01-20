@@ -6,7 +6,6 @@ from .forward_model import forward_model
 from .sensor_filter import apply_sensor_filter
 from .error import error_all
 
-from . import sambuca
 
 # Versioning: major.minor.patch
 # major: increment on a major version. Must be changed when the API changes in
