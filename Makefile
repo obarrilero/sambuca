@@ -33,7 +33,7 @@ tests: test
 
 .PHONY: clean
 clean:
-	rm -rf build/ htmlcov/
+	rm -rf build/
 	find ./src/ -name "__pycache__" -exec rm -rf {} \;
 	find ./src/ -name "*.pyc" -exec rm -rf {} \;
 
@@ -70,7 +70,7 @@ html:
 latex:
 	sphinx-build -b latex docs build/docs/latex
 
-pdf: latex 
+pdf: latex
 	$(MAKE) -C build/docs/latex all-pdf
 	mkdir -p ./build/docs/pdf/
 	mv build/docs/latex/*.pdf build/docs/pdf/
