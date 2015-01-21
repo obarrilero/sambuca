@@ -116,7 +116,6 @@ setup(
             'check-manifest',
             'sphinx',
             'sphinxcontrib-napoleon',
-            'sphinx-py3doc-enhanced-theme',
             'wheel',
         ],
         'test': [
