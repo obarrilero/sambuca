@@ -64,23 +64,32 @@ Once only
 
         $ mkvirtualenv -a . --system-site-packages sambuca
 
-10. Install the sambuca and sambuca\_agdc packages into your virtual
-    environment in development mode. This makes the packages available
-    via symlinks to your development code, so that code changes are
-    reflected in the package without reinstallation (although you need
-    to restart your python environment, or use the IPython `%autoreload`
-    extension):
+10. Ensure the virtual environment is activated:
+
+        $ workon sambuca
+
+11. Install the sambuca and sambuca\_agdc packages and dependencies into
+    your virtual environment in development mode. This makes the
+    packages available via symlinks to your development code, so that
+    code changes are reflected in the package without reinstallation
+    (although you need to restart your python environment, or use the
+    IPython `%autoreload` extension).
+
+    The makefile contains a workaround to the issue with sphinx and
+    pytest that occurs when the --system-site-packages flag was used to
+    create the virtual environment. The issue occurs if pytest or sphinx
+    are available in the system packages, as they cannot load plugins
+    that have been installed locally to the virtual environment. For
+    this reason, the makefile forces these packages to be installed
+    locally while still allowing access to the optimised numpy and scipy
+    packages from the system:
 
         $ workon sambuca
         $ cdproject
-        $ python setup.py develop
-
-11. Install additional packages specified in the setup.py script:
-
         $ cd sambuca
-        $ pip install --upgrade -e.[dev,test]
+        $ make sitepkg-develop
         $ cd ../sambuca_agdc
-        $ pip install --upgrade -e.[dev,test]
+        $ make sitepkg-develop
 
 Every time
 ----------
@@ -140,9 +149,9 @@ minimum the following targets:
     virtual environment (be sure to activate it first).
 3.  develop: installs sambuca in development mode.
 4.  lint: runs pylint.
-5.  htmldocs: builds the HTML documentation.
-6.  pdfdocs: builds the documentation in PDF format.
-7.  latexdocs: builds LaTeX source, used to generate other formats.
+5.  html: builds the HTML documentation.
+6.  pdf: builds the documentation in PDF format.
+7.  latex: builds LaTeX source, used to generate other formats.
 8.  alldocs: builds all documentation formats.
 9.  sdist: builds a source distribution.
 10. bdist\_wheel: builds a universal wheel distribution.

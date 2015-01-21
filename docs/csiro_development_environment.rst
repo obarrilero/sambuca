@@ -59,22 +59,30 @@ Once only
 
         $ mkvirtualenv -a . --system-site-packages sambuca
 
-9.  Install the sambuca and sambuca_agdc packages into your virtual environment
-    in development mode. This makes the packages available via symlinks to your
-    development code, so that code changes are reflected in the package without
-    reinstallation (although you need to restart your python environment, or use
-    the IPython ``%autoreload`` extension)::
+9.  Ensure the virtual environment is activated::
+
+        $ workon sambuca
+
+10. Install the sambuca and sambuca_agdc packages and dependencies into your
+    virtual environment in development mode.  This makes the packages available
+    via symlinks to your development code, so that code changes are reflected in
+    the package without reinstallation (although you need to restart your python
+    environment, or use the IPython ``%autoreload`` extension).
+
+    The makefile contains a workaround to the issue with sphinx and pytest that
+    occurs when the `--system-site-packages` flag was used to create the virtual
+    environment. The issue occurs if pytest or sphinx are available in the
+    system packages, as they cannot load plugins that have been installed
+    locally to the virtual environment. For this reason, the makefile forces
+    these packages to be installed locally while still allowing access to the
+    optimised numpy and scipy packages from the system::
 
         $ workon sambuca
         $ cdproject
-        $ python setup.py develop
-
-10. Install additional packages specified in the setup.py script::
-
         $ cd sambuca
-        $ pip install --upgrade -e.[dev,test]
+        $ make sitepkg-develop
         $ cd ../sambuca_agdc
-        $ pip install --upgrade -e.[dev,test]
+        $ make sitepkg-develop
 
 Every time
 ----------
@@ -121,7 +129,7 @@ A helper script makes this easier.
 
 Using the MakeFile
 ------------------
-A makefile is in the root folder. It is intended to simply common development 
+A makefile is in the root folder. It is intended to simply common development
 tasks. Using it is optional. The makefile supports at a minimum the following
 targets:
 
