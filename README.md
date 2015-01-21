@@ -76,11 +76,11 @@ Once only
     IPython `%autoreload` extension).
 
     The makefile contains a workaround to the issue with sphinx and
-    pytest that occurs when the --system-site-packages flag was used to
-    create the virtual environment. The issue occurs if pytest or sphinx
-    are available in the system packages, as they cannot load plugins
-    that have been installed locally to the virtual environment. For
-    this reason, the makefile forces these packages to be installed
+    pytest that occurs when the `--system-site-packages` flag was used
+    to create the virtual environment. The issue occurs if pytest or
+    sphinx are available in the system packages, as they cannot load
+    plugins that have been installed locally to the virtual environment.
+    For this reason, the makefile forces these packages to be installed
     locally while still allowing access to the optimised numpy and scipy
     packages from the system:
 
