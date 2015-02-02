@@ -1,0 +1,17 @@
+bumpversion>=0.5.1
+cov-core>=1.15.0
+coverage>=3.7.1
+future>=0.14.3
+ipython>=2.3.1
+matplotlib>=1.4.2
+numpy>=1.9.1
+pandas>=0.15.2
+Pygments>=2.0.2
+pylint>=1.4.1
+pyparsing>=2.0.3
+pytest>=2.6.4
+pytest-cov>=1.8.1
+pytest-sugar>=0.3.6
+python-dateutil>=2.4.0
+scipy>=0.15.1
+spectral>=0.16.1
