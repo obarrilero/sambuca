@@ -4,14 +4,12 @@ from __future__ import (
     division,
     print_function,
     unicode_literals)
-from builtins import range
 
 import sambuca as sb
 import numpy as np
 import spectral.io.envi as envi
 from scipy.io import loadmat
 from pkg_resources import resource_filename
-import pytest
 
 
 class TestSensorFilter(object):
