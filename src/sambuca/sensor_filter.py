@@ -19,11 +19,14 @@ def apply_sensor_filter(spectra, filter_):
 
     Args:
         spectra (array-like): The input spectra.
-        filter_ (matrix-like): The spectral response filter.
+        filter_ (matrix-like): The spectral response filter matrix.
+            The first dimension determines the number of output bands.
+            The second dimension must match the number of bands in the input
+            spectra.
 
     Returns:
         ndarray: The resampled spectra.
 
     """
 
-    return np.dot(spectra, filter_) / filter_.sum(0)
+    return np.dot(filter_, spectra) / filter_.sum(1)
