@@ -18,7 +18,7 @@ import numpy as np
 def forward_model(
         chl,
         cdom,
-        tr,
+        nap,
         h,
         q,
         substrate1,
@@ -40,20 +40,21 @@ def forward_model(
     """Semi analytical Lee/Sambuca forward model.
 
     TODO: Extended description goes here.
+    TODO: For those arguments which have units, the units should be stated.
 
     Args:
-        chl (float): Chlorophyll. Algal organic particles
-        cdom (float): Dissolved organic particulates
-        tr (float): Trypton or NAP (Non-Algal Particles)
-        h (float): Depth
+        chl (float): Concentration of chlorophyll(algal organic particles).
+        cdom (float): Concentration of coloured dissolved organic particulates.
+        nap (float): Concentration of non-algal particles, (also known an Tripton in some literature).
+        h (float): Depth.
         q (float): Substrate proportion, used to generate a convex combination
             of substrate1 and substrate2.
-        substrate1 (array-like):
-        substrate2 (array-like):
+        substrate1 (array-like): A benthic substrate.
+        substrate2 (array-like): A benthic substrate.
         wav (array-like):
-        awater (array-like): SIOP...
-        aphy_star (array-like): SIOP...
-        num_bands (int): number of spectral bands
+        awater (array-like): Absorption coefficient of pure water
+        aphy_star (array-like): Specific absorption of phytoplankton.
+        num_bands (int): The number of spectral bands.
         x_ph_lambda0x (float, optional):
         x_tr_lambda0x (float, optional):
         sc (float, optional):
@@ -85,7 +86,7 @@ def forward_model(
     # The wave lengths hardcoded here (550.00 and 546.00) are reference
     # wavelengths that are are actually part of the user defined SIOP set
     # TODO: 550 == lambda0cdom?
-    # TODO: what is the name of the second reference frequency?
+    # TODO: what is the name of the second reference frequency? Arnold suggested it be made into an argument, but I don't know what to call it.
     # TODO: I think this direct port from Matlab is creating too many
     # intermediate arrays
     # TODO: some terms are reused and could be calculated just once
@@ -95,8 +96,8 @@ def forward_model(
     bbph_star = x_ph_lambda0x * np.power(546. / wav, y)
     bbtr_star = x_tr_lambda0x * np.power(546. / wav, y)
 
-    a = awater + chl * aphy_star + cdom * acdom_star + tr * atr_star
-    bb = bbwater + chl * bbph_star + tr * bbtr_star
+    a = awater + chl * aphy_star + cdom * acdom_star + nap * atr_star
+    bb = bbwater + chl * bbph_star + nap * bbtr_star
 
     # Calculates total bottom reflectance from the two substrates and the
     # proportion of q and (1-q)
