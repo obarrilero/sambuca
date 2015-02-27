@@ -38,7 +38,7 @@ class TestForwardModel(object):
         modelled_spectra = sb.forward_model(
             chl=self.__data['chl'],
             cdom=self.__data['cdom'],
-            tr=self.__data['tr'],
+            nap=self.__data['tr'],
             h=self.__data['h'],
             q=self.__data['q'],
             substrate1=self.__data['substrate1'],
