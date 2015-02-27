@@ -87,9 +87,9 @@ Once only
         $ workon sambuca
         $ cdproject
         $ cd sambuca
-        $ make sitepkg-develop
+        $ make develop
         $ cd ../sambuca_agdc
-        $ make sitepkg-develop
+        $ make develop
 
 Every time
 ----------
