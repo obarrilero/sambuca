@@ -25,7 +25,7 @@ help:
 	echo '  * readme: For CSIRO Stash, builds the README.md file from ./docs/csiro_development_environment.rst'
 
 .PHONY: test
-test:
+test: lint
 	py.test
 
 .PHONY: tests

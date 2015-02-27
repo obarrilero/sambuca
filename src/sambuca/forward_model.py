@@ -45,7 +45,8 @@ def forward_model(
     Args:
         chl (float): Concentration of chlorophyll(algal organic particles).
         cdom (float): Concentration of coloured dissolved organic particulates.
-        nap (float): Concentration of non-algal particles, (also known an Tripton in some literature).
+        nap (float): Concentration of non-algal particles, (also known as
+        Tripton in some literature).
         h (float): Depth.
         q (float): Substrate proportion, used to generate a convex combination
             of substrate1 and substrate2.
@@ -86,10 +87,9 @@ def forward_model(
     # The wave lengths hardcoded here (550.00 and 546.00) are reference
     # wavelengths that are are actually part of the user defined SIOP set
     # TODO: 550 == lambda0cdom?
-    # TODO: what is the name of the second reference frequency? Arnold suggested it be made into an argument, but I don't know what to call it.
-    # TODO: I think this direct port from Matlab is creating too many
-    # intermediate arrays
-    # TODO: some terms are reused and could be calculated just once
+    # TODO: what is the name of the second reference frequency?
+    #   Arnold suggested it be made into an argument,
+    #   but I don't know what to call it.
     bbwater = (0.00194/2.) * np.power(lambda0cdom / wav, 4.32)
     acdom_star = a_cdom_lambda0cdom * np.exp(-sc * (wav - lambda0cdom))
     atr_star = a_tr_lambda0tr * np.exp(-str_ * (wav - lambda0cdom))
@@ -109,7 +109,6 @@ def forward_model(
     du_bottom = 1.04 * np.power(1. + (5.4 * u), 0.5)
 
     rrsdp = (0.084 + 0.17 * u) * u
-    # TODO: Ask Steve why these are unused
     # kd = kappa * (1.0 / np.cos(thetaw))
     # kuc = kappa * (du_column / np.cos(thetao))
     # kub = kappa * (du_bottom / np.cos(thetao))
