@@ -15,3 +15,5 @@ __pycache__/
 # PyCharm Project files contain local settings, and so are not appropriate for Git
 .idea/
 *.dat
+
+reference/wl_alos_data/outputs/closed.*
