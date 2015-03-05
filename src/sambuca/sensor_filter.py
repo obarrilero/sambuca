@@ -14,15 +14,18 @@ from builtins import *
 import numpy as np
 
 
+# TODO: Do I need to rename this function?
 def apply_sensor_filter(spectra, filter_):
-    """Resamples a spectra using the given spectral response filter.
+    """Resamples a remotely-sensed reflectance spectra using the given spectral
+    sensitivity curves.
 
     Args:
-        spectra (array-like): The input spectra.
-        filter_ (matrix-like): The spectral response filter matrix.
+        spectra (array-like): The input reflectance spectra.
+        filter_ (matrix-like): The spectral sensitivity matrix.
             The first dimension determines the number of output bands.
-            The second dimension must match the number of bands in the input
-            spectra.
+            The second dimension represents the proportional contribution of
+            each of the input bands to an output band. The size must match the
+            number of bands in the input spectra.
 
     Returns:
         ndarray: The resampled spectra.
