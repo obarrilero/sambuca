@@ -72,7 +72,6 @@ class TestErrorFunctions(object):
         assert np.allclose(actual.distance_alpha_f, expected_distance_alpha_f)
         assert np.allclose(actual.distance_f, expected_distance_f)
         assert np.allclose(actual.distance_lsq, expected_distance_lsq)
-        assert np.allclose(actual.error_af, expected_error_af)
 
         # The IDL code was returning some identical values with different names
         # These tests ensure that we still have access to all the required
@@ -92,10 +91,49 @@ class TestErrorFunctions(object):
         assert np.allclose(actual.distance_alpha_f, expected_distance_alpha_f)
         assert np.allclose(actual.distance_f, expected_distance_f)
         assert np.allclose(actual.distance_lsq, expected_distance_lsq)
-        assert np.allclose(actual.error_af, expected_error_af)
 
         # The IDL code was returning some identical values with different names
         # These tests ensure that we still have access to all the required
         # values
         assert np.allclose(actual.distance_alpha, expected_error_a)
         assert np.allclose(actual.distance_f, expected_error_f)
+
+    def test_distance_alpha(self):
+        os = self.__noisedata['observed_spectra']
+        ms = self.__noisedata['modelled_spectra']
+        nedr = self.__noisedata['noiserrs']
+        expected = self.__noisedata['distance_alpha']
+
+        actual = sb.distance_alpha(os, ms, nedr)
+
+        assert np.allclose(actual, expected)
+
+    def test_distance_alpha_f(self):
+        os = self.__noisedata['observed_spectra']
+        ms = self.__noisedata['modelled_spectra']
+        nedr = self.__noisedata['noiserrs']
+        expected = self.__noisedata['distance_alpha_f']
+
+        actual = sb.distance_alpha_f(os, ms, nedr)
+
+        assert np.allclose(actual, expected)
+
+    def test_distance_f(self):
+        os = self.__noisedata['observed_spectra']
+        ms = self.__noisedata['modelled_spectra']
+        nedr = self.__noisedata['noiserrs']
+        expected = self.__noisedata['distance_f']
+
+        actual = sb.distance_f(os, ms, nedr)
+
+        assert np.allclose(actual, expected)
+
+    def test_distance_lsq(self):
+        os = self.__noisedata['observed_spectra']
+        ms = self.__noisedata['modelled_spectra']
+        nedr = self.__noisedata['noiserrs']
+        expected = self.__noisedata['distance_lsq']
+
+        actual = sb.distance_lsq(os, ms, nedr)
+
+        assert np.allclose(actual, expected)

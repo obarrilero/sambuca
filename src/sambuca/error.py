@@ -11,22 +11,21 @@ from __future__ import (
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
 # pylint: disable=redefined-builtin
+# pylint: disable=no-member
 from builtins import *
 
 from collections import namedtuple
 import numpy as np
 
-# TODO: Implement separate error functions for use when only one error term is
-# required. They may be *slightly* faster.
 
-def error_all(observed_spectra, modelled_spectra, noise=None):
+def error_all(observed_rrs, modelled_rrs, nedr=None):
     # TODO: Fix the doc string. Update descriptions and add return values.
     """Calculates all common error terms, returning them in a named tuple.
 
     Args:
-        observed_spectra: The observed spectra.
-        modelled_spectra: The modelled spectra.
-        noise: Optional spectral noise values.
+        observed_rrs: The observed reflectance(remotely-sensed).
+        modelled_rrs: The modelled reflectance(remotely-sensed).
+        nedr: Optional. Noise equivalent difference in reflectance.
 
     Returns:
         namedtuple: The error terms in a named tuple:
@@ -35,35 +34,34 @@ def error_all(observed_spectra, modelled_spectra, noise=None):
         - **distance_alpha_f** -- Describe me!!!
         - **distance_f** -- Describe me!!!
         - **distance_lsq** -- Describe me!!!
-        - **error_af** -- Describe me!!!
     """
 
     # LSQ = sum((observed_spectra - modelled_spectra).^2)^0.5;
     lsq = np.power(
         np.sum(
             np.power(
-                observed_spectra -
-                modelled_spectra,
+                observed_rrs -
+                modelled_rrs,
                 2)),
         0.5)
 
-    if noise is not None:
+    if nedr is not None:
         # deliberately avoiding an in-place divide as I want a copy of the
         # spectra to avoid side-effects due to pass by reference semantics
-        observed_spectra = observed_spectra / noise
-        modelled_spectra = modelled_spectra / noise
+        observed_rrs = observed_rrs / nedr
+        modelled_rrs = modelled_rrs / nedr
 
     f_val = np.power(
         np.sum(
             np.power(
-                observed_spectra -
-                modelled_spectra,
+                observed_rrs -
+                modelled_rrs,
                 2)),
-        0.5) / np.sum(observed_spectra)
+        0.5) / np.sum(observed_rrs)
 
-    topline = np.sum(observed_spectra * modelled_spectra)
-    botline1 = np.power(np.sum(np.power(observed_spectra, 2)), 0.5)
-    botline2 = np.power(np.sum(np.power(modelled_spectra, 2)), 0.5)
+    topline = np.sum(observed_rrs * modelled_rrs)
+    botline1 = np.power(np.sum(np.power(observed_rrs, 2)), 0.5)
+    botline2 = np.power(np.sum(np.power(modelled_rrs, 2)), 0.5)
 
     rat = (topline / (botline1 * botline2)
            if botline1 > 0 and botline2 > 0
@@ -75,15 +73,66 @@ def error_all(observed_spectra, modelled_spectra, noise=None):
                          ['distance_alpha',
                           'distance_alpha_f',
                           'distance_f',
-                          'distance_lsq',
-                          'error_af'])
+                          'distance_lsq'])
     results.distance_lsq = lsq
     results.distance_alpha = alpha_val
     results.distance_f = f_val
     results.distance_alpha_f = f_val * alpha_val
-    # error_a = alpha_val
-    # error_f = f_val
-    # TODO: why is this fudge factor added to alpha_val?
-    results.error_af = f_val*(0.00000001+alpha_val)
 
     return results
+
+def distance_alpha(observed_rrs, modelled_rrs, nedr=None):
+    # TODO: complete the description
+    """Calculates TODO
+
+    Args:
+        observed_rrs: The observed reflectance(remotely-sensed).
+        modelled_rrs: The modelled reflectance(remotely-sensed).
+        noise: Optional spectral noise values.
+
+    Returns:
+        - **distance_alpha** -- Describe me!!!
+    """
+    return error_all(observed_rrs, modelled_rrs, nedr).distance_alpha
+
+def distance_alpha_f(observed_rrs, modelled_rrs, nedr=None):
+    # TODO: complete the description
+    """Calculates TODO
+
+    Args:
+        observed_rrs: The observed reflectance(remotely-sensed).
+        modelled_rrs: The modelled reflectance(remotely-sensed).
+        noise: Optional spectral noise values.
+
+    Returns:
+        - **distance_alpha_f** -- Describe me!!!
+    """
+    return error_all(observed_rrs, modelled_rrs, nedr).distance_alpha_f
+
+def distance_lsq(observed_rrs, modelled_rrs, nedr=None):
+    # TODO: complete the description
+    """Calculates TODO
+
+    Args:
+        observed_rrs: The observed reflectance(remotely-sensed).
+        modelled_rrs: The modelled reflectance(remotely-sensed).
+        noise: Optional spectral noise values.
+
+    Returns:
+        - **distance_lsq** -- Describe me!!!
+    """
+    return error_all(observed_rrs, modelled_rrs, nedr).distance_lsq
+
+def distance_f(observed_rrs, modelled_rrs, nedr=None):
+    # TODO: complete the description
+    """Calculates TODO
+
+    Args:
+        observed_rrs: The observed reflectance(remotely-sensed).
+        modelled_rrs: The modelled reflectance(remotely-sensed).
+        noise: Optional spectral noise values.
+
+    Returns:
+        - **distance_f** -- Describe me!!!
+    """
+    return error_all(observed_rrs, modelled_rrs, nedr).distance_f
