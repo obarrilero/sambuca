@@ -68,7 +68,8 @@ def forward_model(
         offnad (float, optional): off-nadir angle
 
     Returns:
-        ndarray: The modelled spectra with num_bands bands.
+        ndarray: The modelled remotely-sensed reflectance spectra with num_bands
+        bands.
 
     """
     # pylint: disable=too-many-arguments
