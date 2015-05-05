@@ -15,6 +15,7 @@ help:
 	echo '  * sitepkg-develop: Use this only when you are using a virtual environment created with the --system-site-packages flag. It forcibly installs some packages into the virtual environment to work around issues where a package and its plugins are installed to different locations'
 	echo '  * install-deps: installs development and test dependencies into your virtual environment.'
 	echo '  * develop: installs sambuca in development mode.'
+	echo '  * test: runs py.test.'
 	echo '  * lint: runs pylint.'
 	echo '  * html: builds the HTML documentation.'
 	echo '  * pdf: builds the documentation in PDF format.'
