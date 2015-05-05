@@ -102,7 +102,7 @@ Every time
     install with pip will be installed into the virtual environment.
     System packages are still available.
 
-5.  To deactivate the virtual environment, simply use the
+5.  To deactivate the virtual environment, use the
     virtualenvwrapper command (or simply close the terminal window)::
 
         $ deactivate
