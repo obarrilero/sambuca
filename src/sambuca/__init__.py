@@ -11,6 +11,8 @@ from .error import \
     distance_lsq, \
     distance_alpha_f
 
+__author__ = 'Daniel Collins'
+__email__ = 'daniel.collins@csiro.au'
 
 # Versioning: major.minor.patch
 # major: increment on a major version. Must be changed when the API changes in
