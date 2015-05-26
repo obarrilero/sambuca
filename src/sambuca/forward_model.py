@@ -18,6 +18,9 @@ import math
 import numpy as np
 
 
+# pylint: disable=too-many-arguments
+# pylint: disable=invalid-name
+# pylint: disable=too-many-locals
 def forward_model(
         chl,
         cdom,
@@ -46,38 +49,47 @@ def forward_model(
     TODO: For those arguments which have units, the units should be stated.
 
     Args:
-        chl (float): Concentration of chlorophyll(algal organic particles).
+        chl (float): Concentration of chlorophyll (algal organic particles).
         cdom (float): Concentration of coloured dissolved organic particulates.
-        nap (float): Concentration of non-algal particles, (also known as
-        Tripton in some literature).
+        nap (float): Concentration of non-algal particles,
+            (also known as Tripton/tr in some literature).
         h (float): Depth.
         q (float): Substrate proportion, used to generate a convex combination
             of substrate1 and substrate2.
         substrate1 (array-like): A benthic substrate.
         substrate2 (array-like): A benthic substrate.
-        wav (array-like):
+        wav (array-like): TODO
         awater (array-like): Absorption coefficient of pure water
         aphy_star (array-like): Specific absorption of phytoplankton.
         num_bands (int): The number of spectral bands.
-        x_ph_lambda0x (float, optional):
-        x_tr_lambda0x (float, optional):
-        sc (float, optional):
-        str_ (float, optional):
-        a_tr_lambda0tr (float, optional):
-        y (float, optional):
+        x_ph_lambda0x (float, optional): specific backscatter of chlorophyl
+            at lambda0x.
+        x_tr_lambda0x (float, optional): specific backscatter of tripton
+            at lambda0x.
+        sc (float, optional): slope of cdom absorption
+        str_ (float, optional): slope of NAP/tripton absorption
+        a_tr_lambda0tr (float, optional): TODO
+        y (float, optional): TODO
         lambda0cdom (float, optional): Reference frequency?
         a_cdom_lambda0cdom (float, optional):
         theta_air (float, optional): solar zenith
         offnad (float, optional): off-nadir angle
 
     Returns:
-        ndarray: The modelled remotely-sensed reflectance spectra with num_bands
-        bands.
+        Dictionary: A dictionary containing the model outputs.
+
+        TODO: Will it be faster to only calculate requested outputs from a set?
+
+        - **substrateR** (*ndarray*): The combined substrate.
+        - closed_spectrum (ndarray): Modelled remotely-sensed reflectance.
+        - closed_deep_spectrum (ndarray): Modelled optically-deep
+          remotely-sensed reflectance.
+        - kd (ndarray): TODO
+        - Kuc (ndarray): TODO
+        - Kub (ndarray): TODO
+
 
     """
-    # pylint: disable=too-many-arguments
-    # pylint: disable=invalid-name
-    # pylint: disable=too-many-locals
 
     assert len(substrate1) == num_bands
     assert len(substrate2) == num_bands
