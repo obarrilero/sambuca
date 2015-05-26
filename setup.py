@@ -99,9 +99,9 @@ setup(
     # https://packaging.python.org/en/latest/technical.html#install-requires-vs-requirements-files
     install_requires=[
         'future',
-        'scipy',
-        'numpy',
         # 'GDAL',
+        'numpy',
+        'scipy',
         'spectral',
     ],
 
@@ -112,8 +112,10 @@ setup(
     extras_require={
         'dev': [
             'bumpversion',
-            'pylint',
             'check-manifest',
+            'ipython',
+            'ipdb',
+            'pylint',
             'sphinx',
             'sphinxcontrib-napoleon',
             'wheel',

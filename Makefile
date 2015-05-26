@@ -42,14 +42,16 @@ clean:
 install-deps:
 	pip install -e.[dev,test]
 
+.PHONY: develop
 develop: install-deps
 	python setup.py develop
 
 #--system-site-packages plugin issue workaround
 # if additional plugins to sphinx and pytest are added to setup.py, they must
 # also be added here.
+.PHONY: sitepkg-develop
 sitepkg-develop: develop
-	pip install --ignore-installed sphinx sphinxcontrib-napoleon pytest pytest-cov pytest-sugar
+	pip install --ignore-installed sphinx sphinxcontrib-napoleon pytest pytest-cov pytest-sugar ipython ipdb
 
 .PHONY: lint
 lint:
