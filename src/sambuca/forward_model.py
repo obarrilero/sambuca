@@ -138,4 +138,6 @@ def forward_model(
            ((1. / math.pi) * r *
             np.exp(-(inv_cos_thetaw + du_bottom_scaled) * kappa_h)))
 
-    return rrs
+    # TODO: generate and fill in all results
+    results = {}
+    return results
