@@ -29,9 +29,6 @@ help:
 test: lint
 	py.test
 
-.PHONY: tests
-tests: test
-
 .PHONY: clean
 clean:
 	rm -rf build/
