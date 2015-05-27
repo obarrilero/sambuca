@@ -124,6 +124,7 @@ def forward_model(
     du_column = 1.03 * np.power(1. + (2.4 * u), 0.5)
     du_bottom = 1.04 * np.power(1. + (5.4 * u), 0.5)
 
+    # is this 'reflectance remotely sensed deep?'
     rrsdp = (0.084 + 0.17 * u) * u
     # kd = kappa * (1.0 / np.cos(thetaw))
     # kuc = kappa * (du_column / np.cos(thetao))
