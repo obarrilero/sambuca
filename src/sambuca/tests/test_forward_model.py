@@ -10,7 +10,7 @@ from pkg_resources import resource_filename
 
 import numpy as np
 import sambuca as sb
-from pytest import fail
+from pytest import fail, skip
 from scipy.io import readsav
 
 
@@ -19,41 +19,99 @@ class TestForwardModel(object):
     """Sambuca forward model test class
     """
 
-    def setup_class(self):
+    @classmethod
+    def setup_class(cls):
         # load the test values
         filename = resource_filename(
             sb.__name__,
             'tests/data/_F1nm_H25_a_Non_UQ02_MB_RC__OS_SHon.sav')
-        self.data = readsav(filename)
+        cls.data = readsav(filename)
+        cls._unpack_parameters()
+        cls._unpack_input_spectra()
+        cls._unpack_input_params()
+        cls._unpack_results()
+
+    @classmethod
+    def _unpack_parameters(cls):
+        # The IDL code has the parameters packed into a structure called ZZ.
+        # Magic numbers here are drawn directly from the IDL code.
+        zz = cls.data.zz
+        cls.chl = zz[1]
+        cls.cdom = zz[2]
+        cls.nap = zz[3]
+        cls.x_ph_lambda0x = zz[4]
+        cls.x_tr_lambda0x = zz[5]
+        cls.Sc = zz[6]
+        cls.Str = zz[7]
+        cls.a_tr_lambda0tr = zz[8]
+        cls.Y = zz[9]
+        cls.q1 = zz[10]
+        cls.q2 = zz[11]
+        cls.q3 = zz[12]
+        cls.H = zz[13]
+        cls.Qwater = zz[14]
+
+    @classmethod
+    def _unpack_input_spectra(cls):
+        s = cls.data.sambuca.input_spectra[0]
+        cls.wav = s.wl[0]
+        cls.awater = s.awater[0]
+        # cls.bbwater = s.bbwater[0]
+        cls.aphy_star = s.aphy_star[0]
+        # cls.acdom_star = s.acdom_star[0]
+
+    @classmethod
+    def _unpack_input_params(cls):
+        p = cls.data.sambuca.input_params[0]
+        cls.theta_air = p.theta_air
+        cls.lambda0cdom = p.lambda0cdom
+        cls.lambda0tr = p.lambda0tr
+        cls.lambda0x = p.lambda0x
+
+    @classmethod
+    def _unpack_results(cls):
+        r = cls.data.spectra
+        cls.expected_substrate_r = r.substrater[0]
+        cls.expected_closed_spectrum = r.R0[0]
+        cls.expected_closed_spectrum_deep = r.R0DP[0]
+        cls.expected_kd = r.kd[0]
+        cls.expected_kub = r.kub[0]
+        cls.expected_kuc = r.kuc[0]
 
     def test_validate_data(self):
-        # fail()
         assert self.data
-
-        # bands = self.__data['d_wls']
-        # assert len(self.__data['awater']) == bands
-        # assert len(self.__data['wav']) == bands
-        # assert len(self.__data['substrate1']) == bands
-        # assert len(self.__data['substrate2']) == bands
-        # assert len(self.__data['aphy_star']) == bands
+        assert len(self.data.zz) == 15
+        spectra = [
+            self.wav,
+            self.awater,
+            self.aphy_star,
+            self.expected_substrate_r,
+            self.expected_closed_spectrum,
+            self.expected_closed_spectrum_deep,
+            self.expected_kd,
+            self.expected_kub,
+            self.expected_kuc,
+        ]
+        for array in spectra:
+            assert len(array) == 551
 
     def test_substrate_r(self):
-        fail()
+        skip()
 
     def test_closed_spectrum(self):
-        fail()
+        skip()
 
     def test_closed_deep_spectrum(self):
-        fail()
+        skip()
 
     def test_kd(self):
-        fail()
+        skip()
 
     def test_kub(self):
-        fail()
+        skip()
 
     def test_kuc(self):
-        fail()
+        skip()
 
     # def test_forward_model_against_matlab_results(self):
         # expected_spectra = self.__data['modelled_spectra']
