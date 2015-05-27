@@ -80,7 +80,7 @@ def forward_model(
 
         TODO: Will it be faster to only calculate requested outputs from a set?
 
-        - **substrateR** (*ndarray*): The combined substrate.
+        - **substrate_r** (*ndarray*): The combined substrate.
         - closed_spectrum (ndarray): Modelled remotely-sensed reflectance.
         - closed_deep_spectrum (ndarray): Modelled optically-deep
           remotely-sensed reflectance.
@@ -98,7 +98,9 @@ def forward_model(
     assert len(aphy_star) == num_bands
 
     thetaw = math.asin(1 / 1.333 * math.sin(math.pi / 180. * theta_air))
-    thetao = math.asin(1 / 1.333 * math.sin(math.pi / 180. * offnad))
+    # TODO: Reconcile thetao calculation difference between IDL and Matlab
+    # thetao = math.asin(1 / 1.333 * math.sin(math.pi / 180. * offnad))
+    thetao = 0.0
 
     # The wave lengths hardcoded here (550.00 and 546.00) are reference
     # wavelengths that are are actually part of the user defined SIOP set
@@ -140,7 +142,9 @@ def forward_model(
             np.exp(-(inv_cos_thetaw + du_bottom_scaled) * kappa_h)))
 
     # TODO: generate and fill in all results
-    results = {}
+    results = {
+        'substrate_r' : r,
+    }
     return results
 
 # pylint: enable=too-many-arguments

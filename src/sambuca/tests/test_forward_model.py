@@ -26,13 +26,14 @@ class TestForwardModel(object):
             sb.__name__,
             'tests/data/_F1nm_H25_a_Non_UQ02_MB_RC__OS_SHon.sav')
         cls.data = readsav(filename)
-        cls._unpack_parameters()
-        cls._unpack_input_spectra()
-        cls._unpack_input_params()
-        cls._unpack_results()
+        cls.unpack_parameters()
+        cls.unpack_input_spectra()
+        cls.unpack_input_params()
+        cls.unpack_results()
+        cls.unpack_substrates()
 
     @classmethod
-    def _unpack_parameters(cls):
+    def unpack_parameters(cls):
         # The IDL code has the parameters packed into a structure called ZZ.
         # Magic numbers here are drawn directly from the IDL code.
         zz = cls.data.zz
@@ -52,7 +53,7 @@ class TestForwardModel(object):
         cls.Qwater = zz[14]
 
     @classmethod
-    def _unpack_input_spectra(cls):
+    def unpack_input_spectra(cls):
         s = cls.data.sambuca.input_spectra[0]
         cls.wav = s.wl[0]
         cls.awater = s.awater[0]
@@ -61,7 +62,7 @@ class TestForwardModel(object):
         # cls.acdom_star = s.acdom_star[0]
 
     @classmethod
-    def _unpack_input_params(cls):
+    def unpack_input_params(cls):
         p = cls.data.sambuca.input_params[0]
         cls.theta_air = p.theta_air
         cls.lambda0cdom = p.lambda0cdom
@@ -69,7 +70,15 @@ class TestForwardModel(object):
         cls.lambda0x = p.lambda0x
 
     @classmethod
-    def _unpack_results(cls):
+    def unpack_substrates(cls):
+        spectra = cls.data.sambuca.inputr[0].spectra[0]
+        # TODO: generate new test data that uses different substrates
+        # it appears that in the test I set up, the substrates are both the same
+        cls.substrate1 = spectra[:,0]
+        cls.substrate2 = spectra[:,0]
+
+    @classmethod
+    def unpack_results(cls):
         r = cls.data.spectra
         cls.expected_substrate_r = r.substrater[0]
         cls.expected_closed_spectrum = r.R0[0]
@@ -91,12 +100,41 @@ class TestForwardModel(object):
             self.expected_kd,
             self.expected_kub,
             self.expected_kuc,
+            self.substrate1,
+            self.substrate2,
         ]
         for array in spectra:
             assert len(array) == 551
 
+    def run_forward_model(self):
+        return sb.forward_model(
+            self.chl,
+            self.cdom,
+            self.nap,
+            self.H,
+            self.q1,
+            self.substrate1,
+            self.substrate2,
+            self.wav,
+            self.awater,
+            self.aphy_star,
+            551,
+            self.x_ph_lambda0x,
+            self.x_tr_lambda0x,
+            self.Sc,
+            self.Str,
+            self.a_tr_lambda0tr,
+            self.Y,
+            self.lambda0cdom,
+            self.theta_air,
+            # self.off_nadir,
+        )
+
     def test_substrate_r(self):
-        skip()
+        results = self.run_forward_model()
+        assert 'substrate_r' in results
+        assert np.allclose(results['substrate_r'][0], self.expected_substrate_r[0])
+        assert np.allclose(results['substrate_r'], self.expected_substrate_r)
 
     def test_closed_spectrum(self):
         skip()
