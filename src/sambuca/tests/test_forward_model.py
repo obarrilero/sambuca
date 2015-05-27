@@ -82,7 +82,7 @@ class TestForwardModel(object):
         r = cls.data.spectra
         cls.expected_substrate_r = r.substrater[0]
         cls.expected_closed_spectrum = r.R0[0]
-        cls.expected_closed_spectrum_deep = r.R0DP[0]
+        cls.expected_closed_deep_spectrum = r.R0DP[0]
         cls.expected_kd = r.kd[0]
         cls.expected_kub = r.kub[0]
         cls.expected_kuc = r.kuc[0]
@@ -97,7 +97,7 @@ class TestForwardModel(object):
             self.aphy_star,
             self.expected_substrate_r,
             self.expected_closed_spectrum,
-            self.expected_closed_spectrum_deep,
+            self.expected_closed_deep_spectrum,
             self.expected_kd,
             self.expected_kub,
             self.expected_kuc,
@@ -145,16 +145,28 @@ class TestForwardModel(object):
             self.expected_closed_spectrum)
 
     def test_closed_deep_spectrum(self):
-        skip()
+        results = self.run_forward_model()
+        assert np.allclose(
+            results['closed_deep_spectrum'],
+            self.expected_closed_deep_spectrum)
 
     def test_kd(self):
-        skip()
+        results = self.run_forward_model()
+        assert np.allclose(
+            results['kd'],
+            self.kd)
 
     def test_kub(self):
-        skip()
+        results = self.run_forward_model()
+        assert np.allclose(
+            results['kub'],
+            self.kub)
 
     def test_kuc(self):
-        skip()
+        results = self.run_forward_model()
+        assert np.allclose(
+            results['kuc'],
+            self.kuc)
 
     # def test_forward_model_against_matlab_results(self):
         # expected_spectra = self.__data['modelled_spectra']
