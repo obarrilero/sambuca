@@ -142,3 +142,7 @@ def forward_model(
     # TODO: generate and fill in all results
     results = {}
     return results
+
+# pylint: enable=too-many-arguments
+# pylint: enable=invalid-name
+# pylint: enable=too-many-locals
