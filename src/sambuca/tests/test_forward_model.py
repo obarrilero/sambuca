@@ -90,6 +90,7 @@ class TestForwardModel(object):
     def test_validate_data(self):
         assert self.data
         assert len(self.data.zz) == 15
+
         spectra = [
             self.wav,
             self.awater,
@@ -105,6 +106,8 @@ class TestForwardModel(object):
         ]
         for array in spectra:
             assert len(array) == 551
+
+        assert self.lambda0cdom == 440
 
     def run_forward_model(self):
         return sb.forward_model(
@@ -133,11 +136,13 @@ class TestForwardModel(object):
     def test_substrate_r(self):
         results = self.run_forward_model()
         assert 'substrate_r' in results
-        assert np.allclose(results['substrate_r'][0], self.expected_substrate_r[0])
         assert np.allclose(results['substrate_r'], self.expected_substrate_r)
 
     def test_closed_spectrum(self):
-        skip()
+        results = self.run_forward_model()
+        assert np.allclose(
+            results['closed_spectrum'],
+            self.expected_closed_spectrum)
 
     def test_closed_deep_spectrum(self):
         skip()
