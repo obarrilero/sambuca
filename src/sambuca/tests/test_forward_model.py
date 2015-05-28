@@ -89,6 +89,8 @@ class TestForwardModel(object):
         cls.expected_kd = r.kd[0]
         cls.expected_kub = r.kub[0]
         cls.expected_kuc = r.kuc[0]
+        cls.expected_a = r.a[0]
+        cls.expected_bb = r.bb[0]
 
     def test_validate_data(self):
         assert self.data

@@ -90,6 +90,8 @@ def forward_model(
         - kd (ndarray): TODO
         - Kuc (ndarray): TODO
         - Kub (ndarray): TODO
+        - a (ndarray): TODO
+        - bb (ndarray): TODO
 
 
     """
@@ -176,6 +178,8 @@ def forward_model(
         'kd': kd,
         'kuc': kuc,
         'kub': kub,
+        'a': a,
+        'bb': bb,
     }
     return results
 
