@@ -76,7 +76,7 @@ def forward_model(
         lambda0tr (float, optional): TODO
         lambda0x (float, optional): TODO
         a_cdom_lambda0cdom (float, optional):
-        theta_air (float, optional): solar zenith
+        theta_air (float, optional): solar zenith angle in degrees
         offnad (float, optional): off-nadir angle
 
     Returns:
@@ -101,9 +101,13 @@ def forward_model(
     assert len(awater) == num_bands
     assert len(aphy_star) == num_bands
 
+    # Sub-surface solar zenith angle in radians
+    # thetaw = math.asin(1 / 1.333 * math.sin(math.radians(theta_air)))
     thetaw = math.asin(1 / 1.333 * math.sin(math.pi / 180. * theta_air))
+
+    # Sub-surface viewing angle in radians
     # TODO: Reconcile thetao calculation difference between IDL and Matlab
-    # thetao = math.asin(1 / 1.333 * math.sin(math.pi / 180. * offnad))
+    # thetao = math.asin(1 / 1.333 * math.sin(math.radians(off_nadir))
     thetao = 0.0
 
     # Calculate derived SIOPS
@@ -142,11 +146,13 @@ def forward_model(
     # Remotely sensed reflectance for optically deep water
     rrsdp = (0.084 + 0.17 * u) * u
 
-    # kd = kappa * (1.0 / np.cos(thetaw))
-    # kuc = kappa * (du_column / np.cos(thetao))
-    # kub = kappa * (du_bottom / np.cos(thetao))
+    inv_cos_thetaw = 1.0 / math.cos(thetaw)
 
-    inv_cos_thetaw = 1. / math.cos(thetaw)
+    # TODO: descriptions of kd, kuc, kub
+    kd = kappa * inv_cos_thetaw
+    kuc = kappa * (du_column / math.cos(thetao))
+    kub = kappa * (du_bottom / math.cos(thetao))
+
     du_column_scaled = du_column / math.cos(thetao)
     du_bottom_scaled = du_bottom / math.cos(thetao)
     kappa_h = kappa * h
