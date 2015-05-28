@@ -125,9 +125,11 @@ def forward_model(
     a = awater + chl * aphy_star + cdom * acdom_star + nap * atr_star
     bb = bbwater + chl * bbph_star + nap * bbtr_star
 
-    # Calculates total bottom reflectance from the two substrates and the
-    # proportion of q and (1-q)
+    # Calculate total bottom reflectance from the two substrates and the
+    # substrate interpolation factor q
     r = q * substrate1 + (1. - q) * substrate2
+
+    # TODO: what are u and kappa?
     u = bb / (a + bb)
     kappa = a + bb
 
