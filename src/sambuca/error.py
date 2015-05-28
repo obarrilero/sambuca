@@ -2,21 +2,21 @@
 
     Used when assessing model closure during parameter estimation.
 """
-# Ensure compatibility of Python 2 with Python 3 constructs
+
+
 from __future__ import (
     absolute_import,
     division,
     print_function,
     unicode_literals)
-# pylint: disable=wildcard-import
-# pylint: disable=unused-wildcard-import
-# pylint: disable=redefined-builtin
-# pylint: disable=no-member
 from builtins import *
 
 from collections import namedtuple
+
 import numpy as np
 
+# pylint generates no-member warnings for valid named tuple members
+# pylint: disable=no-member
 
 def error_all(observed_rrs, modelled_rrs, nedr=None):
     # TODO: Fix the doc string. Update descriptions and add return values.

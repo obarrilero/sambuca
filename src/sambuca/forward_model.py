@@ -1,12 +1,7 @@
 """Semi analytical Lee/Sambuca forward model.
 """
 
-# Disable some pylint warnings caused by future and tkinter
-# pylint: disable=wildcard-import
-# pylint: disable=unused-wildcard-import
-# pylint: disable=redefined-builtin
 
-# Ensure compatibility of Python 2 with Python 3 constructs
 from __future__ import (
     absolute_import,
     division,
@@ -15,6 +10,7 @@ from __future__ import (
 from builtins import *
 
 import math
+
 import numpy as np
 
 
