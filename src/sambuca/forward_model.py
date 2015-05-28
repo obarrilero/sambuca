@@ -41,6 +41,7 @@ def forward_model(
         y=0.878138,
         lambda0cdom=550.0,
         lambda0tr=550.0,
+        lambda0x=546.0,
         a_cdom_lambda0cdom=1.0,
         theta_air=30,
         offnad=10):
@@ -73,6 +74,7 @@ def forward_model(
         y (float, optional): TODO
         lambda0cdom (float, optional): TODO
         lambda0tr (float, optional): TODO
+        lambda0x (float, optional): TODO
         a_cdom_lambda0cdom (float, optional):
         theta_air (float, optional): solar zenith
         offnad (float, optional): off-nadir angle
@@ -104,14 +106,21 @@ def forward_model(
     # thetao = math.asin(1 / 1.333 * math.sin(math.pi / 180. * offnad))
     thetao = 0.0
 
+    # Calculate derived SIOPS
+    # TODO: In the IDL code, these are calculated just once for a pixel.
     # TODO: should this be lambda0cdom, or hardcoded 550?
     # bbwater = (0.00194 / 2.0) * np.power(lambda0cdom / wav, 4.32)
     bbwater = (0.00194 / 2.0) * np.power(550.0 / wav, 4.32)  # Mobely, 1994
     acdom_star = a_cdom_lambda0cdom * np.exp(-sc * (wav - lambda0cdom))
     atr_star = a_tr_lambda0tr * np.exp(-str_ * (wav - lambda0tr))
-    bbph_star = x_ph_lambda0x * np.power(546. / wav, y)
-    bbtr_star = x_tr_lambda0x * np.power(546. / wav, y)
 
+    # Calculate backscatter
+    # backscatter due to phytoplankton
+    bbph_star = x_ph_lambda0x * np.power(lambda0x / wav, y)
+    # backscatter due to tripton
+    bbtr_star = x_tr_lambda0x * np.power(lambda0x / wav, y)
+
+    # TODO: what do a and bb represent?
     a = awater + chl * aphy_star + cdom * acdom_star + nap * atr_star
     bb = bbwater + chl * bbph_star + nap * bbtr_star
 
