@@ -102,13 +102,9 @@ def forward_model(
     # thetao = math.asin(1 / 1.333 * math.sin(math.pi / 180. * offnad))
     thetao = 0.0
 
-    # The wave lengths hardcoded here (550.00 and 546.00) are reference
-    # wavelengths that are are actually part of the user defined SIOP set
-    # TODO: 550 == lambda0cdom?
-    # TODO: what is the name of the second reference frequency?
-    #   Arnold suggested it be made into an argument,
-    #   but I don't know what to call it.
-    bbwater = (0.00194/2.) * np.power(lambda0cdom / wav, 4.32)
+    # TODO: should this be lambda0cdom, or hardcoded 550?
+    # bbwater = (0.00194 / 2.0) * np.power(lambda0cdom / wav, 4.32)
+    bbwater = (0.00194 / 2.0) * np.power(550.0 / wav, 4.32)
     acdom_star = a_cdom_lambda0cdom * np.exp(-sc * (wav - lambda0cdom))
     atr_star = a_tr_lambda0tr * np.exp(-str_ * (wav - lambda0cdom))
     bbph_star = x_ph_lambda0x * np.power(546. / wav, y)
