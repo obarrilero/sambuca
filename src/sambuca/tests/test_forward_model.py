@@ -183,24 +183,18 @@ class TestForwardModel(object):
             atol=self.atol,
             rtol=self.rtol)
 
-    # def test_forward_model_against_matlab_results(self):
-        # expected_spectra = self.__data['modelled_spectra']
+    def test_a(self):
+        results = self.run_forward_model()
+        assert np.allclose(
+            results['a'],
+            self.expected_a,
+            atol=self.atol,
+            rtol=self.rtol)
 
-        # modelled_spectra = sb.forward_model(
-            # chl=self.__data['chl'],
-            # cdom=self.__data['cdom'],
-            # nap=self.__data['tr'],
-            # h=self.__data['h'],
-            # q=self.__data['q'],
-            # substrate1=self.__data['substrate1'],
-            # substrate2=self.__data['substrate2'],
-            # wav=self.__data['wav'],
-            # awater=self.__data['awater'],
-            # aphy_star=self.__data['aphy_star'],
-            # num_bands=self.__data['d_wls'],)
-
-        # assert np.allclose(
-            # modelled_spectra,
-            # expected_spectra,
-            # rtol=1.e-5,
-            # atol=1.e-20)
+    def test_bb(self):
+        results = self.run_forward_model()
+        assert np.allclose(
+            results['bb'],
+            self.expected_bb,
+            atol=self.atol,
+            rtol=self.rtol)
