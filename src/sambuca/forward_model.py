@@ -164,7 +164,10 @@ def forward_model(
     # TODO: generate and fill in all results
     results = {
         'substrate_r': r,
-        'closed_spectrum': rrs,
+        # 'closed_spectrum': rrs,
+        'kd': kd,
+        'kuc': kuc,
+        'kub': kub,
     }
     return results
 

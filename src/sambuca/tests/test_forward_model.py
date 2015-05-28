@@ -155,19 +155,19 @@ class TestForwardModel(object):
         results = self.run_forward_model()
         assert np.allclose(
             results['kd'],
-            self.kd)
+            self.expected_kd)
 
     def test_kub(self):
         results = self.run_forward_model()
         assert np.allclose(
             results['kub'],
-            self.kub)
+            self.expected_kub)
 
     def test_kuc(self):
         results = self.run_forward_model()
         assert np.allclose(
             results['kuc'],
-            self.kuc)
+            self.expected_kuc)
 
     # def test_forward_model_against_matlab_results(self):
         # expected_spectra = self.__data['modelled_spectra']
