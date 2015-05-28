@@ -44,8 +44,8 @@ def forward_model(
         lambda0tr=550.0,
         lambda0x=546.0,
         a_cdom_lambda0cdom=1.0,
-        theta_air=30,
-        offnad=10):
+        theta_air=30.0,
+        off_nadir=0.0):
     """Semi analytical Lee/Sambuca forward model.
 
     TODO: Extended description goes here.
@@ -80,7 +80,7 @@ def forward_model(
         lambda0x (float, optional): TODO
         a_cdom_lambda0cdom (float, optional):
         theta_air (float, optional): solar zenith angle in degrees
-        offnad (float, optional): off-nadir angle
+        off_nadir (float, optional): off-nadir angle
 
     Returns:
         Dictionary: A dictionary containing the model outputs.
@@ -105,13 +105,14 @@ def forward_model(
     assert len(aphy_star) == num_bands
 
     # Sub-surface solar zenith angle in radians
-    # thetaw = math.asin(1 / 1.333 * math.sin(math.radians(theta_air)))
-    thetaw = math.asin(1 / 1.333 * math.sin(math.pi / 180. * theta_air))
+    # TODO: better name for this value
+    solar_constant = 1.0 / 1.333
+    thetaw = math.asin(solar_constant * math.sin(math.radians(theta_air)))
 
     # Sub-surface viewing angle in radians
     # TODO: Reconcile thetao calculation difference between IDL and Matlab
-    # thetao = math.asin(1 / 1.333 * math.sin(math.radians(off_nadir))
-    thetao = 0.0
+    thetao = math.asin(solar_constant * math.sin(math.radians(off_nadir)))
+    # thetao = 0.0
 
     # Calculate derived SIOPS
     # TODO: In the IDL code, these are calculated just once for a pixel.
