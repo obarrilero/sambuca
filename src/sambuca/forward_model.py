@@ -115,10 +115,11 @@ def forward_model(
     atr_star = a_tr_lambda0tr * np.exp(-str_ * (wav - lambda0tr))
 
     # Calculate backscatter
+    backscatter = np.power(lambda0x / wav, y)
     # backscatter due to phytoplankton
-    bbph_star = x_ph_lambda0x * np.power(lambda0x / wav, y)
+    bbph_star = x_ph_lambda0x * backscatter
     # backscatter due to tripton
-    bbtr_star = x_tr_lambda0x * np.power(lambda0x / wav, y)
+    bbtr_star = x_tr_lambda0x * backscatter
 
     # TODO: what do a and bb represent?
     a = awater + chl * aphy_star + cdom * acdom_star + nap * atr_star
