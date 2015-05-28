@@ -121,7 +121,7 @@ def forward_model(
     # backscatter due to tripton
     bbtr_star = x_tr_lambda0x * backscatter
 
-    # TODO: what do a and bb represent?
+    # TODO: what do a and bb represent? absorption and backscatter?
     a = awater + chl * aphy_star + cdom * acdom_star + nap * atr_star
     bb = bbwater + chl * bbph_star + nap * bbtr_star
 
