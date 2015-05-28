@@ -150,13 +150,13 @@ def forward_model(
     # Remotely sensed reflectance for optically deep water
     rrsdp = (0.084 + 0.17 * u) * u
 
+    # common terms in the following calculations
     inv_cos_thetaw = 1.0 / math.cos(thetaw)
+    inv_cos_theta0 = 1.0 / math.cos(thetao)
+    du_column_scaled = du_column * inv_cos_theta0
+    du_bottom_scaled = du_bottom * inv_cos_theta0
 
     # TODO: descriptions of kd, kuc, kub
-    cos_theta0 = math.cos(thetao)
-    du_column_scaled = du_column / cos_theta0
-    du_bottom_scaled = du_bottom / cos_theta0
-
     kd = kappa * inv_cos_thetaw
     kuc = kappa * du_column_scaled
     kub = kappa * du_bottom_scaled
@@ -164,8 +164,8 @@ def forward_model(
     # Remotely sensed reflectance
     kappa_h = kappa * h
     rrs = (rrsdp *
-           (1. - np.exp(-(inv_cos_thetaw + du_column_scaled) * kappa_h)) +
-           ((1. / math.pi) * r *
+           (1.0 - np.exp(-(inv_cos_thetaw + du_column_scaled) * kappa_h)) +
+           ((1.0 / math.pi) * r *
             np.exp(-(inv_cos_thetaw + du_bottom_scaled) * kappa_h)))
 
     # Closed spectra
