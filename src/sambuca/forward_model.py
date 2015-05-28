@@ -139,8 +139,9 @@ def forward_model(
     # elongation from bottom
     du_bottom = 1.04 * np.power(1.00 + (5.40 * u), 0.50)
 
-    # is this 'reflectance remotely sensed deep?'
+    # Remotely sensed reflectance for optically deep water
     rrsdp = (0.084 + 0.17 * u) * u
+
     # kd = kappa * (1.0 / np.cos(thetaw))
     # kuc = kappa * (du_column / np.cos(thetao))
     # kub = kappa * (du_bottom / np.cos(thetao))
