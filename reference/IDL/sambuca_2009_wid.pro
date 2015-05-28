@@ -1173,7 +1173,7 @@ pro sambuca_2009_wid,ev
 ;           return
 ;            end
 ;endcase
-home_path= "C:\IDL_TOOLS\SAMBUCA\input2007\" ;
+home_path= "C:\Users\col52j\sambuca\reference\IDL\" ;
 
  openw, ev_log_fid,"sambuca_wid.evlog", /get_lun,/append
 

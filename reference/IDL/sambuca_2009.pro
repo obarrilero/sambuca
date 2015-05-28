@@ -269,7 +269,7 @@ function SAMBUCA_SA_V12_fwdVB, ZZ, input_spectra, input_params
         CDOM  * input_spectra.acdom_star + TR * input_spectra.atr_star
     bb =  input_spectra.bbwater + CHL * input_spectra.bbph_star + $
         TR * input_spectra.bbtr_star
-
+   
     ;-------bottom reflectance--------
 
     ;r = (q1 * r1) + ( (1-q1)*r2 )     ;proportion of 1st (and second which equals 1-q1 ) end member spectra
@@ -332,6 +332,8 @@ function sub5_SAMBUCA_SA_V12, Z
     ;inputR= {spectra=all_subs.spectra, names:subs_names,  index:uintarr[2]}
     ;              inputR.index=[rr,rrr]
 
+    index1 = SAMBUCA.inputR.index[0]
+    index2 = SAMBUCA.inputR.index[1]
     r1 = SAMBUCA.inputR.spectra[SAMBUCA.inputR.index[0],*]
     r2 = SAMBUCA.inputR.spectra[SAMBUCA.inputR.index[1],*]
     q1 = ZZ(10)
@@ -407,6 +409,13 @@ function sub5_SAMBUCA_SA_V12, Z
     SAMBUCA.distances.distance_LSQ = LSQ
     SAMBUCA.distances.distance_alpha = alpha_val & SAMBUCA.distances.distance_f=F_val & SAMBUCA.distances.distance_alpha_f = F_val*alpha_val
 
+    ;Daniel - saving test data for the Python error function unit tests
+    error_a = alpha_val
+    error_f = f_val
+    error_af = f_val * alpha_val
+    
+    SAVE, realrrs, noiserrs, rrs, LSQ, error_a, error_f, error_af, FILENAME='error_data.sav'
+    
     case SAMBUCA.distances.ERROR_TYPE of
         "a":  error = alpha_val
         "f":  error = f_val
@@ -537,6 +546,8 @@ pro SAMBUCA_2009, pstate=pstate
     endif
 
     common SAMBUCA_share, SAMBUCA
+    
+    print_debug = 1
 
     ;===========================
     report_title="multi_SAMBUCA_2007"
@@ -1340,6 +1351,8 @@ pro SAMBUCA_2009, pstate=pstate
         end ;case 4:
     endcase
 
+    PRINT, "DC!!!!"
+
     if (*pstate).output.closed_deep_spectra then begin
         close, out_R0dp & free_lun, out_R0dp
     endif
@@ -1390,6 +1403,6 @@ pro SAMBUCA_2009, pstate=pstate
     heap_gc
 
     ;envi_report_init, base=base, /finish
-    PRINT,runname, " done in :", SYSTIME(1) - TIC, ' Seconds; ' , n_iter, ' total iterations', n_pixel_run,' total pixels', n_pixel_conv, 'pixel  converged'
+    PRINT,runname, " done in :", SYSTIME(1) - TIC, ' Seconds; ' , n_iter, ' total iterations', n_pixel_run,' total pixels', n_pixel_conv, ' pixel  converged'
     JOURNAL
 end ;procedure SAMBUCA_2009
