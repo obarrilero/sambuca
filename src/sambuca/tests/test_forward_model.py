@@ -50,7 +50,7 @@ class TestForwardModel(object):
         cls.q2 = zz[11]
         cls.q3 = zz[12]
         cls.H = zz[13]
-        cls.Qwater = zz[14]
+        cls.qwater = zz[14]
 
     @classmethod
     def unpack_input_spectra(cls):
@@ -122,6 +122,7 @@ class TestForwardModel(object):
             self.awater,
             self.aphy_star,
             551,
+            qwater=self.qwater,
             x_ph_lambda0x=self.x_ph_lambda0x,
             x_tr_lambda0x=self.x_tr_lambda0x,
             sc=self.Sc,

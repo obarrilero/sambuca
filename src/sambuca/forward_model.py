@@ -33,6 +33,7 @@ def forward_model(
         awater,
         aphy_star,
         num_bands,
+        qwater=1.0,
         x_ph_lambda0x=0.00157747,
         x_tr_lambda0x=0.0225353,
         sc=0.0168052,
@@ -49,6 +50,7 @@ def forward_model(
 
     TODO: Extended description goes here.
     TODO: For those arguments which have units, the units should be stated.
+    TODO: should qwater have a default value? If so, what should it be?
 
     Args:
         chl (float): Concentration of chlorophyll (algal organic particles).
@@ -64,6 +66,7 @@ def forward_model(
         awater (array-like): Absorption coefficient of pure water
         aphy_star (array-like): Specific absorption of phytoplankton.
         num_bands (int): The number of spectral bands.
+        qwater (float): TODO
         x_ph_lambda0x (float, optional): specific backscatter of chlorophyl
             at lambda0x.
         x_tr_lambda0x (float, optional): specific backscatter of tripton
@@ -153,6 +156,7 @@ def forward_model(
     kuc = kappa * (du_column / math.cos(thetao))
     kub = kappa * (du_bottom / math.cos(thetao))
 
+    # Remotely sensed reflectance
     du_column_scaled = du_column / math.cos(thetao)
     du_bottom_scaled = du_bottom / math.cos(thetao)
     kappa_h = kappa * h
@@ -161,10 +165,15 @@ def forward_model(
            ((1. / math.pi) * r *
             np.exp(-(inv_cos_thetaw + du_bottom_scaled) * kappa_h)))
 
+    # Closed spectra
+    closed_spectrum = rrs * qwater
+    closed_deep_spectrum = rrsdp * qwater
+
     # TODO: generate and fill in all results
     results = {
         'substrate_r': r,
-        # 'closed_spectrum': rrs,
+        'closed_spectrum': closed_spectrum,
+        'closed_deep_spectrum': closed_deep_spectrum,
         'kd': kd,
         'kuc': kuc,
         'kub': kub,
