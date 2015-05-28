@@ -133,8 +133,11 @@ def forward_model(
     u = bb / (a + bb)
     kappa = a + bb
 
-    du_column = 1.03 * np.power(1. + (2.4 * u), 0.5)
-    du_bottom = 1.04 * np.power(1. + (5.4 * u), 0.5)
+    # Optical path elongation for scattered photons
+    # elongation from water column
+    du_column = 1.03 * np.power(1.00 + (2.40 * u), 0.50)
+    # elongation from bottom
+    du_bottom = 1.04 * np.power(1.00 + (5.40 * u), 0.50)
 
     # is this 'reflectance remotely sensed deep?'
     rrsdp = (0.084 + 0.17 * u) * u
