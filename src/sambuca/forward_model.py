@@ -39,7 +39,8 @@ def forward_model(
         str_=0.00977262,
         a_tr_lambda0tr=0.00433,
         y=0.878138,
-        lambda0cdom=550.00,
+        lambda0cdom=550.0,
+        lambda0tr=550.0,
         a_cdom_lambda0cdom=1.0,
         theta_air=30,
         offnad=10):
@@ -70,7 +71,8 @@ def forward_model(
         str_ (float, optional): slope of NAP/tripton absorption
         a_tr_lambda0tr (float, optional): TODO
         y (float, optional): TODO
-        lambda0cdom (float, optional): Reference frequency?
+        lambda0cdom (float, optional): TODO
+        lambda0tr (float, optional): TODO
         a_cdom_lambda0cdom (float, optional):
         theta_air (float, optional): solar zenith
         offnad (float, optional): off-nadir angle
@@ -104,9 +106,9 @@ def forward_model(
 
     # TODO: should this be lambda0cdom, or hardcoded 550?
     # bbwater = (0.00194 / 2.0) * np.power(lambda0cdom / wav, 4.32)
-    bbwater = (0.00194 / 2.0) * np.power(550.0 / wav, 4.32)
+    bbwater = (0.00194 / 2.0) * np.power(550.0 / wav, 4.32)  # Mobely, 1994
     acdom_star = a_cdom_lambda0cdom * np.exp(-sc * (wav - lambda0cdom))
-    atr_star = a_tr_lambda0tr * np.exp(-str_ * (wav - lambda0cdom))
+    atr_star = a_tr_lambda0tr * np.exp(-str_ * (wav - lambda0tr))
     bbph_star = x_ph_lambda0x * np.power(546. / wav, y)
     bbtr_star = x_tr_lambda0x * np.power(546. / wav, y)
 
@@ -139,8 +141,8 @@ def forward_model(
 
     # TODO: generate and fill in all results
     results = {
-        'substrate_r' : r,
-        'closed_spectrum' : rrs,
+        'substrate_r': r,
+        'closed_spectrum': rrs,
     }
     return results
 

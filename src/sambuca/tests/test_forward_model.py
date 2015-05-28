@@ -129,6 +129,7 @@ class TestForwardModel(object):
             a_tr_lambda0tr=self.a_tr_lambda0tr,
             y=self.Y,
             lambda0cdom=self.lambda0cdom,
+            lambda0tr=self.lambda0tr,
             theta_air=self.theta_air,
             # self.off_nadir,
         )
