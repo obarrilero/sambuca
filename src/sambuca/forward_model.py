@@ -138,8 +138,8 @@ def forward_model(
     r = q * substrate1 + (1. - q) * substrate2
 
     # TODO: what are u and kappa?
-    u = bb / (a + bb)
     kappa = a + bb
+    u = bb / kappa
 
     # Optical path elongation for scattered photons
     # elongation from water column
@@ -153,13 +153,15 @@ def forward_model(
     inv_cos_thetaw = 1.0 / math.cos(thetaw)
 
     # TODO: descriptions of kd, kuc, kub
+    cos_theta0 = math.cos(thetao)
+    du_column_scaled = du_column / cos_theta0
+    du_bottom_scaled = du_bottom / cos_theta0
+
     kd = kappa * inv_cos_thetaw
-    kuc = kappa * (du_column / math.cos(thetao))
-    kub = kappa * (du_bottom / math.cos(thetao))
+    kuc = kappa * du_column_scaled
+    kub = kappa * du_bottom_scaled
 
     # Remotely sensed reflectance
-    du_column_scaled = du_column / math.cos(thetao)
-    du_bottom_scaled = du_bottom / math.cos(thetao)
     kappa_h = kappa * h
     rrs = (rrsdp *
            (1. - np.exp(-(inv_cos_thetaw + du_column_scaled) * kappa_h)) +
