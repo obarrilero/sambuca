@@ -37,8 +37,9 @@ def error_all(observed_rrs, modelled_rrs, nedr=None):
     """
 
     # LSQ as in as in equation 1 of Mobley 2005 AO:i.e. without using Noise
-    # LSQ = sum((observed_spectra - modelled_spectra).^2)^0.5;
-    lsq = np.power(np.sum(np.power(observed_rrs - modelled_rrs, 2)), 0.5)
+    # lsq = np.power(np.sum(np.power(observed_rrs - modelled_rrs, 2)), 0.5)
+    # L^2 Vector Norm of observed - modelled
+    lsq = np.linalg.norm(observed_rrs - modelled_rrs)
 
     if nedr is not None:
         # deliberately avoiding an in-place divide as I want a copy of the
@@ -46,21 +47,17 @@ def error_all(observed_rrs, modelled_rrs, nedr=None):
         observed_rrs = observed_rrs / nedr
         modelled_rrs = modelled_rrs / nedr
 
-    f_val = np.power(
-        np.sum(
-            np.power(
-                observed_rrs -
-                modelled_rrs,
-                2)),
-        0.5) / np.sum(observed_rrs)
+    # f_val = np.power( np.sum( np.power( observed_rrs - modelled_rrs, 2)), 0.5) / np.sum(observed_rrs)
+    f_val = np.linalg.norm(observed_rrs - modelled_rrs) / observed_rrs.sum()
 
     topline = np.sum(observed_rrs * modelled_rrs)
-    botline1 = np.power(np.sum(np.power(observed_rrs, 2)), 0.5)
-    botline2 = np.power(np.sum(np.power(modelled_rrs, 2)), 0.5)
+    # botline1 = np.power(np.sum(np.power(observed_rrs, 2)), 0.5)
+    # botline2 = np.power(np.sum(np.power(modelled_rrs, 2)), 0.5)
+    botline1 = np.linalg.norm(observed_rrs)
+    botline2 = np.linalg.norm(modelled_rrs)
 
-    rat = (topline / (botline1 * botline2)
-           if botline1 > 0 and botline2 > 0
-           else 0)
+    rat = 0.0 if np.allclose(botline1, 0) or np.allclose(botline2, 0) \
+        else topline / (botline1 * botline2)
 
     alpha_val = np.arccos(rat) if rat <= 1.0 else 100.0
 
