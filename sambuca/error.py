@@ -23,9 +23,9 @@ def error_all(observed_rrs, modelled_rrs, nedr=None):
     """Calculates all common error terms, returning them in a named tuple.
 
     Args:
-        observed_rrs: The observed reflectance(remotely-sensed).
-        modelled_rrs: The modelled reflectance(remotely-sensed).
-        nedr: Optional. Noise equivalent difference in reflectance.
+        observed_rrs (array-like): The observed reflectance(remotely-sensed).
+        modelled_rrs (array-like): The modelled reflectance(remotely-sensed).
+        nedr (array-like): Noise equivalent difference in reflectance.
 
     Returns:
         namedtuple: The error terms in a named tuple:
