@@ -41,10 +41,10 @@ class TestErrorNoise(object):
 
         actual = sb.error_all(observed, modelled, nedr)
 
-        assert np.allclose(actual.distance_alpha, expected_distance_a)
-        assert np.allclose(actual.distance_alpha_f, expected_distance_af)
-        assert np.allclose(actual.distance_f, expected_distance_f)
-        assert np.allclose(actual.distance_lsq, expected_lsq)
+        assert np.allclose(actual.alpha, expected_distance_a)
+        assert np.allclose(actual.alpha_f, expected_distance_af)
+        assert np.allclose(actual.f, expected_distance_f)
+        assert np.allclose(actual.lsq, expected_lsq)
 
     def test_distance_alpha(self):
         observed = self.data['realrrs']

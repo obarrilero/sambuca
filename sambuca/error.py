@@ -30,10 +30,10 @@ def error_all(observed_rrs, modelled_rrs, nedr=None):
     Returns:
         namedtuple: The error terms in a named tuple:
 
-        - **distance_alpha** -- Describe me!!!
-        - **distance_alpha_f** -- Describe me!!!
-        - **distance_f** -- Describe me!!!
-        - **distance_lsq** -- Describe me!!!
+        - **alpha** -- Describe me!!!
+        - **alpha_f** -- Describe me!!!
+        - **f** -- Describe me!!!
+        - **lsq** -- Describe me!!!
     """
 
     # LSQ as in as in equation 1 of Mobley 2005 AO:i.e. without using Noise
@@ -65,14 +65,14 @@ def error_all(observed_rrs, modelled_rrs, nedr=None):
     alpha_val = np.arccos(rat) if rat <= 1.0 else 100.0
 
     results = namedtuple('SambucaErrors',
-                         ['distance_alpha',
-                          'distance_alpha_f',
-                          'distance_f',
-                          'distance_lsq'])
-    results.distance_lsq = lsq
-    results.distance_alpha = alpha_val
-    results.distance_f = f_val
-    results.distance_alpha_f = f_val * alpha_val
+                         ['alpha',
+                          'alpha_f',
+                          'f',
+                          'lsq'])
+    results.lsq = lsq
+    results.alpha = alpha_val
+    results.f = f_val
+    results.alpha_f = f_val * alpha_val
 
     return results
 
@@ -85,10 +85,9 @@ def distance_alpha(observed_rrs, modelled_rrs, nedr=None):
         modelled_rrs: The modelled reflectance(remotely-sensed).
         noise: Optional spectral noise values.
 
-    Returns:
-        - **distance_alpha** -- Describe me!!!
+    Returns: TODO
     """
-    return error_all(observed_rrs, modelled_rrs, nedr).distance_alpha
+    return error_all(observed_rrs, modelled_rrs, nedr).alpha
 
 def distance_alpha_f(observed_rrs, modelled_rrs, nedr=None):
     # TODO: complete the description
@@ -99,10 +98,9 @@ def distance_alpha_f(observed_rrs, modelled_rrs, nedr=None):
         modelled_rrs: The modelled reflectance(remotely-sensed).
         noise: Optional spectral noise values.
 
-    Returns:
-        - **distance_alpha_f** -- Describe me!!!
+    Returns: TODO
     """
-    return error_all(observed_rrs, modelled_rrs, nedr).distance_alpha_f
+    return error_all(observed_rrs, modelled_rrs, nedr).alpha_f
 
 def distance_lsq(observed_rrs, modelled_rrs, nedr=None):
     # TODO: complete the description
@@ -113,10 +111,9 @@ def distance_lsq(observed_rrs, modelled_rrs, nedr=None):
         modelled_rrs: The modelled reflectance(remotely-sensed).
         noise: Optional spectral noise values.
 
-    Returns:
-        - **distance_lsq** -- Describe me!!!
+    Returns: TODO
     """
-    return error_all(observed_rrs, modelled_rrs, nedr).distance_lsq
+    return error_all(observed_rrs, modelled_rrs, nedr).lsq
 
 def distance_f(observed_rrs, modelled_rrs, nedr=None):
     # TODO: complete the description
@@ -127,7 +124,6 @@ def distance_f(observed_rrs, modelled_rrs, nedr=None):
         modelled_rrs: The modelled reflectance(remotely-sensed).
         noise: Optional spectral noise values.
 
-    Returns:
-        - **distance_f** -- Describe me!!!
+    Returns: TODO
     """
-    return error_all(observed_rrs, modelled_rrs, nedr).distance_f
+    return error_all(observed_rrs, modelled_rrs, nedr).f
