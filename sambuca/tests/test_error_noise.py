@@ -20,7 +20,7 @@ class TestErrorNoise(object):
         self.data = readsav(
             resource_filename(
                 sb.__name__,
-                'tests/data/error_data.sav'))
+                'tests/data/noise_error_data.sav'))
 
     def validate_data(self, data):
         observed = self.data['realrrs']
