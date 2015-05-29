@@ -1,8 +1,7 @@
 graft docs
 graft examples
-graft src
+graft sambuca
 
-include .bumpversion.cfg
 include .coverage
 include pylintrc
 
