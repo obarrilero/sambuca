@@ -1,4 +1,3 @@
-# Ensure compatibility of Python 2 with Python 3 constructs
 from __future__ import (
     absolute_import,
     division,
@@ -13,7 +12,6 @@ from pkg_resources import resource_filename
 
 
 class TestErrorFunctions(object):
-
     """ Test the error functions used to assess model closure
     """
 
