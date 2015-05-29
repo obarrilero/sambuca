@@ -1,4 +1,4 @@
-"""Semi analytical Lee/Sambuca forward model.
+"""Semi-analytical Lee/Sambuca forward model.
 """
 
 
@@ -42,10 +42,12 @@ def forward_model(
         a_cdom_lambda0cdom=1.0,
         theta_air=30.0,
         off_nadir=0.0):
-    """Semi analytical Lee/Sambuca forward model.
+    """Semi-analytical Lee/Sambuca forward model.
 
     TODO: Extended description goes here.
+
     TODO: For those arguments which have units, the units should be stated.
+
     TODO: should qwater have a default value? If so, what should it be?
 
     Args:
