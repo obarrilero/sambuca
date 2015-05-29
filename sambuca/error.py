@@ -37,7 +37,6 @@ def error_all(observed_rrs, modelled_rrs, nedr=None):
     """
 
     # LSQ as in as in equation 1 of Mobley 2005 AO:i.e. without using Noise
-    # lsq = np.power(np.sum(np.power(observed_rrs - modelled_rrs, 2)), 0.5)
     # L^2 Vector Norm of observed - modelled
     lsq = np.linalg.norm(observed_rrs - modelled_rrs)
 
@@ -47,19 +46,34 @@ def error_all(observed_rrs, modelled_rrs, nedr=None):
         observed_rrs = observed_rrs / nedr
         modelled_rrs = modelled_rrs / nedr
 
-    # f_val = np.power( np.sum( np.power( observed_rrs - modelled_rrs, 2)), 0.5) / np.sum(observed_rrs)
     f_val = np.linalg.norm(observed_rrs - modelled_rrs) / observed_rrs.sum()
 
-    topline = np.sum(observed_rrs * modelled_rrs)
-    # botline1 = np.power(np.sum(np.power(observed_rrs, 2)), 0.5)
-    # botline2 = np.power(np.sum(np.power(modelled_rrs, 2)), 0.5)
-    botline1 = np.linalg.norm(observed_rrs)
-    botline2 = np.linalg.norm(modelled_rrs)
+    # TODO: Determine a good value for the lower bound of rat_denom
+    rat_numerator = np.sum(observed_rrs * modelled_rrs)
+    rat_denom = np.linalg.norm(observed_rrs) * np.linalg.norm(modelled_rrs)
+    rat_denom = np.clip(rat_denom, 1e-9, rat_denom)
+    rat = rat_numerator / rat_denom
+    rat = np.clip(rat, 0.0, 1.0)
 
-    rat = 0.0 if np.allclose(botline1, 0) or np.allclose(botline2, 0) \
-        else topline / (botline1 * botline2)
+    alpha_val = np.arccos(rat)
 
-    alpha_val = np.arccos(rat) if rat <= 1.0 else 100.0
+    # TODO: Unstable!!! If the denominator is very small, ...
+    # rat will tend to be large. But then if the denominator is 0, this code
+    # arbitrarily sets rat to 0. This creates highly divergent error terms for
+    # inputs that are effectively the same +- a bit of noise.
+
+    # rat = 0.0 if np.allclose(botline1, 0) or np.allclose(botline2, 0) \
+        # else topline / (botline1 * botline2)
+
+    # TODO: Unstable!!! Same explanation as above. rat = 1 - epsilon gives ...
+    # alpha_val ~= 0, while rat = 1 + epsilon gives alpha_val = 100.
+    # So once again, tiny variations in the inputs can produce error terms that
+    # are very different (by ~2 orders of magnitude).
+    # alpha_val = np.arccos(rat) if rat <= 1.0 else 100.0
+
+    # TODO: Check this with the team. I am clamping rat and the denominator ...
+    # term to ranges that avoid the instability in error terms
+    # for these corner cases.
 
     results = namedtuple('SambucaErrors',
                          ['alpha',
