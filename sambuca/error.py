@@ -36,14 +36,9 @@ def error_all(observed_rrs, modelled_rrs, nedr=None):
         - **distance_lsq** -- Describe me!!!
     """
 
+    # LSQ as in as in equation 1 of Mobley 2005 AO:i.e. without using Noise
     # LSQ = sum((observed_spectra - modelled_spectra).^2)^0.5;
-    lsq = np.power(
-        np.sum(
-            np.power(
-                observed_rrs -
-                modelled_rrs,
-                2)),
-        0.5)
+    lsq = np.power(np.sum(np.power(observed_rrs - modelled_rrs, 2)), 0.5)
 
     if nedr is not None:
         # deliberately avoiding an in-place divide as I want a copy of the
