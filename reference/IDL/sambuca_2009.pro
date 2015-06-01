@@ -376,7 +376,12 @@ function sub5_SAMBUCA_SA_V12, Z
     ;ERROR FUNCTION TO BE OPTIMISED
     ;LSQ as in as in equation 1 of Mobley 2005 AO:i.e. without using Noise
     LSQ =   ( (TOTAL (  (double(realrrs) - double(rrs))^2,/double )  ) ^0.5)
-
+    
+    ;for test data generation, we need to copy these so they can be saved before the noise scaling,
+    ;otherwise my unit tests fail and I spend a long time looking at the Python code getting confused :(
+    realrrs_prediv = realrrs
+    rrs_prediv = rrs
+  
     if SAMBUCA.distances.use_noise then begin
         rrs=rrs/noiserrs
         realrrs=realrrs/noiserrs
@@ -413,8 +418,10 @@ function sub5_SAMBUCA_SA_V12, Z
     error_a = alpha_val
     error_f = f_val
     error_af = f_val * alpha_val
+    realrrs = realrrs_prediv
+    rrs = rrs_prediv
     
-    SAVE, realrrs, noiserrs, rrs, LSQ, error_a, error_f, error_af, FILENAME='error_data.sav'
+    SAVE, realrrs, noiserrs, rrs, LSQ, error_a, error_f, error_af, FILENAME='noise_error_data.sav'
     
     case SAMBUCA.distances.ERROR_TYPE of
         "a":  error = alpha_val
