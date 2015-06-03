@@ -13,6 +13,8 @@ import numpy as np
 
 
 # TODO: Do I need to rename this function?
+# Todo: rename to normalised_response_function
+# TODO: check for normalisation when loading the response_function
 def apply_sensor_filter(spectra, response_function):
     """Resamples a remotely-sensed reflectance spectra using the given spectral
     response function.

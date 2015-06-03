@@ -21,21 +21,21 @@ def forward_model(
         chl,
         cdom,
         nap,
-        h,
-        q,
+        h, # TODO: rename to depth
+        q, # TODO: rename to substrate_fraction
         substrate1,
         substrate2,
         wav,
         awater,
         aphy_star,
         num_bands,
-        qwater=1.0,
+        qwater=1.0, #TODO: rename to Q
         x_ph_lambda0x=0.00157747,
         x_tr_lambda0x=0.0225353,
-        sc=0.0168052,
-        str_=0.00977262,
+        sc=0.0168052, # todo: rename to slope_cdom
+        str_=0.00977262, #TODO: rename to slope_nap
         a_tr_lambda0tr=0.00433,
-        y=0.878138,
+        y=0.878138, # TODO: rename to slope_backscatter
         lambda0cdom=550.0,
         lambda0tr=550.0,
         lambda0x=546.0,
@@ -105,20 +105,20 @@ def forward_model(
     assert len(aphy_star) == num_bands
 
     # Sub-surface solar zenith angle in radians
-    # TODO: better name for this value
+    # TODO: make this a parameter : salt water refractive index (or fresh water)
+    # TODO: more precise values, cf Dekker 93
     solar_constant = 1.0 / 1.333
     thetaw = math.asin(solar_constant * math.sin(math.radians(theta_air)))
 
     # Sub-surface viewing angle in radians
-    # TODO: Reconcile thetao calculation difference between IDL and Matlab
     thetao = math.asin(solar_constant * math.sin(math.radians(off_nadir)))
-    # thetao = 0.0
 
     # Calculate derived SIOPS
     # TODO: In the IDL code, these are calculated just once for a pixel.
     # TODO: should this be lambda0cdom, or hardcoded 550?
     # bbwater = (0.00194 / 2.0) * np.power(lambda0cdom / wav, 4.32)
-    bbwater = (0.00194 / 2.0) * np.power(550.0 / wav, 4.32)  # Mobely, 1994
+# 550.0 == bb_lamda_ref
+    bbwater = (0.00194 / 2.0) * np.power(550.0 / wav, 4.32)  # Mobley, 1994
     acdom_star = a_cdom_lambda0cdom * np.exp(-sc * (wav - lambda0cdom))
     atr_star = a_tr_lambda0tr * np.exp(-str_ * (wav - lambda0tr))
 
@@ -129,12 +129,13 @@ def forward_model(
     # backscatter due to tripton
     bbtr_star = x_tr_lambda0x * backscatter
 
-    # TODO: what do a and bb represent? absorption and backscatter?
+    # TODO: what do a and bb represent? absorption and backscatter? yes. update comments
     a = awater + chl * aphy_star + cdom * acdom_star + nap * atr_star
     bb = bbwater + chl * bbph_star + nap * bbtr_star
 
     # Calculate total bottom reflectance from the two substrates and the
     # substrate interpolation factor q
+    # TODO: rename r to r_substratum
     r = q * substrate1 + (1. - q) * substrate2
 
     # TODO: what are u and kappa?
@@ -143,6 +144,7 @@ def forward_model(
 
     # Optical path elongation for scattered photons
     # elongation from water column
+    # TODO: reference to the paper from which these equations are derived
     du_column = 1.03 * np.power(1.00 + (2.40 * u), 0.50)
     # elongation from bottom
     du_bottom = 1.04 * np.power(1.00 + (5.40 * u), 0.50)
@@ -169,10 +171,11 @@ def forward_model(
             np.exp(-(inv_cos_thetaw + du_bottom_scaled) * kappa_h)))
 
     # Closed spectra
-    closed_spectrum = rrs * qwater
+    closed_spectrum = rrs * qwater # TODO: this is R0-
     closed_deep_spectrum = rrsdp * qwater
 
     # TODO: generate and fill in all results
+    # TODO: return rrs & rrsdp
     results = {
         'substrate_r': r,
         'closed_spectrum': closed_spectrum,
