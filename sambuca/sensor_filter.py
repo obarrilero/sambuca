@@ -12,24 +12,25 @@ from builtins import *
 import numpy as np
 
 
-# TODO: Do I need to rename this function?
-# Todo: rename to normalised_response_function
 # TODO: check for normalisation when loading the response_function
-def apply_sensor_filter(spectra, response_function):
-    """Resamples a remotely-sensed reflectance spectra using the given spectral
+def apply_sensor_filter(spectra, normalised_response_function):
+    """Applies a sensor filter to a spectra using the given spectral
     response function.
 
     Args:
-        spectra (array-like): The input reflectance spectra.
-        response_function (matrix-like): The spectral sensitivity matrix.
+        spectra (array-like): The input spectra.
+        normalised_response_function (matrix-like): The spectral sensitivity
+            matrix.
             The first dimension determines the number of output bands.
             The second dimension represents the proportional contribution of
             each of the input bands to an output band. The size must match the
             number of bands in the input spectra.
 
     Returns:
-        ndarray: The resampled spectra.
+        ndarray: The filtered spectra.
 
     """
 
-    return np.dot(response_function, spectra) / response_function.sum(1)
+    return np.dot(
+        normalised_response_function,
+        spectra) / normalised_response_function.sum(1)
