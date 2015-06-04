@@ -13,6 +13,8 @@ import math
 
 import numpy as np
 
+from .constants import REFRACTIVE_INDEX_SEAWATER
+
 
 # pylint: disable=too-many-arguments
 # pylint: disable=too-many-locals
@@ -43,7 +45,7 @@ def forward_model(
         a_cdom_lambda0cdom=1.0,
         a_tr_lambda0tr=0.00433,
         bb_lambda_ref=550,
-        water_refractive_index=1.333,
+        water_refractive_index=REFRACTIVE_INDEX_SEAWATER,
         theta_air=30.0,
         off_nadir=0.0):
     """Semi-analytical Lee/Sambuca forward model.
