@@ -32,7 +32,6 @@ def forward_model(
         awater,
         aphy_star,
         num_bands,
-        Q=1.0,
         slope_cdom=0.0168052,
         slope_nap=0.00977262,
         slope_backscatter=0.878138,
@@ -43,6 +42,8 @@ def forward_model(
         x_tr_lambda0x=0.0225353,
         a_cdom_lambda0cdom=1.0,
         a_tr_lambda0tr=0.00433,
+        bb_lambda_ref=550,
+        water_refractive_index=1.333,
         theta_air=30.0,
         off_nadir=0.0):
     """Semi-analytical Lee/Sambuca forward model.
@@ -65,7 +66,6 @@ def forward_model(
         awater (array-like): Absorption coefficient of pure water
         aphy_star (array-like): Specific absorption of phytoplankton.
         num_bands (int): The number of spectral bands.
-        Q (float): TODO
         slope_cdom (float, optional): slope of cdom absorption
         slope_nap (float, optional): slope of NAP absorption
         slope_backscatter (float, optional): TODO
@@ -78,6 +78,8 @@ def forward_model(
             at lambda0x.
         a_cdom_lambda0cdom (float, optional): TODO
         a_tr_lambda0tr (float, optional): TODO
+        bb_lambda_ref (float, optional): TODO
+        water_refractive_index (float, optional): refractive index of water.
         theta_air (float, optional): solar zenith angle in degrees
         off_nadir (float, optional): off-nadir angle
 
@@ -87,14 +89,14 @@ def forward_model(
         TODO: Will it be faster to only calculate requested outputs from a set?
 
         - **substrate_r** (*ndarray*): The combined substrate.
-        - closed_spectrum (ndarray): Modelled remotely-sensed reflectance.
-        - closed_deep_spectrum (ndarray): Modelled optically-deep
-          remotely-sensed reflectance.
-        - kd (ndarray): TODO
-        - Kuc (ndarray): TODO
-        - Kub (ndarray): TODO
-        - a (ndarray): TODO
-        - bb (ndarray): TODO
+        - **rrs** (*ndarray*): Modelled remotely-sensed reflectance.
+        - **rrsdp** (*ndarray*): Modelled optically-deep
+            remotely-sensed reflectance.
+        - **kd** (*ndarray*): TODO
+        - **kuc** (*ndarray*): TODO
+        - **kub** (*ndarray*): TODO
+        - **a** (*ndarray*): TODO
+        - **bb** (*ndarray*): TODO
 
 
     """
@@ -106,20 +108,15 @@ def forward_model(
     assert len(aphy_star) == num_bands
 
     # Sub-surface solar zenith angle in radians
-    # TODO: make this a parameter : salt water refractive index (or fresh water)
-    # TODO: more precise values, cf Dekker 93
-    solar_constant = 1.0 / 1.333
-    thetaw = math.asin(solar_constant * math.sin(math.radians(theta_air)))
+    inv_refractive_index = 1.0 / water_refractive_index
+    thetaw = math.asin(inv_refractive_index * math.sin(math.radians(theta_air)))
 
     # Sub-surface viewing angle in radians
-    thetao = math.asin(solar_constant * math.sin(math.radians(off_nadir)))
+    thetao = math.asin(inv_refractive_index * math.sin(math.radians(off_nadir)))
 
-    # Calculate derived SIOPS
-    # TODO: In the IDL code, these are calculated just once for a pixel.
-    # TODO: should this be lambda0cdom, or hardcoded 550?
-    # bbwater = (0.00194 / 2.0) * np.power(lambda0cdom / wav, 4.32)
-# 550.0 == bb_lamda_ref
-    bbwater = (0.00194 / 2.0) * np.power(550.0 / wav, 4.32)  # Mobley, 1994
+    # Calculate derived SIOPS, based on
+    # Mobley, Curtis D., 1994: Radiative Transfer in natural waters.
+    bbwater = (0.00194 / 2.0) * np.power(bb_lambda_ref / wav, 4.32)
     acdom_star = a_cdom_lambda0cdom * np.exp(-slope_cdom * (wav - lambda0cdom))
     atr_star = a_tr_lambda0tr * np.exp(-slope_nap * (wav - lambda0tr))
 
@@ -130,13 +127,14 @@ def forward_model(
     # backscatter due to tripton
     bbtr_star = x_tr_lambda0x * backscatter
 
-    # TODO: what do a and bb represent? absorption and backscatter? yes. update comments
+    # Total absorption
     a = awater + chl * aphy_star + cdom * acdom_star + nap * atr_star
+    # Total backscatter
     bb = bbwater + chl * bbph_star + nap * bbtr_star
 
     # Calculate total bottom reflectance from the two substrates
-    # TODO: rename r to r_substratum
-    r = substrate_fraction * substrate1 + (1. - substrate_fraction) * substrate2
+    r_substratum = substrate_fraction * substrate1 + \
+        (1. - substrate_fraction) * substrate2
 
     # TODO: what are u and kappa?
     kappa = a + bb
@@ -167,20 +165,13 @@ def forward_model(
     kappa_d = kappa * depth
     rrs = (rrsdp *
            (1.0 - np.exp(-(inv_cos_thetaw + du_column_scaled) * kappa_d)) +
-           ((1.0 / math.pi) * r *
+           ((1.0 / math.pi) * r_substratum *
             np.exp(-(inv_cos_thetaw + du_bottom_scaled) * kappa_d)))
 
-    # Closed spectra
-    # TODO: remove these two terms from the model
-    closed_spectrum = rrs * Q # TODO: this is R0-
-    closed_deep_spectrum = rrsdp * Q
-
-    # TODO: generate and fill in all results
-    # TODO: return rrs & rrsdp
     results = {
-        'substrate_r': r,
-        'closed_spectrum': closed_spectrum,
-        'closed_deep_spectrum': closed_deep_spectrum,
+        'substrate_r': r_substratum,
+        'rrs': rrs,
+        'rrsdp': rrsdp,
         'kd': kd,
         'kuc': kuc,
         'kub': kub,
