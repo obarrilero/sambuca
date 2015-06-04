@@ -15,31 +15,34 @@ import numpy as np
 
 
 # pylint: disable=too-many-arguments
-# pylint: disable=invalid-name
 # pylint: disable=too-many-locals
+
+# Disabling invalid-name as many of the common (and published) variable names
+# in the Sambuca model are invalid according to Python conventions.
+# pylint: disable=invalid-name
 def forward_model(
         chl,
         cdom,
         nap,
-        h, # TODO: rename to depth
-        q, # TODO: rename to substrate_fraction
+        depth,
+        substrate_fraction,
         substrate1,
         substrate2,
         wav,
         awater,
         aphy_star,
         num_bands,
-        qwater=1.0, #TODO: rename to Q
-        x_ph_lambda0x=0.00157747,
-        x_tr_lambda0x=0.0225353,
-        sc=0.0168052, # todo: rename to slope_cdom
-        str_=0.00977262, #TODO: rename to slope_nap
-        a_tr_lambda0tr=0.00433,
-        y=0.878138, # TODO: rename to slope_backscatter
+        Q=1.0,
+        slope_cdom=0.0168052,
+        slope_nap=0.00977262,
+        slope_backscatter=0.878138,
         lambda0cdom=550.0,
         lambda0tr=550.0,
         lambda0x=546.0,
+        x_ph_lambda0x=0.00157747,
+        x_tr_lambda0x=0.0225353,
         a_cdom_lambda0cdom=1.0,
+        a_tr_lambda0tr=0.00433,
         theta_air=30.0,
         off_nadir=0.0):
     """Semi-analytical Lee/Sambuca forward model.
@@ -48,35 +51,33 @@ def forward_model(
 
     TODO: For those arguments which have units, the units should be stated.
 
-    TODO: should qwater have a default value? If so, what should it be?
-
     Args:
         chl (float): Concentration of chlorophyll (algal organic particles).
         cdom (float): Concentration of coloured dissolved organic particulates.
         nap (float): Concentration of non-algal particles,
             (also known as Tripton/tr in some literature).
-        h (float): Depth.
-        q (float): Substrate proportion, used to generate a convex combination
-            of substrate1 and substrate2.
+        depth (float): Water column depth.
+        substrate_fraction (float): Substrate proportion, used to generate a
+            convex combination of substrate1 and substrate2.
         substrate1 (array-like): A benthic substrate.
         substrate2 (array-like): A benthic substrate.
         wav (array-like): TODO
         awater (array-like): Absorption coefficient of pure water
         aphy_star (array-like): Specific absorption of phytoplankton.
         num_bands (int): The number of spectral bands.
-        qwater (float): TODO
+        Q (float): TODO
+        slope_cdom (float, optional): slope of cdom absorption
+        slope_nap (float, optional): slope of NAP absorption
+        slope_backscatter (float, optional): TODO
+        lambda0cdom (float, optional): TODO
+        lambda0tr (float, optional): TODO
+        lambda0x (float, optional): TODO
         x_ph_lambda0x (float, optional): specific backscatter of chlorophyl
             at lambda0x.
         x_tr_lambda0x (float, optional): specific backscatter of tripton
             at lambda0x.
-        sc (float, optional): slope of cdom absorption
-        str_ (float, optional): slope of NAP/tripton absorption
+        a_cdom_lambda0cdom (float, optional): TODO
         a_tr_lambda0tr (float, optional): TODO
-        y (float, optional): TODO
-        lambda0cdom (float, optional): TODO
-        lambda0tr (float, optional): TODO
-        lambda0x (float, optional): TODO
-        a_cdom_lambda0cdom (float, optional):
         theta_air (float, optional): solar zenith angle in degrees
         off_nadir (float, optional): off-nadir angle
 
@@ -119,11 +120,11 @@ def forward_model(
     # bbwater = (0.00194 / 2.0) * np.power(lambda0cdom / wav, 4.32)
 # 550.0 == bb_lamda_ref
     bbwater = (0.00194 / 2.0) * np.power(550.0 / wav, 4.32)  # Mobley, 1994
-    acdom_star = a_cdom_lambda0cdom * np.exp(-sc * (wav - lambda0cdom))
-    atr_star = a_tr_lambda0tr * np.exp(-str_ * (wav - lambda0tr))
+    acdom_star = a_cdom_lambda0cdom * np.exp(-slope_cdom * (wav - lambda0cdom))
+    atr_star = a_tr_lambda0tr * np.exp(-slope_nap * (wav - lambda0tr))
 
     # Calculate backscatter
-    backscatter = np.power(lambda0x / wav, y)
+    backscatter = np.power(lambda0x / wav, slope_backscatter)
     # backscatter due to phytoplankton
     bbph_star = x_ph_lambda0x * backscatter
     # backscatter due to tripton
@@ -133,10 +134,9 @@ def forward_model(
     a = awater + chl * aphy_star + cdom * acdom_star + nap * atr_star
     bb = bbwater + chl * bbph_star + nap * bbtr_star
 
-    # Calculate total bottom reflectance from the two substrates and the
-    # substrate interpolation factor q
+    # Calculate total bottom reflectance from the two substrates
     # TODO: rename r to r_substratum
-    r = q * substrate1 + (1. - q) * substrate2
+    r = substrate_fraction * substrate1 + (1. - substrate_fraction) * substrate2
 
     # TODO: what are u and kappa?
     kappa = a + bb
@@ -164,15 +164,16 @@ def forward_model(
     kub = kappa * du_bottom_scaled
 
     # Remotely sensed reflectance
-    kappa_h = kappa * h
+    kappa_d = kappa * depth
     rrs = (rrsdp *
-           (1.0 - np.exp(-(inv_cos_thetaw + du_column_scaled) * kappa_h)) +
+           (1.0 - np.exp(-(inv_cos_thetaw + du_column_scaled) * kappa_d)) +
            ((1.0 / math.pi) * r *
-            np.exp(-(inv_cos_thetaw + du_bottom_scaled) * kappa_h)))
+            np.exp(-(inv_cos_thetaw + du_bottom_scaled) * kappa_d)))
 
     # Closed spectra
-    closed_spectrum = rrs * qwater # TODO: this is R0-
-    closed_deep_spectrum = rrsdp * qwater
+    # TODO: remove these two terms from the model
+    closed_spectrum = rrs * Q # TODO: this is R0-
+    closed_deep_spectrum = rrsdp * Q
 
     # TODO: generate and fill in all results
     # TODO: return rrs & rrsdp
