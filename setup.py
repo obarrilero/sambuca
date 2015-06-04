@@ -115,15 +115,15 @@ setup(
             'ipdb',
             'pylint',
             'sphinx',
-            'sphinxcontrib-napoleon',
+            'sphinx_rtd_theme',
             'wheel',
         ],
         'test': [
             'coverage',
+            'pylint',
             'pytest',
             'pytest-cov',
             'pytest-sugar',
-            'pylint',
         ],
     },
 
