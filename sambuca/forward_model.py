@@ -41,9 +41,9 @@ def forward_model(
         lambda0tr=550.0,
         lambda0x=546.0,
         x_ph_lambda0x=0.00157747,
-        x_tr_lambda0x=0.0225353,
+        x_nap_lambda0x=0.0225353,
         a_cdom_lambda0cdom=1.0,
-        a_tr_lambda0tr=0.00433,
+        a_nap_lambda0nap=0.00433,
         bb_lambda_ref=550,
         water_refractive_index=REFRACTIVE_INDEX_SEAWATER,
         theta_air=30.0,
@@ -76,10 +76,10 @@ def forward_model(
         lambda0x (float, optional): TODO
         x_ph_lambda0x (float, optional): specific backscatter of chlorophyl
             at lambda0x.
-        x_tr_lambda0x (float, optional): specific backscatter of tripton
+        x_nap_lambda0x (float, optional): specific backscatter of tripton
             at lambda0x.
         a_cdom_lambda0cdom (float, optional): TODO
-        a_tr_lambda0tr (float, optional): TODO
+        a_nap_lambda0nap (float, optional): TODO
         bb_lambda_ref (float, optional): TODO
         water_refractive_index (float, optional): refractive index of water.
         theta_air (float, optional): solar zenith angle in degrees
@@ -120,14 +120,14 @@ def forward_model(
     # Mobley, Curtis D., 1994: Radiative Transfer in natural waters.
     bbwater = (0.00194 / 2.0) * np.power(bb_lambda_ref / wav, 4.32)
     acdom_star = a_cdom_lambda0cdom * np.exp(-slope_cdom * (wav - lambda0cdom))
-    atr_star = a_tr_lambda0tr * np.exp(-slope_nap * (wav - lambda0tr))
+    atr_star = a_nap_lambda0nap * np.exp(-slope_nap * (wav - lambda0tr))
 
     # Calculate backscatter
     backscatter = np.power(lambda0x / wav, slope_backscatter)
     # backscatter due to phytoplankton
     bbph_star = x_ph_lambda0x * backscatter
     # backscatter due to tripton
-    bbtr_star = x_tr_lambda0x * backscatter
+    bbtr_star = x_nap_lambda0x * backscatter
 
     # Total absorption
     a = awater + chl * aphy_star + cdom * acdom_star + nap * atr_star
