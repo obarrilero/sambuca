@@ -14,7 +14,7 @@ from pytest import fail, skip
 from scipy.io import readsav
 
 
-@skip
+# @skip
 class TestForwardModel(object):
 
     """Sambuca forward model test class
@@ -25,7 +25,7 @@ class TestForwardModel(object):
         # load the test values
         filename = resource_filename(
             sb.__name__,
-            'tests/data/_F1nm_H25_a_Non_UQ02_MB_RC__OS_SHon.sav')
+            'tests/data/forward_model_test_data.sav')
         cls.data = readsav(filename)
         cls.unpack_parameters()
         cls.unpack_input_spectra()
@@ -86,8 +86,6 @@ class TestForwardModel(object):
         cls.expected_substrate_r = r.substrater[0]
         cls.expected_rrs = r.rrs[0]
         cls.expected_rrsdp = r.rrsdp[0]
-        cls.expected_closed_spectrum = r.R0[0]
-        cls.expected_closed_deep_spectrum = r.R0DP[0]
         cls.expected_kd = r.kd[0]
         cls.expected_kub = r.kub[0]
         cls.expected_kuc = r.kuc[0]
@@ -105,8 +103,6 @@ class TestForwardModel(object):
             self.expected_substrate_r,
             self.expected_rrs,
             self.expected_rrsdp,
-            self.expected_closed_spectrum,
-            self.expected_closed_deep_spectrum,
             self.expected_kd,
             self.expected_kub,
             self.expected_kuc,
@@ -148,23 +144,24 @@ class TestForwardModel(object):
         assert 'substrate_r' in results
         assert np.allclose(results['substrate_r'], self.expected_substrate_r)
 
-    def test_closed_spectrum(self):
+    def test_rrs(self):
         results = self.run_forward_model()
         assert np.allclose(
-            results['closed_spectrum'],
-            self.expected_closed_spectrum,
+            results['rrs'],
+            self.expected_rrs,
             atol=self.atol,
             rtol=self.rtol)
 
-    def test_closed_deep_spectrum(self):
+    def test_rrs_deep(self):
         results = self.run_forward_model()
         assert np.allclose(
-            results['closed_deep_spectrum'],
-            self.expected_closed_deep_spectrum,
+            results['rrsdp'],
+            self.expected_rrsdp,
             atol=self.atol,
             rtol=self.rtol)
 
     def test_kd(self):
+        skip()
         results = self.run_forward_model()
         assert np.allclose(
             results['kd'],
