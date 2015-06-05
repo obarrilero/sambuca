@@ -57,24 +57,6 @@ def error_all(observed_rrs, modelled_rrs, nedr=None):
 
     alpha_val = np.arccos(rat)
 
-    # TODO: Unstable!!! If the denominator is very small, ...
-    # rat will tend to be large. But then if the denominator is 0, this code
-    # arbitrarily sets rat to 0. This creates highly divergent error terms for
-    # inputs that are effectively the same +- a bit of noise.
-
-    # rat = 0.0 if np.allclose(botline1, 0) or np.allclose(botline2, 0) \
-        # else topline / (botline1 * botline2)
-
-    # TODO: Unstable!!! Same explanation as above. rat = 1 - epsilon gives ...
-    # alpha_val ~= 0, while rat = 1 + epsilon gives alpha_val = 100.
-    # So once again, tiny variations in the inputs can produce error terms that
-    # are very different (by ~2 orders of magnitude).
-    # alpha_val = np.arccos(rat) if rat <= 1.0 else 100.0
-
-    # TODO: Check this with the team. I am clamping rat and the denominator ...
-    # term to ranges that avoid the instability in error terms
-    # for these corner cases.
-
     results = namedtuple('SambucaErrors',
                          ['alpha',
                           'alpha_f',
