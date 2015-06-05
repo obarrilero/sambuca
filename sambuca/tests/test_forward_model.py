@@ -25,7 +25,7 @@ class TestForwardModel(object):
         # load the test values
         filename = resource_filename(
             sb.__name__,
-            'tests/data/forward_model_test_data.sav')
+            './tests/data/_F1nm_H25_a_Non_UQ02_MB_RC__OS_SHon.sav')
         cls.data = readsav(filename)
         cls.unpack_parameters()
         cls.unpack_input_spectra()
