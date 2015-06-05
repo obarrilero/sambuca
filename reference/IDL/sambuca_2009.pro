@@ -351,7 +351,7 @@ function sub5_SAMBUCA_SA_V12, Z
     ;   R0:closed_spectrum,R0dp:closed_deep_spectrum,kd:Kd,Kuc:Kuc,Kub:Kub }
     SAMBUCA.input_spectra=spectra.input_spectra
     
-    SAVE, /ALL, FILENAME = 'forward_model_test_data.sav'
+;    SAVE, /ALL, FILENAME = 'forward_model_test_data.sav'
 
     ; move to the common output spectra
     if SAMBUCA.distances.run_1nm then begin
@@ -398,19 +398,34 @@ function sub5_SAMBUCA_SA_V12, Z
     Topline=TOTAL(double(realrrs)*double(rrs))
     Botline1=SQRT(TOTAL(double(realrrs)^2))
     Botline2=SQRT(TOTAL(double(rrs)^2))
+    
+    rat_denom = Botline1 * Botline2
+    if rat_denom lt 1e-9 then begin
+      rat_denom = 1e-9
+    endif
+    
+    rat = Topline / rat_denom
+    if rat lt 0 then begin
+      rat = 0
+    endif
+    if rat gt 1 then begin
+      rat = 1
+    endif
+    
+    alpha_val = ACOS(rat)
     ;alpha_val=ACOS(Topline/(Botline1*Botline2))
 
-    if Botline1 eq 0 or Botline2 eq 0 then begin
-        rat=0.0
-    endif else begin
-        rat=Topline/(Botline1*Botline2)
-    endelse
-
-    if rat le 1 then begin
-        alpha_val=ACOS(rat)
-    endif else begin
-        alpha_val=100.0
-    endelse
+;    if Botline1 eq 0 or Botline2 eq 0 then begin
+;        rat=0.0
+;    endif else begin
+;        rat=Topline/(Botline1*Botline2)
+;    endelse
+;
+;    if rat le 1 then begin
+;        alpha_val=ACOS(rat)
+;    endif else begin
+;        alpha_val=100.0
+;    endelse
 
     ;print,alpha_val,rat,Topline,Botline1,Botline2
 
@@ -425,7 +440,7 @@ function sub5_SAMBUCA_SA_V12, Z
     realrrs = realrrs_prediv
     rrs = rrs_prediv
     
-    SAVE, realrrs, noiserrs, rrs, LSQ, error_a, error_f, error_af, FILENAME='noise_error_data.sav'
+    SAVE, realrrs, noiserrs, rrs, LSQ, error_a, error_f, error_af, FILENAME='no_noise_error_data.sav'
     
     case SAMBUCA.distances.ERROR_TYPE of
         "a":  error = alpha_val
