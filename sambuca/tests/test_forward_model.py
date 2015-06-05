@@ -14,6 +14,7 @@ from pytest import fail, skip
 from scipy.io import readsav
 
 
+@skip
 class TestForwardModel(object):
 
     """Sambuca forward model test class
@@ -44,16 +45,15 @@ class TestForwardModel(object):
         cls.cdom = zz[2]
         cls.nap = zz[3]
         cls.x_ph_lambda0x = zz[4]
-        cls.x_tr_lambda0x = zz[5]
-        cls.Sc = zz[6]
-        cls.Str = zz[7]
-        cls.a_tr_lambda0tr = zz[8]
-        cls.Y = zz[9]
+        cls.x_nap_lambda0x = zz[5]
+        cls.slope_cdom = zz[6]
+        cls.slope_nap = zz[7]
+        cls.a_nap_lambda0nap = zz[8]
+        cls.slope_backscatter = zz[9]
         cls.q1 = zz[10]
         cls.q2 = zz[11]
         cls.q3 = zz[12]
         cls.H = zz[13]
-        cls.qwater = zz[14]
 
     @classmethod
     def unpack_input_spectra(cls):
@@ -69,7 +69,7 @@ class TestForwardModel(object):
         p = cls.data.sambuca.input_params[0]
         cls.theta_air = p.theta_air
         cls.lambda0cdom = p.lambda0cdom
-        cls.lambda0tr = p.lambda0tr
+        cls.lambda0nap = p.lambda0tr
         cls.lambda0x = p.lambda0x
 
     @classmethod
@@ -84,6 +84,8 @@ class TestForwardModel(object):
     def unpack_results(cls):
         r = cls.data.spectra
         cls.expected_substrate_r = r.substrater[0]
+        cls.expected_rrs = r.rrs[0]
+        cls.expected_rrsdp = r.rrsdp[0]
         cls.expected_closed_spectrum = r.R0[0]
         cls.expected_closed_deep_spectrum = r.R0DP[0]
         cls.expected_kd = r.kd[0]
@@ -101,6 +103,8 @@ class TestForwardModel(object):
             self.awater,
             self.aphy_star,
             self.expected_substrate_r,
+            self.expected_rrs,
+            self.expected_rrsdp,
             self.expected_closed_spectrum,
             self.expected_closed_deep_spectrum,
             self.expected_kd,
@@ -127,15 +131,14 @@ class TestForwardModel(object):
             self.awater,
             self.aphy_star,
             551,
-            qwater=self.qwater,
             x_ph_lambda0x=self.x_ph_lambda0x,
-            x_tr_lambda0x=self.x_tr_lambda0x,
-            sc=self.Sc,
-            str_=self.Str,
-            a_tr_lambda0tr=self.a_tr_lambda0tr,
-            y=self.Y,
+            x_nap_lambda0x=self.x_nap_lambda0x,
+            slope_cdom=self.slope_cdom,
+            slope_nap=self.slope_nap,
+            a_nap_lambda0nap=self.a_nap_lambda0nap,
+            slope_backscatter=self.slope_backscatter,
             lambda0cdom=self.lambda0cdom,
-            lambda0tr=self.lambda0tr,
+            lambda0nap=self.lambda0nap,
             theta_air=self.theta_air,
             # self.off_nadir,
         )

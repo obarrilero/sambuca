@@ -8,11 +8,13 @@ from builtins import *
 from pkg_resources import resource_filename
 
 import numpy as np
+from pytest import skip
 from scipy.io import readsav
 
 import sambuca as sb
 
 
+@skip
 class TestErrorNoise(object):
     """ Error function tests, with noise. """
 

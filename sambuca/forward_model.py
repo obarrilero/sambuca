@@ -38,7 +38,7 @@ def forward_model(
         slope_nap=0.00977262,
         slope_backscatter=0.878138,
         lambda0cdom=550.0,
-        lambda0tr=550.0,
+        lambda0nap=550.0,
         lambda0x=546.0,
         x_ph_lambda0x=0.00157747,
         x_nap_lambda0x=0.0225353,
@@ -72,7 +72,7 @@ def forward_model(
         slope_nap (float, optional): slope of NAP absorption
         slope_backscatter (float, optional): TODO
         lambda0cdom (float, optional): TODO
-        lambda0tr (float, optional): TODO
+        lambda0nap (float, optional): TODO
         lambda0x (float, optional): TODO
         x_ph_lambda0x (float, optional): specific backscatter of chlorophyl
             at lambda0x.
@@ -120,7 +120,7 @@ def forward_model(
     # Mobley, Curtis D., 1994: Radiative Transfer in natural waters.
     bbwater = (0.00194 / 2.0) * np.power(bb_lambda_ref / wav, 4.32)
     acdom_star = a_cdom_lambda0cdom * np.exp(-slope_cdom * (wav - lambda0cdom))
-    atr_star = a_nap_lambda0nap * np.exp(-slope_nap * (wav - lambda0tr))
+    atr_star = a_nap_lambda0nap * np.exp(-slope_nap * (wav - lambda0nap))
 
     # Calculate backscatter
     backscatter = np.power(lambda0x / wav, slope_backscatter)
