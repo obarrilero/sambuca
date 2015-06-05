@@ -14,54 +14,45 @@ from pkg_resources import resource_filename
 
 class TestSensorFilter(object):
 
-    ''' Additional sensor filter tests. See test_spectral_resampling.py as well.
-    '''
+    """ Sensor filter tests. """
 
-    def setup_method(self, method):
-        # load the test data
-
+    def __load_qb_data(self):
         # sensor filter
-        self.__qb_sensor_filter = envi.open(
+        sensor_filter = envi.open(
             resource_filename(
                 sb.__name__,
                 'tests/data/qbtest_filter_350_900nm.hdr'),
             resource_filename(
                 sb.__name__,
-                'tests/data/qbtest_filter_350_900nm.lib'))
+                'tests/data/qbtest_filter_350_900nm.lib')).spectra
 
         # input spectra
-        self.__qb_input_spectra = envi.open(
+        input_spectra = envi.open(
             resource_filename(
                 sb.__name__,
                 'tests/data/qbtest_input_spectra.hdr'),
             resource_filename(
                 sb.__name__,
-                'tests/data/qbtest_input_spectra.lib'))
+                'tests/data/qbtest_input_spectra.lib')).spectra[0]
 
         # output spectra
-        self.__qb_output_spectra = envi.open(
+        output_spectra = envi.open(
             resource_filename(
                 sb.__name__,
                 'tests/data/qbtest_output_spectra.hdr'),
             resource_filename(
                 sb.__name__,
-                'tests/data/qbtest_output_spectra.lib'))
+                'tests/data/qbtest_output_spectra.lib')).spectra[0]
 
-    def test_validate_data(self):
-        assert self.__qb_sensor_filter.spectra.shape == (4, 551)
-        assert self.__qb_input_spectra.spectra.shape == (1, 551)
-        assert self.__qb_output_spectra.spectra.shape == (1, 4)
+        return sensor_filter, input_spectra, output_spectra
 
     def test_quickbird_spectral_library(self):
-        # get the spectral library values as numpy arrays
-        sensor_filter = self.__qb_sensor_filter.spectra
-        input_spectra = self.__qb_input_spectra.spectra[0]
-        expected_output = self.__qb_output_spectra.spectra[0]
+        sensor_filter, input_spectra, expected_output = self.__load_qb_data()
         actual_output = sb.apply_sensor_filter(input_spectra, sensor_filter)
         assert np.allclose(
             actual_output,
             expected_output,
-            rtol=1.e-5,
+            rtol=1.e-6,
             atol=1.e-20)
 
     def test_synthetic_matlab_data(self):
