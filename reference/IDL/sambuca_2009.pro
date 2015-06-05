@@ -406,10 +406,10 @@ function sub5_SAMBUCA_SA_V12, Z
     
     rat = Topline / rat_denom
     if rat lt 0 then begin
-      rat = 0
+      rat = 0.0
     endif
-    if rat gt 1 then begin
-      rat = 1
+    if rat gt 1.0 then begin
+      rat = 1.0
     endif
     
     alpha_val = ACOS(rat)
@@ -440,7 +440,9 @@ function sub5_SAMBUCA_SA_V12, Z
     realrrs = realrrs_prediv
     rrs = rrs_prediv
     
-    SAVE, realrrs, noiserrs, rrs, LSQ, error_a, error_f, error_af, FILENAME='no_noise_error_data.sav'
+    if rat lt 1.0 then begin
+      SAVE, realrrs, noiserrs, rrs, LSQ, error_a, error_f, error_af, FILENAME='no_noise_error_data.sav'
+    endif
     
     case SAMBUCA.distances.ERROR_TYPE of
         "a":  error = alpha_val
