@@ -136,6 +136,7 @@ class TestForwardModel(object):
             lambda0cdom=self.lambda0cdom,
             lambda0nap=self.lambda0nap,
             theta_air=self.theta_air,
+            water_refractive_index=1.333,  # The hard-coded IDL value
             # self.off_nadir,
         )
 
@@ -161,7 +162,6 @@ class TestForwardModel(object):
             rtol=self.rtol)
 
     def test_kd(self):
-        skip()
         results = self.run_forward_model()
         assert np.allclose(
             results['kd'],
