@@ -353,6 +353,12 @@ function sub5_SAMBUCA_SA_V12, Z
     
 ;    SAVE, /ALL, FILENAME = 'forward_model_test_data.sav'
 
+    ; sensor filter test data
+    filter = SAMBUCA.distances.nm_filter_function
+    input_spectra = spectra.rrs
+    output_spectra = spectra.rrs # SAMBUCA.distances.nm_filter_function
+    SAVE, filter, input_spectra, output_spectra, FILENAME='sensor_filter_test_data.sav'
+
     ; move to the common output spectra
     if SAMBUCA.distances.run_1nm then begin
         SAMBUCA.imagespectra.closed_spectrum=spectra.R0 # SAMBUCA.distances.nm_filter_function
