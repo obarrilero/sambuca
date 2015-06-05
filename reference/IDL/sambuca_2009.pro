@@ -305,6 +305,8 @@ function SAMBUCA_SA_V12_fwdVB, ZZ, input_spectra, input_params
         ;bb_star: [input_spectra.bbwater,[bbph_star], [bbcdom_star],[ bbtr_star]],$
         R0:closed_spectrum,$
         R0dp:closed_deep_spectrum,$
+        rrs:rrs,$
+        rrsdp:rrsdp,$
         kd:Kd,$
         Kuc:Kuc,$
         Kub:Kub }
@@ -348,6 +350,8 @@ function sub5_SAMBUCA_SA_V12, Z
     ;spectra = {wl:input_spectra.wl,$
     ;   R0:closed_spectrum,R0dp:closed_deep_spectrum,kd:Kd,Kuc:Kuc,Kub:Kub }
     SAMBUCA.input_spectra=spectra.input_spectra
+    
+    SAVE, /ALL, FILENAME = 'forward_model_test_data.sav'
 
     ; move to the common output spectra
     if SAMBUCA.distances.run_1nm then begin
