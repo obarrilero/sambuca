@@ -31,9 +31,11 @@ test:
 
 .PHONY: clean
 clean:
+	echo Cleaning ...
 	rm -rf build/
 	find ./sambuca/ -name "__pycache__" -exec rm -rf {} \;
 	find ./sambuca/ -name "*.pyc" -exec rm -rf {} \;
+	echo ... done
 
 .PHONY: install-deps
 install-deps:
