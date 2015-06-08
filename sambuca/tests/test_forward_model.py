@@ -75,7 +75,6 @@ class TestForwardModel(object):
     @classmethod
     def unpack_substrates(cls):
         spectra = cls.data.sambuca.inputr[0].spectra[0]
-        # TODO: generate new test data that uses different substrates
         # it appears that in the test I set up, the substrates are both the same
         cls.substrate1 = spectra[:,0]
         cls.substrate2 = spectra[:,0]

@@ -8,14 +8,12 @@ from __future__ import (
     print_function,
     unicode_literals)
 from builtins import *
-
 import math
 from collections import namedtuple
 
 import numpy as np
 
 from .constants import REFRACTIVE_INDEX_SEAWATER
-
 
 ForwardModelResults = namedtuple('ForwardModelResults',
                                  [
