@@ -10,10 +10,24 @@ from __future__ import (
 from builtins import *
 
 import math
+from collections import namedtuple
 
 import numpy as np
 
 from .constants import REFRACTIVE_INDEX_SEAWATER
+
+
+ForwardModelResults = namedtuple('ForwardModelResults',
+                                 [
+                                     'r_substratum',
+                                     'rrs',
+                                     'rrsdp',
+                                     'kd',
+                                     'kub',
+                                     'kuc',
+                                     'a',
+                                     'bb',
+                                 ])
 
 
 # pylint: disable=too-many-arguments
@@ -86,17 +100,15 @@ def forward_model(
         off_nadir (float, optional): off-nadir angle
 
     Returns:
-        Dictionary: A dictionary containing the model outputs.
+        ForwardModelResults: A namedtuple containing the model outputs.
 
-        TODO: Will it be faster to only calculate requested outputs from a set?
-
-        - **substrate_r** (*ndarray*): The combined substrate.
+        - **r_substratum** (*ndarray*): The combined substrate.
         - **rrs** (*ndarray*): Modelled remotely-sensed reflectance.
         - **rrsdp** (*ndarray*): Modelled optically-deep
             remotely-sensed reflectance.
         - **kd** (*ndarray*): TODO
-        - **kuc** (*ndarray*): TODO
         - **kub** (*ndarray*): TODO
+        - **kuc** (*ndarray*): TODO
         - **a** (*ndarray*): TODO
         - **bb** (*ndarray*): TODO
 
@@ -170,17 +182,16 @@ def forward_model(
            ((1.0 / math.pi) * r_substratum *
             np.exp(-(inv_cos_thetaw + du_bottom_scaled) * kappa_d)))
 
-    results = {
-        'substrate_r': r_substratum,
-        'rrs': rrs,
-        'rrsdp': rrsdp,
-        'kd': kd,
-        'kuc': kuc,
-        'kub': kub,
-        'a': a,
-        'bb': bb,
-    }
-    return results
+    return ForwardModelResults(
+        r_substratum,
+        rrs,
+        rrsdp,
+        kd,
+        kub,
+        kuc,
+        a,
+        bb,
+    )
 
 # pylint: enable=too-many-arguments
 # pylint: enable=invalid-name

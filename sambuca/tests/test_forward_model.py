@@ -142,13 +142,12 @@ class TestForwardModel(object):
 
     def test_substrate_r(self):
         results = self.run_forward_model()
-        assert 'substrate_r' in results
-        assert np.allclose(results['substrate_r'], self.expected_substrate_r)
+        assert np.allclose(results.r_substratum, self.expected_substrate_r)
 
     def test_rrs(self):
         results = self.run_forward_model()
         assert np.allclose(
-            results['rrs'],
+            results.rrs,
             self.expected_rrs,
             atol=self.atol,
             rtol=self.rtol)
@@ -156,7 +155,7 @@ class TestForwardModel(object):
     def test_rrs_deep(self):
         results = self.run_forward_model()
         assert np.allclose(
-            results['rrsdp'],
+            results.rrsdp,
             self.expected_rrsdp,
             atol=self.atol,
             rtol=self.rtol)
@@ -164,7 +163,7 @@ class TestForwardModel(object):
     def test_kd(self):
         results = self.run_forward_model()
         assert np.allclose(
-            results['kd'],
+            results.kd,
             self.expected_kd,
             atol=self.atol,
             rtol=self.rtol)
@@ -172,7 +171,7 @@ class TestForwardModel(object):
     def test_kub(self):
         results = self.run_forward_model()
         assert np.allclose(
-            results['kub'],
+            results.kub,
             self.expected_kub,
             atol=self.atol,
             rtol=self.rtol)
@@ -180,7 +179,7 @@ class TestForwardModel(object):
     def test_kuc(self):
         results = self.run_forward_model()
         assert np.allclose(
-            results['kuc'],
+            results.kuc,
             self.expected_kuc,
             atol=self.atol,
             rtol=self.rtol)
@@ -188,7 +187,7 @@ class TestForwardModel(object):
     def test_a(self):
         results = self.run_forward_model()
         assert np.allclose(
-            results['a'],
+            results.a,
             self.expected_a,
             atol=self.atol,
             rtol=self.rtol)
@@ -196,7 +195,7 @@ class TestForwardModel(object):
     def test_bb(self):
         results = self.run_forward_model()
         assert np.allclose(
-            results['bb'],
+            results.bb,
             self.expected_bb,
             atol=self.atol,
             rtol=self.rtol)
