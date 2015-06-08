@@ -32,7 +32,6 @@ copyright = u'2014-15, CSIRO'
 version = release = '0.1.0'
 pygments_style = 'perldoc'
 templates_path = ['.']
-# html_theme = 'classic'
 html_use_smartypants = True
 html_last_updated_fmt = '%b %d, %Y'
 html_split_index = True
