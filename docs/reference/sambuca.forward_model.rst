@@ -1,5 +1,6 @@
 sambuca.forward_model
 =====================
 
-.. automodule:: sambuca.forward_model
-    :members:
+.. autoclass:: sambuca.forward_model.ForwardModelResults
+
+.. autofunction:: sambuca.forward_model

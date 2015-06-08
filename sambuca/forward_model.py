@@ -28,6 +28,18 @@ ForwardModelResults = namedtuple('ForwardModelResults',
                                      'a',
                                      'bb',
                                  ])
+""" namedtuple containing the forward model results.
+
+Attributes:
+    r_substratum (ndarray): The combined substrate.
+    rrs (ndarray): Modelled remotely-sensed reflectance.
+    rrsdp (ndarray): Modelled optically-deep remotely-sensed reflectance.
+    kd (ndarray): TODO
+    kub (ndarray): TODO
+    kuc (ndarray): TODO
+    a (ndarray): Total absorption.
+    bb (ndarray): Total backscatter.
+"""
 
 
 # pylint: disable=too-many-arguments
@@ -101,18 +113,6 @@ def forward_model(
 
     Returns:
         ForwardModelResults: A namedtuple containing the model outputs.
-
-        - **r_substratum** (*ndarray*): The combined substrate.
-        - **rrs** (*ndarray*): Modelled remotely-sensed reflectance.
-        - **rrsdp** (*ndarray*): Modelled optically-deep
-            remotely-sensed reflectance.
-        - **kd** (*ndarray*): TODO
-        - **kub** (*ndarray*): TODO
-        - **kuc** (*ndarray*): TODO
-        - **a** (*ndarray*): TODO
-        - **bb** (*ndarray*): TODO
-
-
     """
 
     assert len(substrate1) == num_bands
