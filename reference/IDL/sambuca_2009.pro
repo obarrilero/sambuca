@@ -351,7 +351,7 @@ function sub5_SAMBUCA_SA_V12, Z
     ;   R0:closed_spectrum,R0dp:closed_deep_spectrum,kd:Kd,Kuc:Kuc,Kub:Kub }
     SAMBUCA.input_spectra=spectra.input_spectra
     
-;    SAVE, /ALL, FILENAME = 'forward_model_test_data.sav'
+    SAVE, /ALL, FILENAME = 'forward_model_test_data.sav'
 
     ; sensor filter test data
     filter = SAMBUCA.distances.nm_filter_function
@@ -447,7 +447,11 @@ function sub5_SAMBUCA_SA_V12, Z
     rrs = rrs_prediv
     
     if rat lt 1.0 then begin
-      SAVE, realrrs, noiserrs, rrs, LSQ, error_a, error_f, error_af, FILENAME='no_noise_error_data.sav'
+      if SAMBUCA.distances.use_noise then begin
+        SAVE, realrrs, noiserrs, rrs, LSQ, error_a, error_f, error_af, FILENAME='noise_error_data.sav'
+      endif else begin
+        SAVE, realrrs, noiserrs, rrs, LSQ, error_a, error_f, error_af, FILENAME='no_noise_error_data.sav'
+      endelse
     endif
     
     case SAMBUCA.distances.ERROR_TYPE of
@@ -551,14 +555,6 @@ pro SAMBUCA_plot_SIOP,pstate=pstate
         "bbwater" , "bbph_star" , "bbtr_star"]
 
     envi_plot_data,SAMBUCA.input_spectra.wl,a,plot_names=names
-
-    ;VBnov08
-    tic=systime(1)
-    for i=0,49 do $
-        rst= sub5_SAMBUCA_SA_V12(Z)
-
-    toc=systime(1)-tic
-    print, 1000.*toc, 1000.*toc/50.
 
     return
 end
