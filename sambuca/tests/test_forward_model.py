@@ -25,7 +25,7 @@ class TestForwardModel(object):
         # load the test values
         filename = resource_filename(
             sb.__name__,
-            './tests/data/_F1nm_H25_a_Non_UQ02_MB_RC__OS_SHon.sav')
+            './tests/data/forward_model_test_data.sav')
         cls.data = readsav(filename)
         cls.unpack_parameters()
         cls.unpack_input_spectra()
@@ -77,7 +77,7 @@ class TestForwardModel(object):
         spectra = cls.data.sambuca.inputr[0].spectra[0]
         # it appears that in the test I set up, the substrates are both the same
         cls.substrate1 = spectra[:,0]
-        cls.substrate2 = spectra[:,0]
+        cls.substrate2 = spectra[:,1]
 
     @classmethod
     def unpack_results(cls):
