@@ -635,8 +635,9 @@ sum_filter=total(nm_filter_function,1)
 for i= 0,n_elements(sum_filter)-1 do $
  if sum_filter[i] ne 0 then   nm_filter_function[*,i]=nm_filter_function[*,i]/sum_filter[i]
 
-
+nm_filter_original = nm_filter_function
 nm_filter_function=nm_filter_function[*,[wavs_input]]
+SAVE, nm_filter_original, nm_filter_function, wavs_input, sum_filter, FILENAME='sensor_filter_band_count_adjustment.sav'
 
 
 ERROR_TYPE= (*pstate).flag_str.error_type
