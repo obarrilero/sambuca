@@ -118,6 +118,15 @@ class TestSensorFilter(object):
         """
 
         sensor_filter, input_spectra, expected_output = self.__load_casi04_data('CASI04_350_900_1nm')
+
+        # There is an unexplained issue with the Moreton Bay test data, where
+        # the observations have 28 bands while the CASI04 sensor filter has
+        # 30 bands. This has apparently been encounted before, as the IDL code
+        # slices the sensor filter matrix to match the observation band count.
+        # Until we have a sensible approach to this issue, I am simply replicating
+        # the filter slice here in this test.
+        sensor_filter = sensor_filter[0:len(expected_output),]
+
         actual_output = sb.apply_sensor_filter(input_spectra, sensor_filter)
         assert sensor_filter.shape[1] == len(input_spectra)
         assert sensor_filter.shape[0] == len(actual_output)
