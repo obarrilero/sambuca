@@ -54,7 +54,7 @@ def forward_model(
         substrate_fraction,
         substrate1,
         substrate2,
-        wav,
+        wavelengths,
         awater,
         aphy_star,
         num_bands,
@@ -88,7 +88,7 @@ def forward_model(
             convex combination of substrate1 and substrate2.
         substrate1 (array-like): A benthic substrate.
         substrate2 (array-like): A benthic substrate.
-        wav (array-like): TODO
+        wavelengths (array-like): Central wavelengths of the modelled spectral bands.
         awater (array-like): Absorption coefficient of pure water
         aphy_star (array-like): Specific absorption of phytoplankton.
         num_bands (int): The number of spectral bands.
@@ -115,7 +115,7 @@ def forward_model(
 
     assert len(substrate1) == num_bands
     assert len(substrate2) == num_bands
-    assert len(wav) == num_bands
+    assert len(wavelengths) == num_bands
     assert len(awater) == num_bands
     assert len(aphy_star) == num_bands
 
@@ -128,12 +128,12 @@ def forward_model(
 
     # Calculate derived SIOPS, based on
     # Mobley, Curtis D., 1994: Radiative Transfer in natural waters.
-    bbwater = (0.00194 / 2.0) * np.power(bb_lambda_ref / wav, 4.32)
-    acdom_star = a_cdom_lambda0cdom * np.exp(-slope_cdom * (wav - lambda0cdom))
-    atr_star = a_nap_lambda0nap * np.exp(-slope_nap * (wav - lambda0nap))
+    bbwater = (0.00194 / 2.0) * np.power(bb_lambda_ref / wavelengths, 4.32)
+    acdom_star = a_cdom_lambda0cdom * np.exp(-slope_cdom * (wavelengths - lambda0cdom))
+    atr_star = a_nap_lambda0nap * np.exp(-slope_nap * (wavelengths - lambda0nap))
 
     # Calculate backscatter
-    backscatter = np.power(lambda0x / wav, slope_backscatter)
+    backscatter = np.power(lambda0x / wavelengths, slope_backscatter)
     # backscatter due to phytoplankton
     bbph_star = x_ph_lambda0x * backscatter
     # backscatter due to tripton

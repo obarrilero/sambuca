@@ -32,7 +32,7 @@ def main():
             q=data['q'],
             substrate1=data['substrate1'],
             substrate2=data['substrate2'],
-            wav=data['wav'],
+            wavelengths=data['wav'],
             awater=data['awater'],
             aphy_star=data['aphy_star'],
             d_wls=data['d_wls'],)
