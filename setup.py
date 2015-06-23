@@ -93,6 +93,7 @@ setup(
     install_requires=[
         'future',
         'numpy',
+        'sambuca-core',  # Not in PyPI yet, must be installed from source.
         'scipy',
         'spectral',
     ],
