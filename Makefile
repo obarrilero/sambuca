@@ -55,7 +55,7 @@ develop: install-deps
 sitepkg-develop: develop
 	pip install --ignore-installed \
 		sphinx \
-		pytest pytest-cov pytest-sugar \
+		pytest pytest-sugar \
 		ipython ipdb
 
 .PHONY: lint

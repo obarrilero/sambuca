@@ -2,7 +2,6 @@ graft docs
 graft examples
 graft sambuca
 
-include .coverage
 include pylintrc
 
 include AUTHORS.rst

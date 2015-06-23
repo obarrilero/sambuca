@@ -119,16 +119,14 @@ setup(
             'wheel',
         ],
         'test': [
-            'coverage',
             'pylint',
             'pytest',
-            'pytest-cov',
             'pytest-sugar',
         ],
     },
 
     # If there are data files included in your packages that need to be
-    # installed, specify them here.
+    # installed, specify them here using relative paths:
     package_data={
         # 'sambuca': ['./tests/data/*.mat'],
     },
