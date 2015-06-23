@@ -66,14 +66,9 @@ setup(
 
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
-        # todo: which languages can we actually support?
-        # Edit as this becomes clear
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.2',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
     ],
 
     # What does your project relate to?
@@ -97,7 +92,6 @@ setup(
     # https://packaging.python.org/en/latest/technical.html#install-requires-vs-requirements-files
     install_requires=[
         'future',
-        # 'GDAL',
         'numpy',
         'scipy',
         'spectral',
@@ -142,7 +136,6 @@ setup(
     # "scripts" keyword. Entry points provide cross-platform support and allow
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
-        # 'console_scripts': ['sambuca=sambuca:main',],
     },
 
     # this might be untrue if we add any data files
