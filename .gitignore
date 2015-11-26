@@ -11,6 +11,7 @@ sambuca.egg-info/
 __pycache__/
 .coverage
 .ipynb*
+.cache/
 
 # PyCharm Project files contain local settings, and so are not appropriate for Git
 .idea/
