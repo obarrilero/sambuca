@@ -19,6 +19,7 @@ Once only
 1.  load the git module::
 
         $ module load git
+
 2.  Setup virtualenvwrapper by adding the following 2 lines to your
     .bashrc (substituting your own desired locations)::
 

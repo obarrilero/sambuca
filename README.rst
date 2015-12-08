@@ -1,6 +1,6 @@
-===============================
+=======
 Sambuca
-===============================
+=======
 
 * Free software: ??? license
 
@@ -32,3 +32,4 @@ probably most appropriate during the pre-release phase of development::
 
     module load pandoc
     pandoc -o README.md ./docs/csiro_development_environment.rst
+
