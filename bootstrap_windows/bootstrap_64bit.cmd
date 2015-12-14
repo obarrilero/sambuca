@@ -3,7 +3,7 @@ setlocal EnableDelayedExpansion
 
 REM Set CONDA_ENV to the name of the environment you wish to create.
 REM TODO: this could be passed in as a command line arg
-set CONDA_ENV=sam
+set CONDA_ENV=sambuca
 
 echo ---- Creating Conda environment %CONDA_ENV%
 conda create --yes --name %CONDA_ENV% --file conda_reqs_64.txt
