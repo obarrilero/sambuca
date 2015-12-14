@@ -13,18 +13,21 @@ call activate %CONDA_ENV%
 conda info --envs
 
 echo ---- Installing third-party pip packages
-REM pip install --requirement ./pip_reqs_64.txt
+pip install --upgrade --requirement ./pip_reqs_64.txt
 
 REM echo ---- Installing Sambuca Core in develop mode
-REM cd ..\..\sambuca_core
-REM python setup.py develop
+cd ..\..\sambuca_core
+python setup.py develop
+pip install -e.[dev,test]
 
 REM echo ---- Installing Sambuca in develop mode
-REM cd ..\sambuca
-REM python setup.py develop
+cd ..\sambuca
+python setup.py develop
+pip install -e.[dev,test]
 
 REM echo ---- Installing Bioopti in develop mode
-REM cd ..\bioopti
-REM python setup.py develop
+cd ..\bioopti
+python setup.py develop
+pip install -e.[dev,test]
 
 REM echo ---- Done!
