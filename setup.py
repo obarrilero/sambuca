@@ -30,7 +30,7 @@ class PyTest(TestCommand):
 
 setup(
     name='sambuca',
-    version='0.2.0',
+    version='0.2.1',
     description='TODO: Sambuca short description',
     long_description=long_description,
 
