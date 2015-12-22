@@ -15,9 +15,14 @@ from builtins import *
 from collections import namedtuple
 
 
-FreeParameters = namedtuple(
-    'FreeParameters',
-    'chl, cdom, nap, depth, substrate_fraction')
+FreeParameters = namedtuple('FreeParameters',
+                            '''
+                                chl,
+                                cdom,
+                                nap,
+                                depth,
+                                substrate_fraction
+                            ''')
 """ namedtuple containing the default Sambuca free parameters.
 
 Attributes:
