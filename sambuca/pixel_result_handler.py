@@ -1,4 +1,4 @@
-""" Pixed Result Handler
+""" Pixel Result Handler
 """
 
 
