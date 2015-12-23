@@ -15,6 +15,9 @@ from builtins import *
 
 from collections import namedtuple
 
+import numpy as np
+import sambuca-core as sbc
+
 
 AllParameters = namedtuple('AllParameters',
                             '''
@@ -87,3 +90,64 @@ Attributes:
         q_factor (float, optional): q value for producing the R(0-) values from
             modelled remotely-sensed reflectance (rrs) values.
 """
+
+
+def create_fixed_parameter_set(
+        wavelengths,
+        a_water,
+        a_ph_star,
+        substrate1,
+        substrate_fraction=1,
+        substrate2=None,
+        chl=None,
+        cdom=None,
+        nap=None,
+        depth=None,
+        a_cdom_slope=0.0168052,
+        a_nap_slope=0.00977262,
+        bb_ph_slope=0.878138,
+        bb_nap_slope=None,
+        lambda0cdom=550.0,
+        lambda0nap=550.0,
+        lambda0x=546.0,
+        x_ph_lambda0x=0.00157747,
+        x_nap_lambda0x=0.0225353,
+        a_cdom_lambda0cdom=1.0,
+        a_nap_lambda0nap=0.00433,
+        bb_lambda_ref=550,
+        water_refractive_index=sbc.REFRACTIVE_INDEX_SEAWATER,
+        theta_air=30.0,
+        off_nadir=0.0,
+        q_factor=np.pi):
+    """ Get an AllParameters tuple with Sambuca default values for use as
+    a fixed parameter set.
+    """
+
+    return AllParameters(
+        chl=chl,
+        cdom=cdom,
+        nap=nap,
+        depth=depth,
+        substrate_fraction=substrate_fraction,
+        wavelengths=wavelengths,
+        a_water=a_water,
+        a_ph_star=a_ph_star,
+        num_bands=len(wavelengths),
+        substrate1=substrate1,
+        substrate2=substrate2,
+        a_cdom_slope=a_cdom_slope,
+        a_nap_slope=a_nap_slope,
+        bb_ph_slope=bb_ph_slope,
+        bb_nap_slope=bb_nap_slope,
+        lambda0cdom=lambda0cdom,
+        lambda0nap=lambda0nap,
+        lambda0x=lambda0x,
+        x_ph_lambda0x=x_ph_lambda0x,
+        x_nap_lambda0x=x_nap_lambda0x,
+        a_cdom_lambda0cdom=a_cdom_lambda0cdom,
+        a_nap_lambda0nap=a_nap_lambda0nap,
+        bb_lambda_ref=bb_lambda_ref,
+        water_refractive_index=water_refractive_index,
+        theta_air=theta_air,
+        off_nadir=off_nadir,
+        q_factor=q_factor)
