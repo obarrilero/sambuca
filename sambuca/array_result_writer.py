@@ -128,4 +128,4 @@ class ArrayResultWriter(PixelResultHandler):
         self.cdom[x,y] = parameters.cdom
         self.nap[x,y] = parameters.nap
         self.depth[x,y] = parameters.depth
-        self.closed_rrs[,x,y] = closed_rrs
+        self.closed_rrs[:,x,y] = closed_rrs

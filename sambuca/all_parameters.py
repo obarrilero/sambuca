@@ -16,7 +16,7 @@ from builtins import *
 from collections import namedtuple
 
 import numpy as np
-import sambuca-core as sbc
+import sambuca_core as sbc
 
 
 AllParameters = namedtuple('AllParameters',
@@ -115,7 +115,7 @@ def create_fixed_parameter_set(
         a_cdom_lambda0cdom=1.0,
         a_nap_lambda0nap=0.00433,
         bb_lambda_ref=550,
-        water_refractive_index=sbc.REFRACTIVE_INDEX_SEAWATER,
+        water_refractive_index=sbc.constants.REFRACTIVE_INDEX_SEAWATER,
         theta_air=30.0,
         off_nadir=0.0,
         q_factor=np.pi):

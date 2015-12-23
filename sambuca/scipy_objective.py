@@ -1,4 +1,4 @@
-""" Default objective function for parameter estimation.
+""" Objective function for parameter estimation using scipy minimisation.
 """
 
 

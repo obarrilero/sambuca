@@ -2,9 +2,7 @@
 """
 
 from .all_parameters import AllParameters, create_fixed_parameter_set
-
 from .array_result_writer import ArrayResultWriter
-
 from .error import (
     error_all,
     distance_alpha,
@@ -12,8 +10,9 @@ from .error import (
     distance_lsq,
     distance_alpha_f,
 )
-
 from .free_parameters import FreeParameters
+from .pixel_result_handler import PixelResultHandler
+from .scipy_objective import SciPyObjective
 
 __author__ = 'Daniel Collins'
 __email__ = 'daniel.collins@csiro.au'
