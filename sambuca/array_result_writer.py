@@ -62,7 +62,6 @@ class ArrayResultWriter(PixelResultHandler):
         self.cdom = np.zeros((width, height))
         self.nap = np.zeros((width, height))
         self.depth = np.zeros((width, height))
-        self.substrate_fraction = np.zeros((width, height))
         self.closed_rrs = np.zeros((self._num_observed_bands, width, height))
 
     def __call__(self, x, y, observed_rrs, parameters=None):
@@ -75,7 +74,7 @@ class ArrayResultWriter(PixelResultHandler):
             observed_rrs (array-like): The observed remotely-sensed reflectance
                 at this pixel.
             parameters (sambuca.FreeParameters): If the pixel converged,
-                the final parameters; otherwise None.
+                this contains the final parameters; otherwise None.
         """
 
         super().__call__(x, y, observed_rrs, parameters)
@@ -86,11 +85,33 @@ class ArrayResultWriter(PixelResultHandler):
 
         # Generate results from the given parameters
         model_results = sbc.forward_model(
-            chl = parameters.chl,
-            cdom = parameters.cdom,
-            nap = parameters.nap,
-            depth = parameters.depth,
-            substrate_fraction = parameters.substrate_fraction,
+            parameters.chl,
+            parameters.cdom,
+            parameters.nap,
+            parameters.depth,
+            self._fixed_parameters.substrate1,
+            self._fixed_parameters.wavelengths,
+            self._fixed_parameters.a_water,
+            self._fixed_parameters.a_ph_star,
+            self._fixed_parameters.num_bands,
+            substrate_fraction=parameters.substrate_fraction,
+            substrate2=parameters.substrate2,
+            a_cdom_slope=parameters.a_cdom_slope,
+            a_nap_slope=parameters.a_nap_slope,
+            bb_ph_slope=parameters.bb_ph_slope,
+            bb_nap_slope=parameters.bb_nap_slope,
+            lambda0cdom=parameters.lambda0cdom,
+            lambda0nap=parameters.lambda0nap,
+            lambda0x=parameters.lambda0x,
+            x_ph_lambda0x=parameters.x_ph_lambda0x,
+            x_nap_lambda0x=parameters.x_nap_lambda0x,
+            a_cdom_lambda0cdom=parameters.a_cdom_lambda0cdom,
+            a_nap_lambda0nap=parameters.a_nap_lambda0nap,
+            bb_lambda_ref=parameters.bb_lambda_ref,
+            water_refractive_index=parameters.water_refractive_index,
+            theta_air=parameters.theta_air,
+            off_nadir=parameters.off_nadir,
+            q_factor=parameters.q_factor)
 
         closed_rrs = sbc.apply_sensor_filter(
             model_results.rrs,
@@ -99,4 +120,12 @@ class ArrayResultWriter(PixelResultHandler):
         error = sbc.error_all(observed_rrs, closed_rrs, self._nedr)
 
         # Write the results into our arrays
-
+        self.error_alpha[x,y] = error.alpha
+        self.error_alpha_f[x,y] = error.alpha_f
+        self.error_f[x,y] = error.f
+        self.error_lsq[x,y] = error.lsq
+        self.chl[x,y] = parameters.chl
+        self.cdom[x,y] = parameters.cdom
+        self.nap[x,y] = parameters.nap
+        self.depth[x,y] = parameters.depth
+        self.closed_rrs[,x,y] = closed_rrs
