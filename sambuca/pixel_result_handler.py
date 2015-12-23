@@ -1,4 +1,6 @@
-""" Pixed Result Handler """
+""" Pixed Result Handler
+"""
+
 
 from __future__ import (
     absolute_import,
@@ -28,7 +30,9 @@ class PixelResultHandler(Callable):
         Args:
             x (int): The pixel x coordinate.
             y (int): The pixel y coordinate.
-            observed_rrs (array-like): The observed remotely-sensed reflectance at this pixel.
-            parameters (sambuca.FreeParameters): If the pixel converged, the final parameters; otherwise None.
+            observed_rrs (array-like): The observed remotely-sensed reflectance
+                at this pixel.
+            parameters (sambuca.FreeParameters): If the pixel converged,
+                the final parameters; otherwise None.
         """
         pass
