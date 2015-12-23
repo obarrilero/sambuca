@@ -14,9 +14,15 @@ from collections.abc import Callable
 import sambuca_core as sbc
 
 
-class Objective(Callable):
+class SciPyObjective(Callable):
     """
-    Configurable objective function for Sambuca parameter estimation.
+    Configurable objective function for Sambuca parameter estimation, intended
+    for use with the SciPy minimisation methods.
+
+    Attributes:
+        observed_rrs (array-like): The observed remotely-sensed reflectance.
+            This attribute must be updated when you require the objective
+            instance to use a different value.
     """
 
     def __init__(
@@ -37,15 +43,15 @@ class Objective(Callable):
         self._sensor_filter = sensor_filter
         self._nedr = nedr
         self._fixed_parameters = fixed_parameters
+        self.observed_rrs = None
 
-    def __call__(self, parameters, observed_rrs):
+    def __call__(self, parameters):
         """
         Returns an objective score for the given parameter set.
 
         Args:
             parameters (tuple): The parameter tuple
                 (chl, cdom, nap, substrate_fraction, depth).
-            observed_rrs (array-like): The observed remotely-sensed reflectance.
         """
 
         # TODO: do I need to implement this? Here or in a subclass?
