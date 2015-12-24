@@ -13,6 +13,8 @@ from collections.abc import Callable
 
 import sambuca_core as sbc
 
+from .error import error_all
+
 
 class SciPyObjective(Callable):
     """
@@ -40,7 +42,13 @@ class SciPyObjective(Callable):
         """
         super().__init__()
 
-        self._sensor_filter = sensor_filter
+        # check for being passed the (wavelengths, filter) tuple loaded by the
+        # sambuca_core sensor_filter loading functions
+        if isinstance(sensor_filter, tuple) and len(sensor_filter) == 2:
+            self._sensor_filter = sensor_filter[1]
+        else:
+            self._sensor_filter = sensor_filter
+
         self._nedr = nedr
         self._fixed_parameters = fixed_parameters
         self.observed_rrs = None

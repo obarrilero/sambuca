@@ -121,7 +121,24 @@ def create_fixed_parameter_set(
         q_factor=np.pi):
     """ Get an AllParameters tuple with Sambuca default values for use as
     a fixed parameter set.
+
+    Note that if the (wavelength, value) tuples returned from the sambuca_core
+    spectra loading functions are passed to this function, only the value
+    arrays are stored in order to match the expectations of
+    sambuca_core.forward_model.
     """
+
+    if isinstance(a_water, tuple) and len(a_water) == 2:
+        a_water = a_water[1]
+
+    if isinstance(a_ph_star, tuple) and len(a_ph_star) == 2:
+        a_ph_star = a_ph_star[1]
+
+    if isinstance(substrate1, tuple) and len(substrate1) == 2:
+        substrate1 = substrate1[1]
+
+    if isinstance(substrate2, tuple) and len(substrate2) == 2:
+        substrate2 = substrate2[1]
 
     return AllParameters(
         chl=chl,

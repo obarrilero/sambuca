@@ -45,11 +45,18 @@ class ArrayResultWriter(PixelResultHandler):
 
         self._width = width
         self._height = height
-        self._sensor_filter = sensor_filter
         self._nedr = nedr
-        self._num_modelled_bands = sensor_filter.shape[1]
-        self._num_observed_bands = sensor_filter.shape[0]
         self._fixed_parameters = fixed_parameters
+
+        # check for being passed the (wavelengths, filter) tuple loaded by the
+        # sambuca_core sensor_filter loading functions
+        if isinstance(sensor_filter, tuple) and len(sensor_filter) == 2:
+            self._sensor_filter = sensor_filter[1]
+        else:
+            self._sensor_filter = sensor_filter
+
+        self._num_modelled_bands = self._sensor_filter.shape[1]
+        self._num_observed_bands = self._sensor_filter.shape[0]
 
         # initialise the ndarrays for the outputs.
         # Note that I am hard-coding these outputs for now, but the intent is that this class
