@@ -13,7 +13,7 @@ from collections.abc import Callable
 
 import sambuca_core as sbc
 
-from .error import error_all
+from .error import distance_f
 
 
 class SciPyObjective(Callable):
@@ -31,6 +31,7 @@ class SciPyObjective(Callable):
             self,
             sensor_filter,
             fixed_parameters,
+            error_function=distance_f,
             nedr=None):
         """
         Initialise the ArrayWriter.
@@ -38,6 +39,8 @@ class SciPyObjective(Callable):
             sensor_filter (array-like): The Sambuca sensor filter.
             fixed_parameters (sambuca.AllParameters): The fixed model
                 parameters.
+            error_function (Callable): The error function that will be applied
+                to the modelled and observed rrs.
             nedr (array-like): Noise equivalent difference in reflectance.
         """
         super().__init__()
@@ -51,6 +54,7 @@ class SciPyObjective(Callable):
 
         self._nedr = nedr
         self._fixed_parameters = fixed_parameters
+        self._error_func = error_function
         self.observed_rrs = None
 
     def __call__(self, parameters):
@@ -108,6 +112,4 @@ class SciPyObjective(Callable):
             model_results.rrs,
             self._sensor_filter)
 
-        # TODO: allow dependency injection of the specific error term to return
-        error = sbc.error_all(observed_rrs, closed_rrs, self._nedr)
-        return error.f
+        return self._error_func(self.observed_rrs, closed_rrs, self._nedr)
