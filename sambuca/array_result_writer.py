@@ -10,7 +10,9 @@ from __future__ import (
 from builtins import *
 
 import numpy as np
+import sambuca_core as sbc
 
+from .error import error_all
 from .pixel_result_handler import PixelResultHandler
 
 
@@ -102,29 +104,29 @@ class ArrayResultWriter(PixelResultHandler):
             self._fixed_parameters.a_ph_star,
             self._fixed_parameters.num_bands,
             substrate_fraction=parameters.substrate_fraction,
-            substrate2=parameters.substrate2,
-            a_cdom_slope=parameters.a_cdom_slope,
-            a_nap_slope=parameters.a_nap_slope,
-            bb_ph_slope=parameters.bb_ph_slope,
-            bb_nap_slope=parameters.bb_nap_slope,
-            lambda0cdom=parameters.lambda0cdom,
-            lambda0nap=parameters.lambda0nap,
-            lambda0x=parameters.lambda0x,
-            x_ph_lambda0x=parameters.x_ph_lambda0x,
-            x_nap_lambda0x=parameters.x_nap_lambda0x,
-            a_cdom_lambda0cdom=parameters.a_cdom_lambda0cdom,
-            a_nap_lambda0nap=parameters.a_nap_lambda0nap,
-            bb_lambda_ref=parameters.bb_lambda_ref,
-            water_refractive_index=parameters.water_refractive_index,
-            theta_air=parameters.theta_air,
-            off_nadir=parameters.off_nadir,
-            q_factor=parameters.q_factor)
+            substrate2=self._fixed_parameters.substrate2,
+            a_cdom_slope=self._fixed_parameters.a_cdom_slope,
+            a_nap_slope=self._fixed_parameters.a_nap_slope,
+            bb_ph_slope=self._fixed_parameters.bb_ph_slope,
+            bb_nap_slope=self._fixed_parameters.bb_nap_slope,
+            lambda0cdom=self._fixed_parameters.lambda0cdom,
+            lambda0nap=self._fixed_parameters.lambda0nap,
+            lambda0x=self._fixed_parameters.lambda0x,
+            x_ph_lambda0x=self._fixed_parameters.x_ph_lambda0x,
+            x_nap_lambda0x=self._fixed_parameters.x_nap_lambda0x,
+            a_cdom_lambda0cdom=self._fixed_parameters.a_cdom_lambda0cdom,
+            a_nap_lambda0nap=self._fixed_parameters.a_nap_lambda0nap,
+            bb_lambda_ref=self._fixed_parameters.bb_lambda_ref,
+            water_refractive_index=self._fixed_parameters.water_refractive_index,
+            theta_air=self._fixed_parameters.theta_air,
+            off_nadir=self._fixed_parameters.off_nadir,
+            q_factor=self._fixed_parameters.q_factor)
 
         closed_rrs = sbc.apply_sensor_filter(
             model_results.rrs,
             self._sensor_filter)
 
-        error = sbc.error_all(observed_rrs, closed_rrs, self._nedr)
+        error = error_all(observed_rrs, closed_rrs, self._nedr)
 
         # Write the results into our arrays
         self.error_alpha[x,y] = error.alpha
