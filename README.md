@@ -19,7 +19,8 @@ environment being used during pre-release development on CSIRO systems.
 Once only
 ---------
 
-1.  load the git module:
+1.  On Scientific Computing clusters, load the git module (otherwise
+    make sure you have Git installed):
 
         $ module load git
 
@@ -37,27 +38,37 @@ Once only
         $ cd ~/projects/
         $ mkdir sambuca_project
 
-5.  Clone the Git repositories for sambuca and sambuca\_agdc into the
+5.  Clone the Git repositories for sambuca and sambuca\_core into the
     sambuca\_project directory:
 
         $ cd ~/projects/sambuca_project/
-        $ git clone https://col52j@stash.csiro.au/scm/~col52j/sambuca.git
-        $ git clone https://col52j@stash.csiro.au/scm/~col52j/sambuca_agdc.git
+        $ git clone https://bitbucket.csiro.au/scm/~col52j/sambuca.git
+        $ git clone https://bitbucket.csiro.au/scm/~col52j/sambuca_core.git
 
-6.  Load the Python version used for development:
+    You may also wish to get the Bioopti project, and the Bioopti
+    Reference Data project:
 
-        $ module load python/2.7.6
+        $ git clone https://bitbucket.csiro.au/scm/sam/bioopti.git
+        $ git clone https://bitbucket.csiro.au/scm/sam/bioopti_data.git
+
+6.  On Scientific Computing clusters, load the Python version used for
+    development:
+
+        $ module load python/3.4.3
+
+    On other systems, you may need to manually install a Python 3
+    scientific Python stack.
 
 7.  Activate the virtualenvwrapper scripts:
 
-        $ source /apps/python/2.7.6/bin/virtualenvwrapper_lazy.sh
+        $ source /apps/python/3.4.3/bin/virtualenvwrapper_lazy.sh
 
 8.  Change to the top-level sambuca project directory:
 
         $ cd ~/projects/sambuca_project/
 
 9.  Make a virtual environment called sambuca that will be shared by
-    sambuca and sambuca\_agdc, associate it with the project directory,
+    sambuca and sambuca\_core, associate it with the project directory,
     and allow the virtual environment to access the system site packages
     (required for access to site-optimised packages like numpy and
     scipy).:
@@ -68,7 +79,7 @@ Once only
 
         $ workon sambuca
 
-11. Install the sambuca and sambuca\_agdc packages and dependencies into
+11. Install the sambuca and sambuca\_core packages and dependencies into
     your virtual environment in development mode. This makes the
     packages available via symlinks to your development code, so that
     code changes are reflected in the package without reinstallation
@@ -87,20 +98,20 @@ Once only
         $ workon sambuca
         $ cdproject
         $ cd sambuca
-        $ make develop
-        $ cd ../sambuca_agdc
-        $ make develop
+        $ make sitepkg-develop
+        $ cd ../sambuca_core
+        $ make sitepkg-develop
 
 Every time
 ----------
 
 1.  Load the Python version used for development:
 
-        $ module load python/2.7.6
+        $ module load python/3.4.3
 
 2.  Activate the virtualenvwrapper scripts:
 
-        $ source /apps/python/2.7.6/bin/virtualenvwrapper_lazy.sh
+        $ source /apps/python/3.4.3/bin/virtualenvwrapper_lazy.sh
 
 3.  Activate the sambuca virtual environment:
 
@@ -109,10 +120,6 @@ Every time
 4.  You can now work on the sambuca python code. Any Python packages you
     install with pip will be installed into the virtual environment.
     System packages are still available.
-5.  To deactivate the virtual environment, use the virtualenvwrapper
-    command (or simply close the terminal window):
-
-        $ deactivate
 
 Testing
 -------
