@@ -18,11 +18,21 @@ from .pixel_result_handler import PixelResultHandler
 
 class ArrayResultWriter(PixelResultHandler):
     """ Pixel result handler that writes pixel model outputs
-    to numpy ndarrays.
+    to in-memory numpy arrays.
 
-    Note that the current implementation is writing a hard-coded set of outputs
+    **Note that the current implementation is writing a hard-coded set of outputs
     for the alpha implementation. The intention is to replace this with a
-    data-driven system that only captures the outputs specified by the user.
+    data-driven system that only captures the outputs specified by the user.**
+
+    **In the short-term, this class could be modified to add additional outputs,
+    but this is not an ideal long-term solution.**
+
+    The intent is that this class is used to capture model outputs of interest
+    during raster processing. Once processing is complete, these outputs can
+    then be used in various ways, such as writing to file (HDF, NetCDF,
+    multi-band raster etc), plotting, or communication via message passing to a
+    parallel processing manager. Each of these uses can be built on top of the
+    basic array capture implemented in this class.
 
     """
 
