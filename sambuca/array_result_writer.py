@@ -81,6 +81,7 @@ class ArrayResultWriter(PixelResultHandler):
         self.cdom = np.zeros((width, height))
         self.nap = np.zeros((width, height))
         self.depth = np.zeros((width, height))
+        self.substrate_fraction = np.zeros((width, height))
         self.closed_rrs = np.zeros((self._num_observed_bands, width, height))
 
     def __call__(self, x, y, observed_rrs, parameters=None):
@@ -147,4 +148,5 @@ class ArrayResultWriter(PixelResultHandler):
         self.cdom[x,y] = parameters.cdom
         self.nap[x,y] = parameters.nap
         self.depth[x,y] = parameters.depth
+        self.substrate_fraction[x,y] = parameters.substrate_fraction
         self.closed_rrs[:,x,y] = closed_rrs
