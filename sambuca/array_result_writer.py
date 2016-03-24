@@ -83,8 +83,10 @@ class ArrayResultWriter(PixelResultHandler):
         self.depth = np.zeros((width, height))
         self.substrate_fraction = np.zeros((width, height))
         self.closed_rrs = np.zeros((self._num_observed_bands, width, height))
+        self.nit = np.full((width, height), -1)
+        self.success = np.full((width, height), -1)
 
-    def __call__(self, x, y, observed_rrs, parameters=None):
+    def __call__(self, x, y, observed_rrs, parameters=None, nit=None, success=None):
         """
         Called by the parameter estimator when there is a result for a pixel.
 
@@ -95,6 +97,8 @@ class ArrayResultWriter(PixelResultHandler):
                 at this pixel.
             parameters (sambuca.FreeParameters): If the pixel converged,
                 this contains the final parameters; otherwise None.
+            nit (int): The number of iterations performed
+            success (bool): If the optimizer exited successfully
         """
 
         super().__call__(x, y, observed_rrs, parameters)
@@ -150,3 +154,5 @@ class ArrayResultWriter(PixelResultHandler):
         self.depth[x,y] = parameters.depth
         self.substrate_fraction[x,y] = parameters.substrate_fraction
         self.closed_rrs[:,x,y] = closed_rrs
+        self.nit[x,y] = nit
+        self.success[x,y] = success
