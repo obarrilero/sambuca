@@ -62,8 +62,10 @@ class SciPyObjective(Callable):
         Returns an objective score for the given parameter set.
 
         Args:
-            parameters (tuple): The parameter tuple
-                (chl, cdom, nap, substrate_fraction, depth).
+            parameters (ndarray): The parameter array in the order
+                (chl, cdom, nap, depth, substrate_fraction)
+                as defined in the FreeParameters tuple
+          
         """
 
         # TODO: do I need to implement this? Here or in a subclass?
@@ -83,8 +85,8 @@ class SciPyObjective(Callable):
             chl=parameters[0],
             cdom=parameters[1],
             nap=parameters[2],
-            substrate_fraction=parameters[3],
-            depth=parameters[4],
+            depth=parameters[3],
+            substrate_fraction=parameters[4],
             substrate1=self._fixed_parameters.substrate1,
             wavelengths=self._fixed_parameters.wavelengths,
             a_water=self._fixed_parameters.a_water,
