@@ -14,6 +14,7 @@ from __future__ import (
 from builtins import *
 
 from collections import namedtuple
+from itertools import combinations
 
 import numpy as np
 import sambuca_core as sbc
@@ -30,8 +31,8 @@ AllParameters = namedtuple('AllParameters',
                                 a_ph_star,
                                 num_bands,
                                 substrate_fraction,
-                                substrate1,
-                                substrate2,
+                                substrates,
+                                substrate_combinations,
                                 a_cdom_slope,
                                 a_nap_slope,
                                 bb_ph_slope,
@@ -57,15 +58,16 @@ Attributes:
             (CDOM).
         nap (float): Concentration of non-algal particulates (NAP).
         depth (float): Water column depth.
-        substrate1 (array-like): A benthic substrate.
+        substrates (array-like): A list of benthic substrates.
         wavelengths (array-like): Central wavelengths of the modelled
             spectral bands.
         a_water (array-like): Absorption coefficient of pure water
         a_ph_star (array-like): Specific absorption of phytoplankton.
         num_bands (int): The number of spectral bands.
         substrate_fraction (float): Substrate proportion, used to generate a
-            convex combination of substrate1 and substrate2.
-        substrate2 (array-like, optional): A benthic substrate.
+            convex combination of two substrate members.
+        substrate_combinations (array-like): The index in substrates for all
+            combintations of pairs in substrates
         a_cdom_slope (float, optional): slope of CDOM absorption
         a_nap_slope (float, optional): slope of NAP absorption
         bb_ph_slope (float, optional): Power law exponent for the
@@ -96,9 +98,8 @@ def create_fixed_parameter_set(
         wavelengths,
         a_water,
         a_ph_star,
-        substrate1,
+        substrates,
         substrate_fraction=1,
-        substrate2=None,
         chl=None,
         cdom=None,
         nap=None,
@@ -134,11 +135,13 @@ def create_fixed_parameter_set(
     if isinstance(a_ph_star, tuple) and len(a_ph_star) == 2:
         a_ph_star = a_ph_star[1]
 
-    if isinstance(substrate1, tuple) and len(substrate1) == 2:
-        substrate1 = substrate1[1]
+    lsubstrates = []
+    for substrate in substrates:
+        if isinstance(substrate, tuple) and len(substrate) == 2:
+            lsubstrates.append(substrate[1])
 
-    if isinstance(substrate2, tuple) and len(substrate2) == 2:
-        substrate2 = substrate2[1]
+    nsubstrates = len(substrates)
+    substrate_combinations =  [ combo for combo in combinations([ i for i in range(nsubstrates) ],2)]
 
     return AllParameters(
         chl=chl,
@@ -150,8 +153,8 @@ def create_fixed_parameter_set(
         a_water=a_water,
         a_ph_star=a_ph_star,
         num_bands=len(wavelengths),
-        substrate1=substrate1,
-        substrate2=substrate2,
+        substrates=lsubstrates,
+        substrate_combinations=substrate_combinations,
         a_cdom_slope=a_cdom_slope,
         a_nap_slope=a_nap_slope,
         bb_ph_slope=bb_ph_slope,

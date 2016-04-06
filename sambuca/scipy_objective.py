@@ -56,6 +56,7 @@ class SciPyObjective(Callable):
         self._fixed_parameters = fixed_parameters
         self._error_func = error_function
         self.observed_rrs = None
+        self.id = None
 
     def __call__(self, parameters):
         """
@@ -80,6 +81,10 @@ class SciPyObjective(Callable):
                     return 100000.0
         '''
 
+        # Select the substrate pair from the list of substrates
+        id1 = self._fixed_parameters.substrate_combinations[self.id][0]
+        id2 = self._fixed_parameters.substrate_combinations[self.id][1]
+
         # Generate results from the given parameters
         model_results = sbc.forward_model(
             chl=parameters[0],
@@ -87,12 +92,12 @@ class SciPyObjective(Callable):
             nap=parameters[2],
             depth=parameters[3],
             substrate_fraction=parameters[4],
-            substrate1=self._fixed_parameters.substrate1,
+            substrate1=self._fixed_parameters.substrates[id1],
             wavelengths=self._fixed_parameters.wavelengths,
             a_water=self._fixed_parameters.a_water,
             a_ph_star=self._fixed_parameters.a_ph_star,
             num_bands=self._fixed_parameters.num_bands,
-            substrate2=self._fixed_parameters.substrate2,
+            substrate2=self._fixed_parameters.substrates[id2],
             a_cdom_slope=self._fixed_parameters.a_cdom_slope,
             a_nap_slope=self._fixed_parameters.a_nap_slope,
             bb_ph_slope=self._fixed_parameters.bb_ph_slope,
