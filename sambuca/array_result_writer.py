@@ -87,7 +87,7 @@ class ArrayResultWriter(PixelResultHandler):
         self.success = np.full((width, height), -1)
         self.substrate_pair = np.full((width, height), -1)
 
-    def __call__(self, x, y, observed_rrs, id, parameters=None, nit=None, success=None):
+    def __call__(self, x, y, observed_rrs, parameters=None, id=None, nit=None, success=None):
         """
         Called by the parameter estimator when there is a result for a pixel.
 
@@ -99,6 +99,7 @@ class ArrayResultWriter(PixelResultHandler):
             id (int): The substrate combination index
             parameters (sambuca.FreeParameters): If the pixel converged,
                 this contains the final parameters; otherwise None.
+            id (int): The substrate combination index
             nit (int): The number of iterations performed
             success (bool): If the optimizer exited successfully
         """
