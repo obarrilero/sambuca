@@ -82,7 +82,7 @@ class ArrayResultWriter(PixelResultHandler):
         self.nap = np.zeros((width, height))
         self.depth = np.zeros((width, height))
         self.substrate_fraction = np.zeros((width, height))
-        self.closed_rrs = np.zeros((self._num_observed_bands, width, height))
+        self.closed_rrs = np.zeros((width, height, self._num_observed_bands))
         self.nit = np.full((width, height), -1)
         self.success = np.full((width, height), -1)
 
@@ -153,6 +153,6 @@ class ArrayResultWriter(PixelResultHandler):
         self.nap[x,y] = parameters.nap
         self.depth[x,y] = parameters.depth
         self.substrate_fraction[x,y] = parameters.substrate_fraction
-        self.closed_rrs[:,x,y] = closed_rrs
+        self.closed_rrs[x,y,:] = closed_rrs
         self.nit[x,y] = nit
         self.success[x,y] = success
