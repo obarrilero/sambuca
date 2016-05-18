@@ -9,7 +9,7 @@ from __future__ import (
     unicode_literals)
 from builtins import *
 
-from collections.abc import Callable
+from collections import Callable
 
 
 class PixelResultHandler(Callable):
