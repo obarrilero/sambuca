@@ -3,6 +3,7 @@
 
 from .all_parameters import AllParameters, create_fixed_parameter_set
 from .array_result_writer import ArrayResultWriter
+from .minimize_wrapper import minimize_result, minimize
 from .error import (
     error_all,
     distance_alpha,
