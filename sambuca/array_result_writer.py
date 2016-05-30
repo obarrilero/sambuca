@@ -85,8 +85,9 @@ class ArrayResultWriter(PixelResultHandler):
         self.closed_rrs = np.zeros((width, height, self._num_observed_bands))
         self.nit = np.full((width, height), -1)
         self.success = np.full((width, height), -1)
+        self.substrate_pair = np.full((width, height), -1)
 
-    def __call__(self, x, y, observed_rrs, parameters=None, nit=None, success=None):
+    def __call__(self, x, y, observed_rrs, parameters=None, id=None, nit=None, success=None):
         """
         Called by the parameter estimator when there is a result for a pixel.
 
@@ -95,8 +96,10 @@ class ArrayResultWriter(PixelResultHandler):
             y (int): The pixel y coordinate.
             observed_rrs (array-like): The observed remotely-sensed reflectance
                 at this pixel.
+            id (int): The substrate combination index
             parameters (sambuca.FreeParameters): If the pixel converged,
                 this contains the final parameters; otherwise None.
+            id (int): The substrate combination index
             nit (int): The number of iterations performed
             success (bool): If the optimizer exited successfully
         """
@@ -107,19 +110,23 @@ class ArrayResultWriter(PixelResultHandler):
         if not parameters:
             return
 
+        # Select the substrate pair from the list of substrates
+        id1 = self._fixed_parameters.substrate_combinations[id][0]
+        id2 = self._fixed_parameters.substrate_combinations[id][1]
+
         # Generate results from the given parameters
         model_results = sbc.forward_model(
             parameters.chl,
             parameters.cdom,
             parameters.nap,
             parameters.depth,
-            self._fixed_parameters.substrate1,
+            self._fixed_parameters.substrates[id1],
             self._fixed_parameters.wavelengths,
             self._fixed_parameters.a_water,
             self._fixed_parameters.a_ph_star,
             self._fixed_parameters.num_bands,
             substrate_fraction=parameters.substrate_fraction,
-            substrate2=self._fixed_parameters.substrate2,
+            substrate2=self._fixed_parameters.substrates[id2],
             a_cdom_slope=self._fixed_parameters.a_cdom_slope,
             a_nap_slope=self._fixed_parameters.a_nap_slope,
             bb_ph_slope=self._fixed_parameters.bb_ph_slope,
@@ -156,3 +163,4 @@ class ArrayResultWriter(PixelResultHandler):
         self.closed_rrs[x,y,:] = closed_rrs
         self.nit[x,y] = nit
         self.success[x,y] = success
+        self.substrate_pair[x,y] = id
