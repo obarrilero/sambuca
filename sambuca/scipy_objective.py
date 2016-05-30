@@ -25,6 +25,9 @@ class SciPyObjective(Callable):
         observed_rrs (array-like): The observed remotely-sensed reflectance.
             This attribute must be updated when you require the objective
             instance to use a different value.
+        id (integer): The index of the substrate pair combination.
+            This attribute must be updated when you require the objective
+            instance to use a different substrate pair.
     """
 
     def __init__(
