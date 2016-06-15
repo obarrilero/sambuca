@@ -83,9 +83,9 @@ class ArrayResultWriter(PixelResultHandler):
         self.depth = np.zeros((width, height))
         self.substrate_fraction = np.zeros((width, height))
         self.closed_rrs = np.zeros((width, height, self._num_observed_bands))
-        self.nit = np.full((width, height), -1)
-        self.success = np.full((width, height), -1)
-        self.substrate_pair = np.full((width, height), -1)
+        self.nit = np.full((width, height), -1, dtype=np.int64)
+        self.success = np.full((width, height), -1, dtype=np.int64)
+        self.substrate_pair = np.full((width, height), -1, dtype=np.int64)
 
     def __call__(self, x, y, observed_rrs, parameters=None, id=None, nit=None, success=None):
         """
