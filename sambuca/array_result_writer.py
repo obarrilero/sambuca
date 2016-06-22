@@ -96,7 +96,6 @@ class ArrayResultWriter(PixelResultHandler):
             y (int): The pixel y coordinate.
             observed_rrs (array-like): The observed remotely-sensed reflectance
                 at this pixel.
-            id (int): The substrate combination index
             parameters (sambuca.FreeParameters): If the pixel converged,
                 this contains the final parameters; otherwise None.
             id (int): The substrate combination index
