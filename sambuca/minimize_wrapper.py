@@ -31,6 +31,15 @@ def pwork(id,objective,p0,method,bounds,options,obs_rrs):
     """
     This is a wrapper function for the SciPy minimize function as only
     top level functions can be pickled with the multiprocessing module
+
+    Args:
+	id (int): the substrate combination index to use
+	objective (callable): the objective function
+        p0 (ndarray): the initial guess
+        method (str): the type of solver
+	bounds (sequence): bounds for the variable solution
+	options (dict): solver options
+	obs_rrs (ndarray): initial observations
     """
 
     objective.id = id
@@ -49,6 +58,15 @@ def minimize(objective,p0,method,bounds,options,obs_rrs,pool=None):
     calling the SciPy minimize function for each combination.  It returns the
     result with the best fit.  It supports passing a pool of worker to
     parallelize over the substrate combinations.
+
+    Args:
+	objective (callable): the objective function
+        p0 (ndarray): the initial guess
+        method (str): the type of solver
+	bounds (sequence): bounds for the variable solution
+	options (dict): solver options
+	obs_rrs (ndarray): initial observations
+	pool (Pool, optional): a pool of processes for multiprocessing
     """
     
     Nc = len(objective._fixed_parameters.substrate_combinations)
