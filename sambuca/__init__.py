@@ -15,6 +15,8 @@ from .free_parameters import FreeParameters
 from .pixel_result_handler import PixelResultHandler
 from .scipy_objective import SciPyObjective
 
+
+
 __author__ = 'Daniel Collins'
 __email__ = 'daniel.collins@csiro.au'
 
@@ -24,4 +26,4 @@ __email__ = 'daniel.collins@csiro.au'
 # minor: new functionality that does not break the
 # existing API.
 # patch: bug-fixes that do not change the public API
-__version__ = '0.3.0'
+__version__ = '1.0.0'
